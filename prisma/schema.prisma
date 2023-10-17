@@ -1,0 +1,176 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Legend {
+  id Int @id @default(autoincrement())
+  code String @db.VarChar(255) @unique()
+  name String @db.VarChar(255)
+  nameEng String @db.VarChar(255)
+  priority Int @unique()
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  space Space[]
+}
+
+model Building {
+  id Int @id @default(autoincrement())
+  code String @db.VarChar(255)
+  name String @db.VarChar(255)
+  description String @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  floors Floor[]
+}
+
+model Floor {
+  id Int @id @default(autoincrement())
+  buildingId Int
+  number Int
+  svg String @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  building Building @relation(fields: [buildingId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  spaces Space[]
+
+  @@unique([buildingId, number])
+}
+
+model Space {
+  id Int @id @default(autoincrement())
+  code String @db.VarChar(255)
+  name String @db.VarChar(255)
+  description String? @db.VarChar(255)
+  capacity Int?
+  legendId Int
+  floorId Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  floor Floor? @relation(fields: [floorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  legend Legend @relation(fields: [legendId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  directionsFrom Route[] @relation("directionsFrom")
+  directionsTo Route[] @relation("directionsTo")
+  sensors Sensor[]
+
+  @@index([floorId])
+  @@index([legendId])
+}
+
+model Route {
+  id Int @id @default(autoincrement())
+  spaceStartId Int
+  spaceEndId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  directionsFrom Space @relation("directionsFrom", fields: [spaceEndId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  directionsTo Space @relation("directionsTo", fields: [spaceStartId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  indications Indication[]
+
+  @@unique([spaceStartId, spaceEndId])
+  @@index([spaceEndId])
+}
+
+model Indication {
+  id Int @id @default(autoincrement())
+  order Int
+  type IndicationType
+  itemId String? @db.VarChar(255)
+  routeId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  route Route @relation(fields: [routeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([routeId])
+}
+
+enum IndicationType {
+  STEP
+  USE_STAIRS
+  USE_EXIT
+  CHANGE_FLOOR
+  ENTER_BUILDING
+  EXIT_BUILDING
+}
+
+model Sensor {
+  code String @id
+  typeCode String
+  type SensorType @relation(fields: [typeCode], references: [code])
+  spaceId Int
+  space Space @relation(fields: [spaceId], references: [id])
+  values SensorValue[]
+  archivedValues SensorValueArchive[]
+  aggregatedValues SensorAggregatedValue[]
+
+  // systemId + viewId + objectId identifies the sensor within the BIM
+  systemId Int
+  viewId Int
+  objectId Int @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SensorType {
+  code String @id
+  priority Int @unique()
+  virtual Boolean @default(false)
+  sensors Sensor[]
+  unitCode String
+  unit Unit @relation(fields: [unitCode], references: [code])
+}
+
+model Unit {
+  code String @id
+  symbol String @unique
+  sensorTypes SensorType[]
+}
+
+model SensorValue {
+  id Int @id @default(autoincrement())
+  sensorCode String
+  sensor Sensor @relation(fields: [sensorCode], references: [code])
+  value Decimal
+  timestamp DateTime
+  createdAt DateTime @default(now())
+}
+
+model SensorValueArchive {
+  id Int @id @default(autoincrement())
+  sensorCode String
+  sensor Sensor @relation(fields: [sensorCode], references: [code])
+  value Decimal
+  timestamp DateTime
+  createdAt DateTime
+  archivedAt DateTime @default(now())
+}
+
+enum AggregationMode {
+  AVG
+  MIN
+  MAX
+}
+
+model SensorAggregatedValue {
+  id Int @id @default(autoincrement())
+  sensorCode String
+  sensor Sensor @relation(fields: [sensorCode], references: [code])
+  aggregator String
+  value Decimal
+  count Int
+  mode AggregationMode @default(AVG)
+  timestampFrom DateTime
+  timestampTo DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([sensorCode, aggregator, mode])
+}

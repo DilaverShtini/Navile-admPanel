@@ -1,0 +1,11 @@
+[
+  { "code": "COMFORT", "unitCode": "PERCENT", "virtual": true, "priority": 5 },
+  { "code": "TEMPERATURE", "unitCode": "DEGREES_CELSIUS", "priority": 20 },
+  { "code": "HUMIDITY", "unitCode": "PERCENT", "priority": 30 },
+  { "code": "SOUND", "unitCode": "DECIBEL", "priority": 40 },
+  { "code": "PM2.5", "unitCode": "MG_PER_M3", "priority": 50 },
+  { "code": "PM10", "unitCode": "MG_PER_M3", "priority": 55 },
+  { "code": "CARBON_MONOXIDE", "unitCode": "MG_PER_M3", "priority": 60 },
+  { "code": "NITROGEN_DIOXIDE", "unitCode": "MG_PER_M3", "priority": 65 },
+  { "code": "OZONE", "unitCode": "MG_PER_M3", "priority": 70 }
+]
