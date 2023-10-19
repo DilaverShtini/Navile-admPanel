@@ -1,6 +1,7 @@
 <!-- MainInput.vue -->
 <template>
   <div class="inputModel">
+    <h3 class="text-2xl font-bold mb-4">Open a Model</h3>
     <label :for="id">
       {{ label }}
     </label>
