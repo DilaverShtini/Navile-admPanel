@@ -1,7 +1,26 @@
 <script lang="ts" setup>
 
-import { MainInput } from "../../pages"
-import { MainVerticalNav } from "../../pages"
+import { MainInput } from "../utils"
+import { MainVerticalNav } from '../utils';
+import { ref, defineEmits } from 'vue';
+
+const emits = defineEmits();
+
+// Stato per il titolo del link selezionato
+const selectedModel = ref('');
+
+const router = useRouter();
+
+// Funzione per gestire il clic del link
+const handleLinkClick = (model: string): void => {
+  selectedModel.value = model;
+  emits('linkClicked', model);
+
+  // Utilizza router solo quando window è definito
+  if (typeof window !== 'undefined') {
+    router.push({ path: '/operation-menu/', query: { model: selectedModel.value } });
+  }
+}
 
 </script>
 
@@ -12,7 +31,7 @@ import { MainVerticalNav } from "../../pages"
           <MainInput type="text" placeholder="Search" id="openModel" class="mb-4 custom-input " />
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
-            <MainVerticalNav />
+              <MainVerticalNav @linkClicked="handleLinkClick" />
           </div>
         </div>
       </div>
@@ -58,4 +77,3 @@ import { MainVerticalNav } from "../../pages"
     border-bottom: 1px solid #d5d5d5;
   }
   </style>
-  

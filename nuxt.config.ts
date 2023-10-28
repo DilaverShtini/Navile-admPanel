@@ -1,4 +1,12 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { defineNuxtConfig } from "nuxt/config"
+
 export default defineNuxtConfig({
-  devtools: { enabled: true }
+  ssr: false,
+  srcDir: "src",
+  dir: {
+    public: "../public"
+  },
+  runtimeConfig: {
+    baseUrl: "" // Override with NUXT_BASE_URL
+  },
 })
