@@ -74,6 +74,7 @@ ul.listOfModel {
   margin: 0em;
   background-size: 2em;
   line-height: 2em;
+  text-transform: capitalize;
 }
 
 .listModel:hover {
