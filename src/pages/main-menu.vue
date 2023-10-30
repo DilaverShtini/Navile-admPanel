@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import { MainInput } from "../utils"
 import { MainVerticalNav } from '../utils';
 import { ref, defineEmits } from 'vue';
@@ -21,7 +20,6 @@ const handleLinkClick = (model: string): void => {
     router.push({ path: '/operation-menu/', query: { model: selectedModel.value } });
   }
 }
-
 </script>
 
 <template>
@@ -29,10 +27,10 @@ const handleLinkClick = (model: string): void => {
       <div class="menu border p-4">
         <div class="box">
           <MainInput type="text" placeholder="Search" id="openModel" class="mb-4 custom-input " />
-          <div class="with-bottom-border"></div>
-          <div class="verticalNav">
-              <MainVerticalNav @linkClicked="handleLinkClick" />
-          </div>
+            <div class="with-bottom-border"></div>
+            <div class="verticalNav">
+                <MainVerticalNav @linkClicked="handleLinkClick" />
+            </div>
         </div>
       </div>
       <div></div>
@@ -65,7 +63,7 @@ const handleLinkClick = (model: string): void => {
   .box {
     border: 1px solid #d5d5d5;
     border-radius: 0.5em;
-    max-height: 100em;
+    max-height: 50em;
     overflow-y: hidden;
   }
   

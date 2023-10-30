@@ -8,14 +8,14 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 const opeartionValue = ref('');
 
-// Accesso al valore della variabile 'model' dall'URL
+// Accesso al valore della variabile 'operation' dall'URL
 const operationFromQuery = route.query.operation;
 
 if (operationFromQuery !== undefined && operationFromQuery !== null) {
 opeartionValue.value = operationFromQuery.toString();
-console.log('Model:', opeartionValue.value);
+console.log('Operation:', opeartionValue.value);
 } else {
-console.error('Model non definito nell\'URL');
+console.error('Operation non definito nell\'URL');
 }
 </script>
 

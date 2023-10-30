@@ -9,4 +9,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     baseUrl: "" // Override with NUXT_BASE_URL
   },
+  routeRules: {
+    "/api/**": { cors: true },
+    "/res/**": { cors: true }
+  },
 })

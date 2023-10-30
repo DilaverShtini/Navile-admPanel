@@ -3,7 +3,9 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
-  // ... you will write your Prisma Client queries here
+  /*const models = Object.keys(prisma);
+  const filteredModels = models.filter(model => !model.startsWith('_') && !model.startsWith('$'));
+  return filteredModels*/
 }
 
 main()
