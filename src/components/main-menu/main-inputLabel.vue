@@ -1,7 +1,7 @@
 <!-- MainInput.vue -->
 <template>
   <div class="inputModel">
-    <h3 class="text-2xl font-bold mb-4">Open a Model</h3>
+    <h3 class="text-2xl font-bold mb-4">OPEN A MODEL</h3>
     <input
       @input="onInput"
       :type="type"
@@ -10,7 +10,10 @@
       :name="id"
     />
     <ul class="listOfModel" v-if="filteredModels.length">
-      <li class="listModel" v-for="model in filteredModels" :key="model.id">{{ model }}</li>
+      <li class="listModel" v-for="model in filteredModels" :key="model.id">
+        <router-link @click="handleLinkClick()" :to="{ path: '/operation-menu/', query: { model: model }}" class="linkModel">
+          <div>{{ model }}</div>
+        </router-link></li>
     </ul>
   </div>
 </template>
@@ -57,6 +60,13 @@ ul.listOfModel {
   text-align: left;
   padding: 0% 8% 0% 8%;
   margin: 5% 0% 0% 0%;
+}
+
+.linkModel {
+  color: black;
+  text-decoration: none;
+  transition: 0.3s ease;
+  margin-bottom: 15em;
 }
 
 .listModel {

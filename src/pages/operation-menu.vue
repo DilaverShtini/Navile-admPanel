@@ -36,7 +36,7 @@ import { useRoute } from 'vue-router';
     <div class="container">
       <div class="menu border p-4">
         <div class="box">
-          <h3 class="text-2xl font-bold mb-4"> {{ modelValue }} </h3>
+          <h3 class="text-2xl font-bold mb-4"> {{ modelValue.toUpperCase() }} </h3>
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
             <OperationVerticalNav @linkClicked="handleLinkClick" />
