@@ -3,9 +3,9 @@
     <nav class="bg-gray-800 text-white">
       <ul class="listOfModel">
         Spazi già esistenti nel db
-        <li v-for="link in links" :key="link.id" :title="link.operation" class="listModel">
-          <router-link @click="handleLinkClick(link.operation)" :to="link.to" class="linkModel">
-            <div>{{ link.text }}</div>  
+        <li v-for="name in uniqueNames" :key="name" class="listModel">
+          <router-link @click="handleLinkClick()" :to="{ path: '/operation-menu/'}" class="linkModel">
+            <div>{{ name }}</div>  
           </router-link>
         </li>
       </ul>
@@ -14,27 +14,18 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits } from 'vue';
+import { ref, defineProps } from 'vue';
 
-const links = [
-  { id: 1, to: '/controlPanel', text: 'a', operation: 'a' },
-  { id: 2, to: '/controlPanel', text: 'b', operation: 'b' },
-  { id: 3, to: '/controlPanel', text: 'c', operation: 'c' },
-];
+const props = defineProps(['modelValue']);
+const apiPath = `/api/${props.modelValue}`;
+const { data } = await useFetch(apiPath);
+const uniqueNames = Array.from(new Set(data.value.map(item => item.name)));
 
-const props = defineProps(['operation']);
-const emits = defineEmits(['linkClicked']);
-
-const handleLinkClick = (model) => {
-emits('linkClicked', model);
-};
 </script>
 
 <style scoped>
-
-
 .verticalNav {
-    height: 100%;
+    height: 40em;
     width: 100%;
     position: relative;
     margin: auto;
@@ -47,6 +38,7 @@ emits('linkClicked', model);
   }
   
   ul.listOfModel {
+    height: auto;
     width: auto;
     list-style-type: none;
     text-align: left;

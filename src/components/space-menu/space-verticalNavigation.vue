@@ -1,11 +1,31 @@
 <script lang="ts" setup>
 
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
-const { data } = await useFetch('/api/building') as { data: any };
-const items = ref(['Edificio', 'Modifica']);
+interface SpaceItem {
+  code: number;
+  name: string;
+}
+
+const props = defineProps(['buildingCode', 'floorNumber', 'floorId']);
+const data = ref<SpaceItem[]>([]);
+const items = ref(['Locali', 'Modifica']);
 const operations = ref(['Aggiungi', 'Elimina']);
-const activeItem = ref('Edificio');
+const activeItem = ref('Locali');
+
+onMounted(async () => {
+  try {
+    const response = await fetch(`/api/space?floorIdNumber=${props.floorId}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const result = await response.json();
+    console.log('Result from API:', result);
+    data.value = result;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+});
 
 const emit = defineEmits<{
   (e: "change", item: string): void
@@ -15,23 +35,26 @@ const changeTab = (item: string) => {
   activeItem.value = item;
   emit('change', item);
 }
+
 </script>
 
 <template>
   <div class="verticalNav">
+    <div class="buildingSelected"> Edificio: {{ props.buildingCode }} </div>
+    <div class="floorSelected"> Piano: {{ props.floorNumber }} </div>
     <button 
-        v-for="item, i in items" :key="i" 
-        class="tab" :class="{ active: item === activeItem }"
-        @click="changeTab(item)"
-        >{{item}}</button>
+      v-for="item, i in items" :key="i" 
+      class="tab btn" :class="{ active: item === activeItem }"
+      @click="changeTab(item)"
+      >{{item}}</button>
     <nav class="bg-gray-800 text-white">
-      <ul class="listOfBuilding">
-        <li v-for="link in data" :key="link.id" :title="link.buildingCode" class="listBuilding">
-          <router-link :to="{ path: '/floor-menu/', query: { buildingCode: link.code }}" class="linkBuilding">
-            <div>{{ link.name }}</div>
+      <ul class="listOfSpace">
+        <li v-for="link in data" :key="link.code" class="listSpace">
+          <router-link :to="{ path: '/' }" class="linkSpace">
+              <div>{{ link.name }}</div>
           </router-link>
         </li>
-        <li v-if="!data.length" class="noLinks">Nessun edificio disponibile</li>
+        <li v-if="!data.length" class="noLinks">Nessun locale disponibile</li>
       </ul>
     </nav>
     <button 
@@ -116,21 +139,28 @@ const changeTab = (item: string) => {
   text-align: center;
 }
 
-ul.listOfBuilding {
+.buildingSelected, .floorSelected {
+  width: auto;
+  text-align: left;
+  padding: 5% 0% 5% 5%;
+  border-bottom: 1px solid #d5d5d5;
+}
+
+ul.listOfSpace {
   width: auto;
   list-style-type: none;
   text-align: left;
   padding: 0% 8% 0% 8%;
 }
 
-.linkBuilding {
+.linkSpace {
   color: black;
   text-decoration: none;
   transition: 0.3s ease;
   margin-bottom: 15em;
 }
 
-.listBuilding {
+.listSpace {
   padding-left: 3%;
   margin: 0.5em 0em 0.5em 0em;
   background-size: 2em;
@@ -138,7 +168,7 @@ ul.listOfBuilding {
   text-transform: capitalize;
 }
 
-.listBuilding:hover {
+.listSpace:hover {
   background-color: #e2e8f0;
   border-radius: 0.2em;
 }

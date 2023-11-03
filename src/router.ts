@@ -1,10 +1,12 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
 import { createApp } from 'vue';
-import { MainMenu, OperationMenu, ControlPanel } from './utils/index';
+import { MainMenu, OperationMenu, ControlPanel, Floor } from './utils/index';
 import { NotFoundComponent } from './utils/index';
 
 const routes: RouteRecordRaw[] = [
   { path: '/main-menu', component: MainMenu },
+  { path: '/floor-menu', component: Floor },
+  { path: '/space-menu', component: Space },
   { path: '/operation-menu', name: 'operation-menu', component: OperationMenu },
   { path: '/controlPanel', component: ControlPanel },
   { path: '/error', component: NotFoundComponent },

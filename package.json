@@ -36,6 +36,7 @@
     "lodash": "^4.17.21",
     "ts-node": "^10.9.1",
     "vue-chartjs": "^5.2.0",
+    "vue-query": "^1.26.0",
     "winston": "^3.8.2",
     "winston-daily-rotate-file": "^4.7.1",
     "zod": "^3.21.4"

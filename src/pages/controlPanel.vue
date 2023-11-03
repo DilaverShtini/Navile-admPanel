@@ -8,24 +8,26 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 const opeartionValue = ref('');
 
-// Accesso al valore della variabile 'operation' dall'URL
+// Accesso al valore delle variabili 'model' e 'operation' dall'URL
 const operationFromQuery = route.query.operation;
+const modelFromQuery = route.query.model;
 
-if (operationFromQuery !== undefined && operationFromQuery !== null) {
-opeartionValue.value = operationFromQuery.toString();
-console.log('Operation:', opeartionValue.value);
+if (operationFromQuery !== undefined && (operationFromQuery) !== null) {
+    opeartionValue.value = operationFromQuery.toString();
+    //console.log('Operation:', opeartionValue.value);
 } else {
-console.error('Operation non definito nell\'URL');
+    console.error('Operation non definito nell\'URL');
 }
+
 </script>
 
 <template>
     <div class="container">
         <div class="sidebar">
             <div class="operationSelected">
-                {{ opeartionValue }} 
+                {{ opeartionValue }}
             </div>
-            <SideBar></SideBar>
+            <SideBar :operation="operationFromQuery" :modelValue="modelFromQuery"></SideBar>
         </div>
         <div class="form">
             <Form></Form>
@@ -67,9 +69,7 @@ console.error('Operation non definito nell\'URL');
     width: 76%;
     height: 100%;
     float: right;
-    margin-top: 2%;
-    margin-left: 2%;
-    margin-right: 2%;
+    margin: 2% 2% 2% 2%;
     box-sizing: border-box
 }
 

@@ -1,24 +1,7 @@
-<!-- MainInput.vue -->
-<template>
-  <div class="inputModel">
-    <h3 class="text-2xl font-bold mb-4">OPEN A MODEL</h3>
-    <input
-      @input="onInput"
-      :type="type"
-      :placeholder="placeholder"
-      :id="id"
-      :name="id"
-    />
-    <ul class="listOfModel" v-if="filteredModels.length">
-      <li class="listModel" v-for="model in filteredModels" :key="model.id">
-        <router-link @click="handleLinkClick()" :to="{ path: '/operation-menu/', query: { model: model }}" class="linkModel">
-          <div>{{ model }}</div>
-        </router-link></li>
-    </ul>
-  </div>
-</template>
-
 <script setup>
+
+//TODO cambiare la logica del search, non bisogna più cercare solamente i modelli nel database.
+
 import { ref, defineProps } from 'vue';
 
 const { data } = await useFetch('/api/models')
@@ -44,14 +27,37 @@ const onInput = (event) => {
 
 </script>
 
+<template>
+  <div class="inputModel">
+    <input
+      @input="onInput"
+      :type="type"
+      :placeholder="placeholder"
+      :id="id"
+      :name="id"
+    />
+    <ul class="listOfModel" v-if="filteredModels.length">
+      <li class="listModel" v-for="model in filteredModels" :key="model.id">
+        <router-link :to="{ path: '/operation-menu/', query: { model: model }}" class="linkModel">
+          <div>{{ model }}</div>
+        </router-link></li>
+    </ul>
+  </div>
+</template>
+
 <style scoped>
 
+.inputModel {
+  width: 100%;
+}
+
 input {
-  width: 20em;
-  padding: 4px;
+  width: 100%;
+  height: 3.5em;
+  box-sizing: border-box;
   border: 1px solid #e2e8f0;
-  border-radius: 
-  0.2em;
+  border-radius: 0.2em;
+  border: none;
 }
 
 ul.listOfModel {
