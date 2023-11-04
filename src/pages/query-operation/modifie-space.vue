@@ -1,42 +1,37 @@
 <script lang="ts" setup>
 
-import { MainInput } from '~/utils';
-import { SpaceVerticalNav} from '~/utils';
-import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { MainInput } from '../../utils';
+import { SpaceVerticalNav } from '../../utils';
+import { ref, watch } from 'vue';
 
-
-const items = ref(['Locali', 'Modifica']);
-const operations = ref(['Aggiungi', 'Elimina']);
-const activeItem = ref('Locali');
-
+const selectedSpace = ref('');
 const route = useRoute();
-const isEditMode = ref(false);
+const router = useRouter();
+const isEditMode = ref(true);
 
-// Accesso al valore delle variabili 'buildingCode' e 'floorNumber' dall'URL
 const buildingFromQuery = route.query.buildingCode
 const floorFromQuery = route.query.floorNumber
 const floorIdFromQuery = route.query.floorId
 
-// Stato per il titolo del link selezionato
-const selectedSpace = ref('');
+const items = ref(['Locali', 'Modifica']);
+const operations = ref(['Aggiungi', 'Elimina']);
+const activeItem = ref('Modifica');
+let spaceFromQuery = ref(route.query.spaceCode);
 
-const router = useRouter();
-
-const emit = defineEmits<{
+const emits = defineEmits<{
   (e: "change", item: string): void;
-  (e: "linkClicked", space: string): void;
+  (e: "linkClicked", building: string): void;
 }>();
 
 const changeTab = (item: string) => {
   activeItem.value = item;
-  emit('change', item);
+  emits('change', item);
   if (item === 'Modifica') {
     isEditMode.value = true;
   } else {
     isEditMode.value = false;
   }
-}
+};
 
 const operation = (item: string) => {
   if (item === 'Aggiungi') {
@@ -49,46 +44,55 @@ const operation = (item: string) => {
 // Funzione per gestire il clic del link
 const handleLinkClick = (space: string): void => {
   selectedSpace.value = space;
-  emit('linkClicked', space);
+  emits('linkClicked', space);
 
   // Utilizza router solo quando window è definito
   if (typeof window !== 'undefined') {
     if (activeItem.value === 'Modifica') {
-      router.push({ path: '/query-operation/modifie-space/', query: { spaceCode: selectedSpace.value, buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
+      router.push({ path: '/query-operation/modifie-space/', query: { spaceCode: selectedSpace.value } });
     } else {
       router.push({ path: '/space-menu/', query: { spaceCode: selectedSpace.value } });
     }
   }
 }
+
+watch(() => route.query.spaceCode, (newSpaceCode) => {
+    spaceFromQuery.value = newSpaceCode;
+});
+
 </script>
 
 <template>
-    <div class="container">
-      <div class="menu border p-4">
-        <div class="box">
-          <MainInput type="text" placeholder="Search" id="openBuilding" class="mb-4" />
-            <div class="with-bottom-border"></div>
-            <div class="verticalNav">
-              <div class="buildingSelected"> Edificio: {{ buildingFromQuery }} </div>
-              <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
-              <button 
-                v-for="item, i in items" :key="i" 
-                class="tab btn" :class="{ active: item === activeItem }"
-                @click="changeTab(item)"
-                >{{item}}</button>
-              <SpaceVerticalNav @linkClicked="handleLinkClick" :editMode="isEditMode" :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery"/>
-              <button 
-                v-for="item, i in operations" :key="i" 
-                class="action" :class="item.toLowerCase()"
-                @click="operation(item)"
-                >{{item}}</button>
-            </div>
-        </div>
+  <div class="container">
+    <div class="menu border p-4">
+      <div class="box">
+        <MainInput type="text" placeholder="Search" id="openBuilding" class="mb-4" />
+          <div class="with-bottom-border"></div>
+          <div class="verticalNav">
+            <div class="buildingSelected"> Edificio: {{ buildingFromQuery }} </div>
+            <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
+            <button 
+              v-for="item, i in items" :key="i" 
+              class="tab" :class="{ active: item === activeItem }"
+              @click="changeTab(item)"
+              >{{item}}</button>
+            <SpaceVerticalNav @linkClicked="handleLinkClick" :editMode="isEditMode" :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
+            <button 
+              v-for="item, i in operations" :key="i" 
+              class="action" :class="item.toLowerCase()"
+              @click="operation(item)"
+              >{{item}}</button>
+          </div>
       </div>
     </div>
+    <div v-if="activeItem === 'Modifica'" class="form-container">
+      Stai modificando: {{ spaceFromQuery }}
+    </div>
+  </div>
 </template>
-
+ 
 <style scoped>
+
 .container {
   height: 100%;
   margin-bottom: 5%;
@@ -117,13 +121,6 @@ const handleLinkClick = (space: string): void => {
   border-right: 1px solid #d5d5d5;
   overflow-y: hidden;
   width: 20em;
-}
-
-.buildingSelected, .floorSelected {
-  width: auto;
-  text-align: left;
-  padding: 5% 0% 5% 5%;
-  border-bottom: 1px solid #d5d5d5;
 }
 
 .action {
@@ -186,11 +183,19 @@ const handleLinkClick = (space: string): void => {
   opacity: 1;
 }
 
+
 .verticalNav {
   text-align: center;
 }
 
 .with-bottom-border {
+  border-bottom: 1px solid #d5d5d5;
+}
+
+.buildingSelected, .floorSelected {
+  width: auto;
+  text-align: left;
+  padding: 5% 0% 5% 5%;
   border-bottom: 1px solid #d5d5d5;
 }
 

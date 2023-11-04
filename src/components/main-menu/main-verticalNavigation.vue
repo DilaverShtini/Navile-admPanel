@@ -1,44 +1,21 @@
 <script lang="ts" setup>
 
-import { ref } from 'vue';
-
 const { data } = await useFetch('/api/building') as { data: any };
-const items = ref(['Edificio', 'Modifica']);
-const operations = ref(['Aggiungi', 'Elimina']);
-const activeItem = ref('Edificio');
+const props = defineProps(['editMode']);
 
-const emit = defineEmits<{
-  (e: "change", item: string): void
-}>()
-
-const changeTab = (item: string) => {
-  activeItem.value = item;
-  emit('change', item);
-}
 </script>
 
 <template>
-  <div class="verticalNav">
-    <button 
-        v-for="item, i in items" :key="i" 
-        class="tab" :class="{ active: item === activeItem }"
-        @click="changeTab(item)"
-        >{{item}}</button>
-    <nav class="bg-gray-800 text-white">
-      <ul class="listOfBuilding">
-        <li v-for="link in data" :key="link.id" :title="link.buildingCode" class="listBuilding">
-          <router-link :to="{ path: '/floor-menu/', query: { buildingCode: link.code }}" class="linkBuilding">
-            <div>{{ link.name }}</div>
-          </router-link>
-        </li>
-        <li v-if="!data.length" class="noLinks">Nessun edificio disponibile</li>
-      </ul>
-    </nav>
-    <button 
-        v-for="item, i in operations" :key="i" 
-        class="action" :class="item.toLowerCase()"
-        >{{item}}</button>
-  </div>
+  <nav class="bg-gray-800 text-white">
+    <ul class="listOfBuilding">
+      <li v-for="link in data" :key="link.id" :title="link.buildingCode" class="listBuilding">
+        <router-link :to="{ path: props.editMode ? '/query-operation/modifie-building/' : '/floor-menu/', query: { buildingCode: link.code }}" class="linkBuilding">
+          <div>{{ link.name }}</div>
+        </router-link>
+      </li>
+      <li v-if="!data.length" class="noLinks">Nessun edificio disponibile</li>
+    </ul>
+  </nav>
 </template>
 
 <style scoped>
@@ -46,66 +23,6 @@ const changeTab = (item: string) => {
 .noLinks {
   color: #777;
   margin-top: 1em;
-}
-
-.action {
-  width: 40%;
-  position: relative;
-  display: inline-block;
-  margin-bottom: 3%;
-  padding: 0.8em 2em;
-  text-align: center;
-  font-weight: bold;
-  color: #000;
-  letter-spacing: 2px;
-  background-color: #fff;
-  border-radius: 0.5em;
-}
-
-.action:hover {
-  background-color: #ed5959;
-}
-
-.aggiungi {
-  margin-right: 10px;
-}
-
-.elimina {
-  margin-left: 10px;
-}
-
-.tab {
-  position: relative;
-  display: inline-block;
-  padding: 1rem 2rem;
-  text-align: center;
-  font-weight: bold;
-  color: #333;
-  letter-spacing: 2px;
-  background-color: #fff;
-  border: none;
-}
-
-.tab::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 2px;
-  width: calc(100% - 30px);
-  border-radius: 0 0 8px 8px;
-  background-color: rgb(255, 37, 37);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.tab.active {
-  color: rgb(234, 37, 37);
-}
-
-.tab.active::after {
-  opacity: 1;
 }
 
 .verticalNav {

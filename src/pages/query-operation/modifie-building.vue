@@ -1,17 +1,18 @@
 <script lang="ts" setup>
-import { MainInput } from "../utils";
-import { MainVerticalNav } from '../utils';
-import { ref } from 'vue';
 
-// Stato per il titolo del link selezionato
+import { MainInput } from '../../utils';
+import { MainVerticalNav } from '../../utils';
+import { ref, watch } from 'vue';
+
 const selectedBuilding = ref('');
-
-const isEditMode = ref(false);
-
+const route = useRoute();
 const router = useRouter();
+const isEditMode = ref(true);
 
 const items = ref(['Edificio', 'Modifica']);
-const activeItem = ref('Edificio');
+const operations = ref(['Aggiungi', 'Elimina']);
+const activeItem = ref('Modifica');
+let buildingFromQuery = ref(route.query.buildingCode);
 
 const emits = defineEmits<{
   (e: "change", item: string): void;
@@ -28,7 +29,6 @@ const changeTab = (item: string) => {
   }
 };
 
-
 // Funzione per gestire il clic del link
 const handleLinkClick = (building: string): void => {
   selectedBuilding.value = building;
@@ -43,6 +43,11 @@ const handleLinkClick = (building: string): void => {
     }
   }
 }
+
+watch(() => route.query.buildingCode, (newBuildingCode) => {
+  buildingFromQuery.value = newBuildingCode;
+});
+
 </script>
 
 <template>
@@ -58,8 +63,15 @@ const handleLinkClick = (building: string): void => {
               @click="changeTab(item)"
               >{{item}}</button>
             <MainVerticalNav @linkClicked="handleLinkClick" :editMode=isEditMode />
+            <button 
+              v-for="item, i in operations" :key="i" 
+              class="action" :class="item.toLowerCase()"
+              >{{item}}</button>
           </div>
       </div>
+    </div>
+    <div v-if="activeItem === 'Modifica'" class="form-container">
+      Stai modificando: {{ buildingFromQuery }}
     </div>
   </div>
 </template>
@@ -112,6 +124,14 @@ const handleLinkClick = (building: string): void => {
 
 .action:hover {
   background-color: #ed5959;
+}
+
+.aggiungi {
+  margin-right: 10px;
+}
+
+.elimina {
+  margin-left: 10px;
 }
 
 .tab {
