@@ -67,8 +67,7 @@ const handleLinkClick = (building: string): void => {
 <style scoped>
 
 .container {
-  height: 100%;
-  margin-bottom: 5%;
+  min-height: 100%;
   display: flex;
   justify-content: left;
   flex: 1;
@@ -76,6 +75,7 @@ const handleLinkClick = (building: string): void => {
 }
 
 .form-container {
+  min-height: 100vh;
   top: 0;
   right: 0;
   bottom: 0;

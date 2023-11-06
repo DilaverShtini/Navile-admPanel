@@ -90,8 +90,7 @@ const handleLinkClick = (space: string): void => {
 
 <style scoped>
 .container {
-  height: 100%;
-  margin-bottom: 5%;
+  max-height: 100%;
   display: flex;
   justify-content: left;
   flex: 1;

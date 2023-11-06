@@ -4,6 +4,11 @@ import { MainInput } from '../../utils';
 import { SpaceVerticalNav } from '../../utils';
 import { ref, watch } from 'vue';
 
+interface SpaceItem {
+  code: number;
+  name: string;
+}
+
 const selectedSpace = ref('');
 const route = useRoute();
 const router = useRouter();
@@ -15,8 +20,25 @@ const floorIdFromQuery = route.query.floorId
 
 const items = ref(['Locali', 'Modifica']);
 const operations = ref(['Aggiungi', 'Elimina']);
+const modifieOperations = ref(['Conferma', 'Annulla']);
 const activeItem = ref('Locali');
 let spaceFromQuery = ref(route.query.spaceCode);
+
+const data = ref<SpaceItem[]>([]);
+
+onMounted(async () => {
+  try {
+    const response = await fetch(`/api/space?floorIdNumber=${floorIdFromQuery}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const result = await response.json();
+    console.log('Result from API:', result);
+    data.value = result;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+});
 
 const emits = defineEmits<{
   (e: "change", item: string): void;
@@ -40,6 +62,17 @@ const operation = (item: string) => {
     router.push({ path: '/query-operation/delete-space/', query: { spaceCode: selectedSpace.value, buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
   }
 }
+
+const modifieOperation = (item: string) => {
+  // TODO logica delle operazioni di conferma/annulla modifica
+
+  if (item === 'Conferma') {
+
+  } else {
+    
+  }
+}
+
 
 // Funzione per gestire il clic del link
 const handleLinkClick = (space: string): void => {
@@ -85,17 +118,118 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
           </div>
       </div>
     </div>
-    <div class="form-container">
-        Stai eliminando uno spazio
+    <div class="form">
+      <div class="form-container">
+        <div class="title" >Stai eliminando un locale dal piano: {{ floorFromQuery }}</div>
+        <div class="subtitle">Lista dei locali con relativi codici:</div>
+        <div v-for="link in data" class="listOfSpaces">
+          <label>{{ link.name }}</label>
+          <label>{{ link.code }}</label>
+        </div>
+        <div>
+          <div class="listOfInput">
+            <label for="spaceName"> Codice del locale </label>
+              <div>
+                <input 
+                  type="text"
+                  name="spaceName"
+                  id="spaceName"
+                  placeholder="Inserisci il codice" />
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="buttonsOperation">
+        <button
+          v-for="item, i in modifieOperations" :key="i" 
+          class="modifieAction" :class="item.toLowerCase()"
+          @click="modifieOperation(item)"
+          >{{ item }}</button>
+      </div>
     </div>
   </div>
 </template>
  
 <style scoped>
 
+.listOfInput {
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+
+.subtitle {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.listOfSpaces {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.listOfSpaces label {
+  font-size: 1em;
+  color: #333;
+}
+
+.listOfSpaces label:first-child {
+  font-weight: bold;
+}
+
+.listOfInput label {
+  display: block;
+  font-size: 1em;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.listOfInput input,
+.listOfInput textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.listOfInput textarea {
+  resize: vertical;
+}
+
+.title {
+  text-align: left;
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.form {
+  width: 100%;
+  justify-content: flex-start;
+  border-left: 1px solid #d5d5d5;
+}
+
+.buttonsOperation {
+  text-align: end;
+  margin-top: auto;
+  padding: 10px;
+}
+
 .container {
   height: 100%;
-  margin-bottom: 5%;
   display: flex;
   justify-content: left;
   flex: 1;
@@ -103,12 +237,11 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 }
 
 .form-container {
-  top: 0;
-  right: 0;
-  bottom: 0;
+  width: 96%;
+  margin: 0%;
+  justify-content: flex-start;
   background-color: #fff;
-  padding: 20px;
-  border-left: 1px solid #d5d5d5;
+  padding: 2% 2% 0% 2%;
 }
 
 .menu {
@@ -120,7 +253,20 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 .box {
   border-right: 1px solid #d5d5d5;
   overflow-y: hidden;
+  justify-content: left;
   width: 20em;
+}
+
+.modifieAction {
+  width: 100%;
+  margin: 0 1%;
+  padding: 0.8em 2em;
+  text-align: center;
+  font-weight: bold;
+  color: #000;
+  letter-spacing: 2px;
+  background-color: #fff;
+  border-radius: 0.5em;
 }
 
 .action {
@@ -137,7 +283,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
   border-radius: 0.5em;
 }
 
-.action:hover {
+.action:hover, .modifieAction:hover {
   background-color: #ed5959;
 }
 
@@ -147,6 +293,16 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 
 .elimina {
   margin-left: 10px;
+}
+
+.conferma {
+  height: 25%;
+  width: 10%;
+}
+
+.annulla {
+  height: 25%;
+  width: 10%;
 }
 
 .tab {

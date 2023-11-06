@@ -4,13 +4,14 @@ import { MainInput } from '../../utils';
 import { MainVerticalNav } from '../../utils';
 import { ref, watch } from 'vue';
 
+const { data } = await useFetch('/api/building') as { data: any };
 const selectedBuilding = ref('');
 const route = useRoute();
 const router = useRouter();
 const isEditMode = ref(true);
 
 const items = ref(['Edificio', 'Modifica']);
-const operations = ref(['Aggiungi', 'Elimina']);
+const operations = ref(['Conferma', 'Annulla']);
 const activeItem = ref('Modifica');
 let buildingFromQuery = ref(route.query.buildingCode);
 
@@ -44,6 +45,16 @@ const handleLinkClick = (building: string): void => {
   }
 }
 
+const operation = (item: string) => {
+  // TODO logica delle operazioni di conferma/annulla modifica
+
+  if (item === 'Conferma') {
+
+  } else {
+
+  }
+}
+
 watch(() => route.query.buildingCode, (newBuildingCode) => {
   buildingFromQuery.value = newBuildingCode;
 });
@@ -63,37 +74,109 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
               @click="changeTab(item)"
               >{{item}}</button>
             <MainVerticalNav @linkClicked="handleLinkClick" :editMode=isEditMode />
-            <button 
-              v-for="item, i in operations" :key="i" 
-              class="action" :class="item.toLowerCase()"
-              >{{item}}</button>
           </div>
       </div>
     </div>
-    <div v-if="activeItem === 'Modifica'" class="form-container">
-      Stai modificando: {{ buildingFromQuery }}
+    <div class="form">
+      <div v-if="activeItem === 'Modifica'" class="form-container">
+        <div class="title" >Stai modificando: {{ buildingFromQuery }}</div>
+          <div v-for="build in data">
+            <div v-if="build.code == buildingFromQuery" class="listOfInput">
+              <label for="buildingName"> Nome dell'edificio </label>
+                <div>
+                  <input 
+                    type="text"
+                    name="buildName"
+                    id="buildName"
+                    :placeholder="'Cambia ' + build.name " />
+                </div>
+              <label for="buildingDescription"> Descrizione </label>
+              <div>
+                <textarea
+                  id="buildDescription"
+                  name="buildDescription"
+                  rows="3"
+                  :placeholder=build.description />
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="buttonsOperation" v-if=isEditMode>
+        <button
+          v-for="item, i in operations" :key="i" 
+          class="action" :class="item.toLowerCase()"
+          @click="operation(item)"
+          >{{item}}</button>
+      </div>
     </div>
   </div>
 </template>
  
 <style scoped>
 
+.listOfInput {
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+
+.listOfInput label {
+  display: block;
+  font-size: 1em;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.listOfInput input,
+.listOfInput textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.listOfInput textarea {
+  resize: vertical;
+}
+
+.title {
+  text-align: left;
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.form {
+  width: 100%;
+  justify-content: flex-start;
+  border-left: 1px solid #d5d5d5;
+}
+
+.buttonsOperation {
+  text-align: end;
+  margin-top: auto;
+  padding: 10px;
+}
+
 .container {
   height: 100%;
-  margin-bottom: 5%;
+  width: 100%;
   display: flex;
-  justify-content: left;
   flex: 1;
   border: 1px solid #d5d5d5;
 }
 
 .form-container {
-  top: 0;
-  right: 0;
-  bottom: 0;
+  width: 96%;
+  margin: 0%;
+  justify-content: flex-start;
   background-color: #fff;
-  padding: 20px;
-  border-left: 1px solid #d5d5d5;
+  padding: 2% 2% 0% 2%;
 }
 
 .menu {
@@ -105,14 +188,13 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
 .box {
   border-right: 1px solid #d5d5d5;
   overflow-y: hidden;
+  justify-content: left;
   width: 20em;
 }
 
 .action {
-  width: 40%;
-  position: relative;
-  display: inline-block;
-  margin-bottom: 3%;
+  width: 100%;
+  margin: 0 1%;
   padding: 0.8em 2em;
   text-align: center;
   font-weight: bold;
@@ -126,12 +208,14 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
   background-color: #ed5959;
 }
 
-.aggiungi {
-  margin-right: 10px;
+.conferma {
+  height: 25%;
+  width: 10%;
 }
 
-.elimina {
-  margin-left: 10px;
+.annulla {
+  height: 25%;
+  width: 10%;
 }
 
 .tab {
@@ -168,11 +252,9 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
   opacity: 1;
 }
 
-
 .verticalNav {
   text-align: center;
 }
-
 .with-bottom-border {
   border-bottom: 1px solid #d5d5d5;
 }
