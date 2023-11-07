@@ -4,7 +4,6 @@
 
 import { ref, defineProps } from 'vue';
 
-const { data } = await useFetch('/api/models')
 const emit = defineEmits();
 const userInput = ref('');
 const filteredModels = ref([]);
@@ -19,10 +18,28 @@ const props = defineProps({
   id: String,
 });
 
+/*let apiUrl;
+
+if(props.floor.length > 0 ) {
+  apiUrl = `/api/models?model=${props.model}&floor=${props.floor}&build=${props.build}`;
+} else if (props.build.length > 0) {
+  apiUrl = `/api/models?model=${props.model}&floor=&build=${props.build}`;
+} else {
+  apiUrl = `/api/models?model=${props.model}&floor=&build=`;
+}
+
+const { data, error } = await useFetch(apiUrl);
+
+if (error.value) {
+  console.error('Error fetching data:', error.value);
+} else {
+  console.log('Data:', data.value);
+}
+*/
 const onInput = (event) => {
-  const searchTerm = event.target.value.toLowerCase();
+  /*const searchTerm = event.target.value.toLowerCase();
   userInput.value = searchTerm;
-  filteredModels.value = searchTerm ? data.value.filter(model => model.toLowerCase().includes(searchTerm)) : [];
+  filteredModels.value = searchTerm ? data.value.filter((model) => model.toLowerCase().includes(searchTerm)) : [];*/
 };
 
 </script>
@@ -39,7 +56,7 @@ const onInput = (event) => {
     <ul class="listOfModel" v-if="filteredModels.length">
       <li class="listModel" v-for="model in filteredModels" :key="model.id">
         <router-link :to="{ path: '/operation-menu/', query: { model: model }}" class="linkModel">
-          <div>{{ model }}</div>
+          <div>{{ model.code }}</div>
         </router-link></li>
     </ul>
   </div>
@@ -65,7 +82,7 @@ ul.listOfModel {
   list-style-type: none;
   text-align: left;
   padding: 0% 8% 0% 8%;
-  margin: 5% 0% 0% 0%;
+  margin: 3% 0% 3% 0%;
 }
 
 .linkModel {
@@ -76,7 +93,7 @@ ul.listOfModel {
 }
 
 .listModel {
-  padding-left: 0%;
+  padding-left: 2%;
   margin: 0em;
   background-size: 2em;
   line-height: 2em;

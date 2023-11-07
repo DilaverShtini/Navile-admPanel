@@ -8,6 +8,7 @@ interface SpaceItem {
 }
 
 const route = useRoute();
+const router = useRouter();
 
 const buildingFromQuery = route.query.buildingCode
 const floorFromQuery = route.query.floorNumber
@@ -15,6 +16,14 @@ const floorIdFromQuery = route.query.floorId
 
 const props = defineProps(['editMode', 'buildingCode', 'floorNumber', 'floorId']);
 const data = ref<SpaceItem[]>([]);
+
+const edit = (code: number) => {
+  router.push({ path: '/query-operation/modifie-space/', query: { spaceCode: code, buildingCode:buildingFromQuery, floorNumber:floorFromQuery, floorId:floorIdFromQuery } });
+}
+
+const navigate = (buildingCode: any, floorNumber: any, floorId: any) => {
+  router.push({ path: '/space-menu/', query: {buildingCode: buildingCode, floorNumber: floorNumber, floorId: floorId} });
+};
 
 onMounted(async () => {
   try {
@@ -36,9 +45,16 @@ onMounted(async () => {
     <nav class="bg-gray-800 text-white">
       <ul class="listOfSpace">
         <li v-for="link in data" :key="link.code" class="listSpace">
-          <router-link :to="{ path: props.editMode ? '/query-operation/modifie-space/' : '/space-menu/', query: { spaceCode: link.code, buildingCode:buildingFromQuery, floorNumber:floorFromQuery, floorId:floorIdFromQuery }}" class="linkSpace">
-              <div>{{ link.name }}</div>
-          </router-link>
+          <div class="row">
+            <div class="space-name" @click="navigate(buildingFromQuery, floorFromQuery, floorIdFromQuery)">
+              {{ link.name }}
+            </div>
+            <div class="edit-button">
+              <button @click.stop="edit(link.code)">
+                Edit
+              </button>
+            </div>
+          </div>
         </li>
         <li v-if="!data.length" class="noLinks">Nessun locale disponibile</li>
       </ul>
@@ -46,6 +62,20 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.building-name {
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.edit-button {
+  margin-left: 10px;
+}
 
 .noLinks {
   color: #777;

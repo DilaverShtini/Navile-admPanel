@@ -5,13 +5,10 @@ import { SpaceVerticalNav} from '~/utils';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-
-const items = ref(['Locali', 'Modifica']);
 const operations = ref(['Aggiungi', 'Elimina']);
 const activeItem = ref('Locali');
 
 const route = useRoute();
-const isEditMode = ref(false);
 
 // Accesso al valore delle variabili 'buildingCode' e 'floorNumber' dall'URL
 const buildingFromQuery = route.query.buildingCode
@@ -27,16 +24,6 @@ const emit = defineEmits<{
   (e: "change", item: string): void;
   (e: "linkClicked", space: string): void;
 }>();
-
-const changeTab = (item: string) => {
-  activeItem.value = item;
-  emit('change', item);
-  if (item === 'Modifica') {
-    isEditMode.value = true;
-  } else {
-    isEditMode.value = false;
-  }
-}
 
 const operation = (item: string) => {
   if (item === 'Aggiungi') {
@@ -66,17 +53,16 @@ const handleLinkClick = (space: string): void => {
     <div class="container">
       <div class="menu border p-4">
         <div class="box">
-          <MainInput type="text" placeholder="Search" id="openBuilding" class="mb-4" />
+          <MainInput type="text"
+                      placeholder="Search"
+                      id="openBuilding"
+                      class="mb-4" />
             <div class="with-bottom-border"></div>
             <div class="verticalNav">
               <div class="buildingSelected"> Edificio: {{ buildingFromQuery }} </div>
               <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
-              <button 
-                v-for="item, i in items" :key="i" 
-                class="tab btn" :class="{ active: item === activeItem }"
-                @click="changeTab(item)"
-                >{{item}}</button>
-              <SpaceVerticalNav @linkClicked="handleLinkClick" :editMode="isEditMode" :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery"/>
+              <div class="title"> Locali </div>
+              <SpaceVerticalNav @linkClicked="handleLinkClick" :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery"/>
               <button 
                 v-for="item, i in operations" :key="i" 
                 class="action" :class="item.toLowerCase()"
@@ -89,6 +75,14 @@ const handleLinkClick = (space: string): void => {
 </template>
 
 <style scoped>
+
+.title {
+  width: 96%;
+  text-align: center;
+  padding: 3% 2% 3% 2%;
+  font-weight: bold;
+}
+
 .container {
   max-height: 100%;
   display: flex;

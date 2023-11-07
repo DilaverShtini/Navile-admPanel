@@ -33,7 +33,10 @@ const handleLinkClick = (space: string): void => {
   <div class="container">
     <div class="menu border p-4">
       <div class="box">
-        <MainInput type="text" placeholder="Search" id="openFloor" class="mb-4" />
+        <MainInput type="text"
+                    placeholder="Search"
+                    id="openFloor"
+                    class="mb-4" />
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
             <FloorVerticalNav @linkClicked="handleLinkClick" :buildingCode="buildingFromQuery"/>

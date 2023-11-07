@@ -7,32 +7,19 @@ import { ref, watch } from 'vue';
 const selectedSpace = ref('');
 const route = useRoute();
 const router = useRouter();
-const isEditMode = ref(false);
 
 const buildingFromQuery = route.query.buildingCode
 const floorFromQuery = route.query.floorNumber
 const floorIdFromQuery = route.query.floorId
 
-const items = ref(['Locali', 'Modifica']);
 const operations = ref(['Aggiungi', 'Elimina']);
 const modifieOperations = ref(['Conferma', 'Annulla']);
-const activeItem = ref('Locali');
 let spaceFromQuery = ref(route.query.spaceCode);
 
 const emits = defineEmits<{
   (e: "change", item: string): void;
   (e: "linkClicked", building: string): void;
 }>();
-
-const changeTab = (item: string) => {
-  activeItem.value = item;
-  emits('change', item);
-  if (item === 'Modifica') {
-    isEditMode.value = true;
-  } else {
-    isEditMode.value = false;
-  }
-};
 
 const operation = (item: string) => {
   if (item === 'Aggiungi') {
@@ -57,15 +44,6 @@ const modifieOperation = (item: string) => {
 const handleLinkClick = (space: string): void => {
   selectedSpace.value = space;
   emits('linkClicked', space);
-
-  // Utilizza router solo quando window è definito
-  if (typeof window !== 'undefined') {
-    if (activeItem.value === 'Modifica') {
-      router.push({ path: '/query-operation/modifie-space/', query: { spaceCode: selectedSpace.value } });
-    } else {
-      router.push({ path: '/space-menu/', query: { spaceCode: selectedSpace.value } });
-    }
-  }
 }
 
 watch(() => route.query.spaceCode, (newSpaceCode) => {
@@ -83,12 +61,8 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
           <div class="verticalNav">
             <div class="buildingSelected"> Edificio: {{ buildingFromQuery }} </div>
             <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
-            <button 
-              v-for="item, i in items" :key="i" 
-              class="tab" :class="{ active: item === activeItem }"
-              @click="changeTab(item)"
-              >{{item}}</button>
-            <SpaceVerticalNav @linkClicked="handleLinkClick" :editMode="isEditMode" :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
+            <div class="space-title"> Locali </div>
+            <SpaceVerticalNav @linkClicked="handleLinkClick" :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
             <button 
               v-for="item, i in operations" :key="i" 
               class="action" :class="item.toLowerCase()"
@@ -141,6 +115,13 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 </template>
  
 <style scoped>
+
+.space-title {
+  width: 96%;
+  text-align: center;
+  padding: 3% 2% 3% 2%;
+  font-weight: bold;
+}
 
 .listOfInput {
   border: 1px solid #ddd;

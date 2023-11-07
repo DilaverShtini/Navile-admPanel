@@ -6,42 +6,16 @@ import { ref } from 'vue';
 // Stato per il titolo del link selezionato
 const selectedBuilding = ref('');
 
-const isEditMode = ref(false);
-
-const router = useRouter();
-
-const items = ref(['Edificio', 'Modifica']);
-const activeItem = ref('Edificio');
-
 const emits = defineEmits<{
   (e: "change", item: string): void;
   (e: "linkClicked", building: string): void;
 }>();
-
-const changeTab = (item: string) => {
-  activeItem.value = item;
-  emits('change', item);
-  if (item === 'Modifica') {
-    isEditMode.value = true;
-  } else {
-    isEditMode.value = false;
-  }
-};
-
 
 // Funzione per gestire il clic del link
 const handleLinkClick = (building: string): void => {
   selectedBuilding.value = building;
   emits('linkClicked', building);
 
-  // Utilizza router solo quando window è definito
-  if (typeof window !== 'undefined') {
-    if (activeItem.value === 'Modifica') {
-      router.push({ path: '/query-operation/modifie-building/', query: { buildingCode: selectedBuilding.value } });
-    } else {
-      router.push({ path: '/floor-menu/', query: { buildingCode: selectedBuilding.value } });
-    }
-  }
 }
 </script>
 
@@ -49,15 +23,14 @@ const handleLinkClick = (building: string): void => {
   <div class="container">
     <div class="menu border p-4">
       <div class="box">
-        <MainInput type="text" placeholder="Search" id="openBuilding" class="mb-4" />
+        <MainInput type="text"
+                    placeholder="Search"
+                    id="openBuilding"
+                    class="mb-4" />
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
-            <button 
-              v-for="item, i in items" :key="i" 
-              class="tab" :class="{ active: item === activeItem }"
-              @click="changeTab(item)"
-              >{{item}}</button>
-            <MainVerticalNav @linkClicked="handleLinkClick" :editMode=isEditMode />
+            <div class="title"> Edifici </div>
+            <MainVerticalNav @linkClicked="handleLinkClick" />
           </div>
       </div>
     </div>
@@ -65,6 +38,13 @@ const handleLinkClick = (building: string): void => {
 </template>
  
 <style scoped>
+
+.title {
+  width: 96%;
+  text-align: center;
+  padding: 3% 2% 3% 2%;
+  font-weight: bold;
+}
 
 .container {
   min-height: 100%;

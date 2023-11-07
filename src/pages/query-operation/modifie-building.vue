@@ -7,12 +7,9 @@ import { ref, watch } from 'vue';
 const { data } = await useFetch('/api/building') as { data: any };
 const selectedBuilding = ref('');
 const route = useRoute();
-const router = useRouter();
 const isEditMode = ref(true);
 
-const items = ref(['Edificio', 'Modifica']);
 const operations = ref(['Conferma', 'Annulla']);
-const activeItem = ref('Modifica');
 let buildingFromQuery = ref(route.query.buildingCode);
 
 const emits = defineEmits<{
@@ -20,29 +17,10 @@ const emits = defineEmits<{
   (e: "linkClicked", building: string): void;
 }>();
 
-const changeTab = (item: string) => {
-  activeItem.value = item;
-  emits('change', item);
-  if (item === 'Modifica') {
-    isEditMode.value = true;
-  } else {
-    isEditMode.value = false;
-  }
-};
-
 // Funzione per gestire il clic del link
 const handleLinkClick = (building: string): void => {
   selectedBuilding.value = building;
   emits('linkClicked', building);
-
-  // Utilizza router solo quando window è definito
-  if (typeof window !== 'undefined') {
-    if (activeItem.value === 'Modifica') {
-      router.push({ path: '/query-operation/modifie-building/', query: { buildingCode: selectedBuilding.value } });
-    } else {
-      router.push({ path: '/floor-menu/', query: { buildingCode: selectedBuilding.value } });
-    }
-  }
 }
 
 const operation = (item: string) => {
@@ -68,17 +46,13 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
         <MainInput type="text" placeholder="Search" id="openBuilding" class="mb-4" />
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
-            <button 
-              v-for="item, i in items" :key="i" 
-              class="tab" :class="{ active: item === activeItem }"
-              @click="changeTab(item)"
-              >{{item}}</button>
+            <div class="building-title"> Edifici </div>
             <MainVerticalNav @linkClicked="handleLinkClick" :editMode=isEditMode />
           </div>
       </div>
     </div>
     <div class="form">
-      <div v-if="activeItem === 'Modifica'" class="form-container">
+      <div class="form-container">
         <div class="title" >Stai modificando: {{ buildingFromQuery }}</div>
           <div v-for="build in data">
             <div v-if="build.code == buildingFromQuery" class="listOfInput">
@@ -113,6 +87,13 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
 </template>
  
 <style scoped>
+
+.building-title {
+  width: 96%;
+  text-align: center;
+  padding: 3% 2% 3% 2%;
+  font-weight: bold;
+}
 
 .listOfInput {
   border: 1px solid #ddd;

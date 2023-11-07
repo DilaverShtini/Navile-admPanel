@@ -1,7 +1,15 @@
 <script lang="ts" setup>
 
 const { data } = await useFetch('/api/building') as { data: any };
-const props = defineProps(['editMode']);
+const router = useRouter();
+
+const edit = (code: string) => {
+  router.push({ path: '/query-operation/modifie-building/', query: { buildingCode: code } });
+}
+
+const navigate = (code: string) => {
+  router.push({ path: '/floor-menu/', query: { buildingCode: code } });
+};
 
 </script>
 
@@ -9,9 +17,16 @@ const props = defineProps(['editMode']);
   <nav class="bg-gray-800 text-white">
     <ul class="listOfBuilding">
       <li v-for="link in data" :key="link.id" :title="link.buildingCode" class="listBuilding">
-        <router-link :to="{ path: props.editMode ? '/query-operation/modifie-building/' : '/floor-menu/', query: { buildingCode: link.code }}" class="linkBuilding">
-          <div>{{ link.name }}</div>
-        </router-link>
+        <div class="row">
+          <div class="building-name" @click="navigate(link.code)">
+            {{ link.name }}
+          </div>
+          <div class="edit-button">
+            <button @click.stop="edit(link.code)">
+              Edit
+            </button>
+          </div>
+        </div>
       </li>
       <li v-if="!data.length" class="noLinks">Nessun edificio disponibile</li>
     </ul>
@@ -19,6 +34,20 @@ const props = defineProps(['editMode']);
 </template>
 
 <style scoped>
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.building-name {
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.edit-button {
+  margin-left: 10px;
+}
 
 .noLinks {
   color: #777;
