@@ -43,7 +43,9 @@ const operation = (item: string) => {
           <MainInput type="text"
                       placeholder="Search"
                       id="openBuilding"
-                      class="mb-4" />
+                      class="mb-4"
+                      model="space" 
+                      :floor="String(floorIdFromQuery)"/>
             <div class="with-bottom-border"></div>
             <div class="verticalNav">
               <div class="buildingSelected"> Edificio: {{ buildingFromQuery }} </div>

@@ -1,7 +1,5 @@
 <script setup>
 
-//TODO cambiare la logica del search, non bisogna più cercare solamente i modelli nel database.
-
 import { ref, defineProps } from 'vue';
 
 const emit = defineEmits();
@@ -9,6 +7,9 @@ const userInput = ref('');
 const filteredModels = ref([]);
 
 const props = defineProps({
+  model: String,
+  floor: String,
+  build: String,
   label: String,
   type: {
     type: String,
@@ -18,28 +19,29 @@ const props = defineProps({
   id: String,
 });
 
-/*let apiUrl;
-
-if(props.floor.length > 0 ) {
-  apiUrl = `/api/models?model=${props.model}&floor=${props.floor}&build=${props.build}`;
-} else if (props.build.length > 0) {
-  apiUrl = `/api/models?model=${props.model}&floor=&build=${props.build}`;
-} else {
-  apiUrl = `/api/models?model=${props.model}&floor=&build=`;
-}
-
-const { data, error } = await useFetch(apiUrl);
+const { data, error } = await useFetch('/api/models', {
+  method: 'post',
+  body: {
+    model: props.model,
+    floor: props.floor,
+    build: props.build,
+  },
+});
 
 if (error.value) {
   console.error('Error fetching data:', error.value);
 } else {
   console.log('Data:', data.value);
 }
-*/
+
 const onInput = (event) => {
-  /*const searchTerm = event.target.value.toLowerCase();
+  const searchTerm = event.target.value.toLowerCase();
   userInput.value = searchTerm;
-  filteredModels.value = searchTerm ? data.value.filter((model) => model.toLowerCase().includes(searchTerm)) : [];*/
+  if(props.model == 'floor') {
+    filteredModels.value = searchTerm ? data.value.filter((model) => String(model.number).includes(searchTerm)) : [];
+  }else {
+    filteredModels.value = searchTerm ? data.value.filter((model) => model.name.toLowerCase().includes(searchTerm)) : [];
+  }
 };
 
 </script>
@@ -55,9 +57,9 @@ const onInput = (event) => {
     />
     <ul class="listOfModel" v-if="filteredModels.length">
       <li class="listModel" v-for="model in filteredModels" :key="model.id">
-        <router-link :to="{ path: '/operation-menu/', query: { model: model }}" class="linkModel">
-          <div>{{ model.code }}</div>
-        </router-link></li>
+        <div v-if="props.model !== 'floor'">{{ model.name }}</div>
+        <div v-if="props.model == 'floor'">Piano n. {{ model.number }}</div>
+      </li>
     </ul>
   </div>
 </template>

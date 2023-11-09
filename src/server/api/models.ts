@@ -1,35 +1,36 @@
-export default defineEventHandler((model: String | null | undefined,
-                                          floor: String | null | undefined,
-                                          build: String | null | undefined) => {
-  /*try {
+export default defineEventHandler(async (event) => {
+  const body = await readBody(event);
+  const { model, floor, build } = body;
+  
+  try {
+    let result;
 
     if (model === 'building') {
-      const buildingResult = prisma.building.groupBy({
-        by: ['code'],
+      result = prisma.building.groupBy({
+        by: ['name'],
       });
-      return buildingResult;
     } else if (model === 'floor') {
-      const floorResult = prisma.floor.groupBy({
+      result = prisma.floor.groupBy({
         by: ['number'],
         where: {
-            buildingId: build
+            buildingId: parseInt(build)
         },
       });
-      return floorResult
     } else if (model === 'space') {
-      const spaceResult = prisma.space.groupBy({
+      result = prisma.space.groupBy({
         by: ['name'],
         where: {
-            floorId: numberfloor
+            floorId: parseInt(floor)
         },
       });
-      return spaceResult;
+    } else {
+      throw new Error('Invalid model parameter');
     }
 
-    throw new Error('Invalid model parameter');
+    return result;
 
   } catch (error) {
     console.error('Error fetching data:', error);
     throw new Error('Error fetching data');
-  }*/
+  }
 });

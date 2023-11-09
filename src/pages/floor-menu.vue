@@ -2,31 +2,16 @@
 
 import { MainInput } from '~/utils';
 import { FloorVerticalNav } from '~/utils';
-import { ref, defineEmits } from 'vue';
+import { defineEmits } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
-// Accesso al valore della variabile 'buildingCode' dall'URL
 const buildingFromQuery = route.query.buildingCode
+const buildingIdFromQuery = String(route.query.buildingId)
 
 const emits = defineEmits();
 
-// Stato per il titolo del link selezionato
-const selectedSpace = ref('');
-
-const router = useRouter();
-
-// Funzione per gestire il clic del link
-const handleLinkClick = (space: string): void => {
-  selectedSpace.value = space;
-  emits('linkClicked', space);
-
-  // Utilizza router solo quando window è definito
-  if (typeof window !== 'undefined') {
-    router.push({ path: '/space-menu/', query: { space: selectedSpace.value } });
-  }
-}
 </script>
   
 <template>
@@ -36,10 +21,12 @@ const handleLinkClick = (space: string): void => {
         <MainInput type="text"
                     placeholder="Search"
                     id="openFloor"
-                    class="mb-4" />
+                    class="mb-4"
+                    model="floor"
+                    :build="buildingIdFromQuery"/>
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
-            <FloorVerticalNav @linkClicked="handleLinkClick" :buildingCode="buildingFromQuery"/>
+            <FloorVerticalNav :buildingCode="buildingFromQuery"/>
           </div>
       </div>
     </div>

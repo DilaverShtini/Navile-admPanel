@@ -7,8 +7,8 @@ const edit = (code: string, id: number) => {
   router.push({ path: '/query-operation/modifie-building/', query: { buildingId: id, buildingCode: code} });
 }
 
-const navigate = (code: string) => {
-  router.push({ path: '/floor-menu/', query: { buildingCode: code } });
+const navigate = (code: string, id: number) => {
+  router.push({ path: '/floor-menu/', query: { buildingId: id, buildingCode: code } });
 };
 
 </script>
@@ -18,7 +18,7 @@ const navigate = (code: string) => {
     <ul class="listOfBuilding">
       <li v-for="link in data" :key="link.id" :title="link.buildingCode" class="listBuilding">
         <div class="row">
-          <div class="building-name" @click="navigate(link.code)">
+          <div class="building-name" @click="navigate(link.code, link.id)">
             {{ link.name }}
           </div>
           <div class="edit-button">

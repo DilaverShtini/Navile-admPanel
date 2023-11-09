@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import { MainInput } from "../utils";
 import { MainVerticalNav } from '../utils';
-import { ref } from 'vue';
 
-// Stato per il titolo del link selezionato
-const selectedBuilding = ref('');
 const { data } = await useAsyncData('buildings', () => $fetch('/api/building')) as {data: any};
 
 const emits = defineEmits<{
@@ -12,12 +9,6 @@ const emits = defineEmits<{
   (e: "linkClicked", building: string): void;
 }>();
 
-// Funzione per gestire il clic del link
-const handleLinkClick = (building: string): void => {
-  selectedBuilding.value = building;
-  emits('linkClicked', building);
-
-}
 </script>
 
 <template>
@@ -27,11 +18,12 @@ const handleLinkClick = (building: string): void => {
         <MainInput type="text"
                     placeholder="Search"
                     id="openBuilding"
-                    class="mb-4" />
+                    class="mb-4" 
+                    model="building"/>
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
             <div class="title"> Edifici </div>
-            <MainVerticalNav @linkClicked="handleLinkClick" />
+            <MainVerticalNav />
           </div>
       </div>
     </div>
