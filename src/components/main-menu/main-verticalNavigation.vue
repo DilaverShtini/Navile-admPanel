@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 
-const { data } = await useFetch('/api/building') as { data: any };
+const { data } = await useAsyncData('buildings', () => $fetch('/api/building')) as {data: any};
 const router = useRouter();
 
-const edit = (code: string) => {
-  router.push({ path: '/query-operation/modifie-building/', query: { buildingCode: code } });
+const edit = (code: string, id: number) => {
+  router.push({ path: '/query-operation/modifie-building/', query: { buildingId: id, buildingCode: code} });
 }
 
 const navigate = (code: string) => {
@@ -22,7 +22,7 @@ const navigate = (code: string) => {
             {{ link.name }}
           </div>
           <div class="edit-button">
-            <button @click.stop="edit(link.code)">
+            <button @click.stop="edit(link.code, link.id)">
               Edit
             </button>
           </div>

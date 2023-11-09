@@ -93,7 +93,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
                     type="text"
                     name="spaceName"
                     id="spaceName"
-                    :placeholder="'Nome presente: ' + space.name " />
+                    v-model="space.name" />
                 </div>
               <label for="spaceDescription"> Descrizione </label>
                 <div>

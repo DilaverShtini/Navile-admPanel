@@ -1,6 +1,6 @@
 export default defineEventHandler(() => {
     const building = prisma.building.groupBy({
-        by: ['code', 'name', 'description'],
+        by: ['id', 'code', 'name', 'description'],
     })
     return building
 })

@@ -4,13 +4,17 @@ import { MainInput } from '../../utils';
 import { MainVerticalNav } from '../../utils';
 import { ref, watch } from 'vue';
 
-const { data } = await useFetch('/api/building') as { data: any };
+const { data } = useNuxtData('buildings') as {data: any};
+const router = useRouter();
+
 const selectedBuilding = ref('');
 const route = useRoute();
-const isEditMode = ref(true);
+const buildName = ref('');
+const buildDescription = ref('');
 
 const operations = ref(['Conferma', 'Annulla']);
 let buildingFromQuery = ref(route.query.buildingCode);
+let buildingIdFromQuery = ref(route.query.buildingId);
 
 const emits = defineEmits<{
   (e: "change", item: string): void;
@@ -23,11 +27,27 @@ const handleLinkClick = (building: string): void => {
   emits('linkClicked', building);
 }
 
-const operation = (item: string) => {
-  // TODO logica delle operazioni di conferma/annulla modifica
-
+const operation = async (item: string, buildName: string, buildDescription: string) => {
   if (item === 'Conferma') {
-
+    if(buildName!==null) {
+      await useFetch('/api/modifie', {
+        method: 'PUT',
+        body: {
+          buildingId: buildingIdFromQuery.value,
+          buildingCode: buildingFromQuery.value,
+          buildingName: buildName,
+          buildingDesc: buildDescription,
+        },
+        onRequest () {
+          data.value.push(buildingIdFromQuery.value, buildingFromQuery.value, buildName, buildDescription)
+        },
+        onResponse: async () => {
+          await refreshNuxtData('buildings')
+          router.push({ path: '/main-menu/', query: { buildingCode: buildingFromQuery.value } });
+        }
+      });
+    }
+    console.log(data)
   } else {
 
   }
@@ -47,7 +67,7 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
             <div class="building-title"> Edifici </div>
-            <MainVerticalNav @linkClicked="handleLinkClick" :editMode=isEditMode />
+            <MainVerticalNav @linkClicked="handleLinkClick" />
           </div>
       </div>
     </div>
@@ -62,7 +82,7 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
                     type="text"
                     name="buildName"
                     id="buildName"
-                    :placeholder="'Cambia ' + build.name " />
+                    v-model="buildName" />
                 </div>
               <label for="buildingDescription"> Descrizione </label>
               <div>
@@ -70,16 +90,16 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
                   id="buildDescription"
                   name="buildDescription"
                   rows="3"
-                  :placeholder=build.description />
+                  v-model="buildDescription" />
               </div>
             </div>
           </div>
       </div>
-      <div class="buttonsOperation" v-if=isEditMode>
+      <div class="buttonsOperation">
         <button
           v-for="item, i in operations" :key="i" 
           class="action" :class="item.toLowerCase()"
-          @click="operation(item)"
+          @click="operation(item, buildName, buildDescription)"
           >{{item}}</button>
       </div>
     </div>
