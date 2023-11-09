@@ -1,16 +1,17 @@
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
-    const { buildingId, buildingCode, buildingName, buildingDesc } = body;
+    const { floorId, spaceId, spaceName, spaceDesc, spaceCapacity } = body;
 
-    if (buildingCode !== null) {
+    if (floorId !== null && spaceId!== null) {
         try {
-            await prisma.building.update({
+            await prisma.space.update({
                 where: {
-                    id: parseInt(buildingId),
+                    id: parseInt(spaceId),
                 },
                 data: {
-                    name: buildingName,
-                    description: buildingDesc,
+                    name: spaceName,
+                    description: spaceDesc,
+                    capacity: parseInt(spaceCapacity) !== null ? parseInt(spaceCapacity) : undefined,
                 },
             });
         } catch (error) {

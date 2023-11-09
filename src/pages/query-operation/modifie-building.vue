@@ -29,7 +29,7 @@ const handleLinkClick = (building: string): void => {
 
 const operation = async (item: string, buildName: string, buildDescription: string) => {
   if (item === 'Conferma') {
-    if(buildName!==null) {
+    if(buildName!=="") {
       await useFetch('/api/modifie', {
         method: 'PUT',
         body: {
@@ -43,13 +43,12 @@ const operation = async (item: string, buildName: string, buildDescription: stri
         },
         onResponse: async () => {
           await refreshNuxtData('buildings')
-          router.push({ path: '/main-menu/', query: { buildingCode: buildingFromQuery.value } });
+          router.push({ path: '/main-menu/', query: { buildingCode: buildingFromQuery.value } })
         }
       });
     }
-    console.log(data)
   } else {
-
+    window.location.reload()
   }
 }
 

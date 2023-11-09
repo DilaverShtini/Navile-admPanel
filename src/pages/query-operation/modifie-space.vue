@@ -8,16 +8,20 @@ const selectedSpace = ref('');
 const route = useRoute();
 const router = useRouter();
 
+const spaceName = ref('');
+const spaceDescription = ref('');
+const spaceCapacity = ref('');
+
 const buildingFromQuery = route.query.buildingCode
 const floorFromQuery = route.query.floorNumber
 const floorIdFromQuery = route.query.floorId
+const spaceIdFromQuery = ref(route.query.spaceId);
+const spaceFromQuery = ref(route.query.spaceCode);
 
-const { data } = await useFetch(`/api/space?floorIdNumber=${floorIdFromQuery}`);
+const { data } = useNuxtData('spaces') as {data: any};
 
 const operations = ref(['Aggiungi', 'Elimina']);
 const modifieOperations = ref(['Conferma', 'Annulla']);
-const activeItem = ref('Modifica');
-let spaceFromQuery = ref(route.query.spaceCode);
 
 const emits = defineEmits<{
   (e: "change", item: string): void;
@@ -32,13 +36,30 @@ const operation = (item: string) => {
   }
 }
 
-const modifieOperation = (item: string) => {
-  // TODO logica delle operazioni di conferma/annulla modifica
-
+const modifieOperation = async (item: string, spaceName: string, spaceDescription: string, spaceCapacity: string) => {
   if (item === 'Conferma') {
-
+    if(spaceName!=="") {
+      if(spaceCapacity.length == 0) spaceCapacity = '0'
+      await useFetch('/api/update-space', {
+        method: 'PUT',
+        body: {
+          floorId: floorIdFromQuery,
+          spaceId: spaceIdFromQuery,
+          spaceName: spaceName,
+          spaceDesc: spaceDescription,
+          spaceCapacity: spaceCapacity
+        },
+        onRequest () {
+          data.value.push(floorIdFromQuery, spaceIdFromQuery, spaceName, spaceDescription, spaceCapacity)
+        },
+        onResponse: async () => {
+          await refreshNuxtData('spaces')
+          router.push({ path: '/space-menu/', query: { buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } })
+        }
+      });
+    }
   } else {
-    
+    window.location.reload()
   }
 }
 
@@ -46,15 +67,6 @@ const modifieOperation = (item: string) => {
 const handleLinkClick = (space: string): void => {
   selectedSpace.value = space;
   emits('linkClicked', space);
-
-  // Utilizza router solo quando window è definito
-  if (typeof window !== 'undefined') {
-    if (activeItem.value === 'Modifica') {
-      router.push({ path: '/query-operation/modifie-space/', query: { spaceCode: selectedSpace.value } });
-    } else {
-      router.push({ path: '/space-menu/', query: { spaceCode: selectedSpace.value } });
-    }
-  }
 }
 
 watch(() => route.query.spaceCode, (newSpaceCode) => {
@@ -83,7 +95,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
       </div>
     </div>
     <div class="form">
-      <div v-if="activeItem === 'Modifica'" class="form-container">
+      <div class="form-container">
         <div class="title" >Stai modificando: {{ spaceFromQuery }}</div>
           <div v-for="space in data">
             <div v-if="space.code == spaceFromQuery" class="listOfInput">
@@ -93,7 +105,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
                     type="text"
                     name="spaceName"
                     id="spaceName"
-                    v-model="space.name" />
+                    v-model="spaceName" />
                 </div>
               <label for="spaceDescription"> Descrizione </label>
                 <div>
@@ -101,15 +113,15 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
                     id="spaceDescription"
                     name="spaceDescription"
                     rows="3"
-                    :placeholder="'Descrizione presente: ' + space.description " />
+                    v-model="spaceDescription" />
                 </div>
               <label for="spaceCapacity"> Capacità </label>
                 <div>
                   <input
-                    id="spaceCapacity"
+                    type="number"
                     name="spaceCapacity"
-                    rows="3"
-                    :placeholder="'Capacità presente: ' + space.capacity" />
+                    id="spaceCapacity"
+                    v-model="spaceCapacity" />
                 </div>
             </div>
           </div>
@@ -118,7 +130,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
         <button
           v-for="item, i in modifieOperations" :key="i" 
           class="modifieAction" :class="item.toLowerCase()"
-          @click="modifieOperation(item)"
+          @click="modifieOperation(item, spaceName, spaceDescription, spaceCapacity)"
           >{{item}}</button>
       </div>
     </div>

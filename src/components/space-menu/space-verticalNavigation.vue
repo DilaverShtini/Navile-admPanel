@@ -1,12 +1,5 @@
 <script lang="ts" setup>
 
-import { ref, onMounted } from 'vue';
-
-interface SpaceItem {
-  code: number;
-  name: string;
-}
-
 const route = useRoute();
 const router = useRouter();
 
@@ -15,29 +8,15 @@ const floorFromQuery = route.query.floorNumber
 const floorIdFromQuery = route.query.floorId
 
 const props = defineProps(['editMode', 'buildingCode', 'floorNumber', 'floorId']);
-const data = ref<SpaceItem[]>([]);
+const { data } = await useAsyncData('spaces', () => $fetch(`/api/space?floorIdNumber=${props.floorId}`)) as {data: any};
 
-const edit = (code: number) => {
-  router.push({ path: '/query-operation/modifie-space/', query: { spaceCode: code, buildingCode:buildingFromQuery, floorNumber:floorFromQuery, floorId:floorIdFromQuery } });
+const edit = (code: number, id: string) => {
+  router.push({ path: '/query-operation/modifie-space/', query: { spaceId: id, spaceCode: code, buildingCode:buildingFromQuery, floorNumber:floorFromQuery, floorId:floorIdFromQuery } });
 }
 
 const navigate = (buildingCode: any, floorNumber: any, floorId: any) => {
   router.push({ path: '/space-menu/', query: {buildingCode: buildingCode, floorNumber: floorNumber, floorId: floorId} });
 };
-
-onMounted(async () => {
-  try {
-    const response = await fetch(`/api/space?floorIdNumber=${props.floorId}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    const result = await response.json();
-    console.log('Result from API:', result);
-    data.value = result;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
-});
 
 </script>
 
@@ -50,7 +29,7 @@ onMounted(async () => {
               {{ link.name }}
             </div>
             <div class="edit-button">
-              <button @click.stop="edit(link.code)">
+              <button @click.stop="edit(link.code, link.id)">
                 Edit
               </button>
             </div>
