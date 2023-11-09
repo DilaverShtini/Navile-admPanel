@@ -6,7 +6,6 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 const operations = ref(['Aggiungi', 'Elimina']);
-const activeItem = ref('Locali');
 
 const route = useRoute();
 
@@ -19,6 +18,8 @@ const floorIdFromQuery = route.query.floorId
 const selectedSpace = ref('');
 
 const router = useRouter();
+
+const { data } = await useAsyncData('spaces', () => $fetch(`/api/space?floorIdNumber=${floorIdFromQuery}`)) as {data: any};
 
 const emit = defineEmits<{
   (e: "change", item: string): void;
@@ -33,20 +34,6 @@ const operation = (item: string) => {
   }
 }
 
-// Funzione per gestire il clic del link
-const handleLinkClick = (space: string): void => {
-  selectedSpace.value = space;
-  emit('linkClicked', space);
-
-  // Utilizza router solo quando window è definito
-  if (typeof window !== 'undefined') {
-    if (activeItem.value === 'Modifica') {
-      router.push({ path: '/query-operation/modifie-space/', query: { spaceCode: selectedSpace.value, buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
-    } else {
-      router.push({ path: '/space-menu/', query: { spaceCode: selectedSpace.value } });
-    }
-  }
-}
 </script>
 
 <template>
@@ -62,12 +49,25 @@ const handleLinkClick = (space: string): void => {
               <div class="buildingSelected"> Edificio: {{ buildingFromQuery }} </div>
               <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
               <div class="title"> Locali </div>
-              <SpaceVerticalNav @linkClicked="handleLinkClick" :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery"/>
+              <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery"/>
               <button 
-                v-for="item, i in operations" :key="i" 
-                class="action" :class="item.toLowerCase()"
-                @click="operation(item)"
-                >{{item}}</button>
+              v-for="item, i in operations" :key="i" 
+              class="action" :class="item.toLowerCase()"
+              @click="operation(item)"
+              >{{item}}</button>
+            </div>
+        </div>
+      </div>
+      <div class="form">
+        <div class="form-container">
+          <div class="title-list" >Dati realtivi ai locali presenti nel piano {{ floorFromQuery }}: </div>
+            <div v-for="space in data">
+              <div class="listOfInput">
+                <label for="spaceCode"> Codice: {{ space.code }} </label>
+                <label for="spaceName"> Nome: {{ space.name }} </label>
+                <label for="spaceDescription"> Descrizione: {{space.description}} </label>
+                <label for="spaceCapacity"> Capacità: {{space.capacity}} </label>
+              </div>
             </div>
         </div>
       </div>
@@ -75,6 +75,58 @@ const handleLinkClick = (space: string): void => {
 </template>
 
 <style scoped>
+
+.listOfInput {
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+
+.listOfInput label {
+  display: block;
+  font-size: 1em;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.listOfInput input,
+.listOfInput textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.listOfInput textarea {
+  resize: vertical;
+}
+
+.title-list {
+  text-align: left;
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.form {
+  overflow-y: scroll;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.form-container {
+  width: 96%;
+  margin: 0%;
+  justify-content: flex-start;
+  background-color: #fff;
+  padding: 2% 2% 0% 2%;
+}
+
 
 .title {
   width: 96%;
@@ -84,7 +136,7 @@ const handleLinkClick = (space: string): void => {
 }
 
 .container {
-  max-height: 100%;
+  max-height: 95vh;
   display: flex;
   justify-content: left;
   flex: 1;
@@ -103,13 +155,14 @@ const handleLinkClick = (space: string): void => {
 .menu {
   text-align: center;
   width: 20em;
-  height: max-content;
+  height: 100%;
 }
 
 .box {
   border-right: 1px solid #d5d5d5;
   overflow-y: hidden;
   width: 20em;
+  height: 100%;
 }
 
 .buildingSelected, .floorSelected {
@@ -180,6 +233,7 @@ const handleLinkClick = (space: string): void => {
 }
 
 .verticalNav {
+  height: 100%;
   text-align: center;
 }
 

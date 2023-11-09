@@ -7,8 +7,7 @@ const buildingFromQuery = route.query.buildingCode
 const floorFromQuery = route.query.floorNumber
 const floorIdFromQuery = route.query.floorId
 
-const props = defineProps(['editMode', 'buildingCode', 'floorNumber', 'floorId']);
-const { data } = await useAsyncData('spaces', () => $fetch(`/api/space?floorIdNumber=${props.floorId}`)) as {data: any};
+const { data } = useNuxtData('spaces') as {data: any};
 
 const edit = (code: number, id: string) => {
   router.push({ path: '/query-operation/modifie-space/', query: { spaceId: id, spaceCode: code, buildingCode:buildingFromQuery, floorNumber:floorFromQuery, floorId:floorIdFromQuery } });

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 
-const { data } = await useAsyncData('buildings', () => $fetch('/api/building')) as {data: any};
+const { data } = useNuxtData('buildings') as {data: any};
 const router = useRouter();
 
 const edit = (code: string, id: number) => {

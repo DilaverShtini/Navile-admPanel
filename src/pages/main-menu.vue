@@ -5,6 +5,7 @@ import { ref } from 'vue';
 
 // Stato per il titolo del link selezionato
 const selectedBuilding = ref('');
+const { data } = await useAsyncData('buildings', () => $fetch('/api/building')) as {data: any};
 
 const emits = defineEmits<{
   (e: "change", item: string): void;
@@ -34,10 +35,72 @@ const handleLinkClick = (building: string): void => {
           </div>
       </div>
     </div>
+    <div class="form">
+      <div class="form-container">
+        <div class="title-list" >Dati realtivi agli edifici: </div>
+          <div v-for="build in data">
+            <div class="listOfInput">
+              <label for="buildingCode"> Codice: {{ build.code }} </label>
+              <label for="buildingName"> Nome: {{ build.name }} </label>
+              <label for="buildingDescription"> Descrizione: {{build.description}} </label>
+            </div>
+          </div>
+        </div>
+    </div>
   </div>
 </template>
  
 <style scoped>
+
+.listOfInput {
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+
+.listOfInput label {
+  display: block;
+  font-size: 1em;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.listOfInput input,
+.listOfInput textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.listOfInput textarea {
+  resize: vertical;
+}
+
+.title-list {
+  text-align: left;
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.form {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.form-container {
+  width: 96%;
+  margin: 0%;
+  justify-content: flex-start;
+  background-color: #fff;
+  padding: 2% 2% 0% 2%;
+}
 
 .title {
   width: 96%;
@@ -47,7 +110,7 @@ const handleLinkClick = (building: string): void => {
 }
 
 .container {
-  min-height: 100%;
+  max-height: 100%;
   display: flex;
   justify-content: left;
   flex: 1;
@@ -55,7 +118,8 @@ const handleLinkClick = (building: string): void => {
 }
 
 .form-container {
-  min-height: 100vh;
+  /*min-height: 50vh;*/
+  max-height: 92vh;
   top: 0;
   right: 0;
   bottom: 0;

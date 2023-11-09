@@ -198,6 +198,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 
 .form {
   width: 100%;
+  overflow-y: scroll;
   justify-content: flex-start;
   border-left: 1px solid #d5d5d5;
 }
@@ -210,6 +211,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 
 .container {
   height: 100%;
+  max-height: 97vh;
   display: flex;
   justify-content: left;
   flex: 1;
