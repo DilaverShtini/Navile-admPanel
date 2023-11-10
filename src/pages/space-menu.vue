@@ -9,7 +9,6 @@ const operations = ref(['Aggiungi', 'Elimina']);
 
 const route = useRoute();
 
-// Accesso al valore delle variabili 'buildingCode' e 'floorNumber' dall'URL
 const buildingFromQuery = route.query.buildingCode
 const floorFromQuery = route.query.floorNumber
 const floorIdFromQuery = route.query.floorId
@@ -45,7 +44,7 @@ const operation = (item: string) => {
                       id="openBuilding"
                       class="mb-4"
                       model="space" 
-                      :floor="String(floorIdFromQuery)"/>
+                      :floor="String(floorIdFromQuery)" />
             <div class="with-bottom-border"></div>
             <div class="verticalNav">
               <div class="buildingSelected"> Edificio: {{ buildingFromQuery }} </div>
@@ -71,12 +70,18 @@ const operation = (item: string) => {
                 <label for="spaceCapacity"> Capacità: {{space.capacity}} </label>
               </div>
             </div>
+            <div v-if="data.length==0" class="noLinks">Nessun locale disponibile</div>
         </div>
       </div>
     </div>
 </template>
 
 <style scoped>
+
+.noLinks {
+  color: #777;
+  margin-top: 1em;
+}
 
 .listOfInput {
   border: 1px solid #ddd;

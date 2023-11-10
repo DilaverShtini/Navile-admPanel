@@ -5,11 +5,13 @@ import { ref, defineProps } from 'vue';
 const emit = defineEmits();
 const userInput = ref('');
 const filteredModels = ref([]);
+const router = useRouter();
 
 const props = defineProps({
   model: String,
   floor: String,
   build: String,
+  buildCode: String,
   label: String,
   type: {
     type: String,
@@ -44,6 +46,19 @@ const onInput = (event) => {
   }
 };
 
+const navigateFloor = (code, id) => {
+  router.push({ path: '/floor-menu/', query: { buildingId: id, buildingCode: code } });
+};
+
+const navigateSpace = (number, id) => {
+  router.push({ path: '/space-menu/', query: { buildingCode: props.buildCode, floorNumber: number, floorId: id } });
+};
+
+const navigateInSpace = () => {
+  // TODO stampare solo i dati relativi al locale selezionato
+  windows.location.reload()
+};
+
 </script>
 
 <template>
@@ -57,8 +72,9 @@ const onInput = (event) => {
     />
     <ul class="listOfModel" v-if="filteredModels.length">
       <li class="listModel" v-for="model in filteredModels" :key="model.id">
-        <div v-if="props.model !== 'floor'">{{ model.name }}</div>
-        <div v-if="props.model == 'floor'">Piano n. {{ model.number }}</div>
+        <div v-if="props.model == 'building'" @click="navigateFloor(model.code, model.id)" >{{ model.name }}</div>
+        <div v-if="props.model == 'floor'" @click="navigateSpace(model.number, model.id)" >Piano n. {{ model.number }}</div>
+        <div v-if="props.model == 'space'" @click="navigateInSpace()" >{{ model.name }}</div>
       </li>
     </ul>
   </div>

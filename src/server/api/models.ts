@@ -7,11 +7,11 @@ export default defineEventHandler(async (event) => {
 
     if (model === 'building') {
       result = prisma.building.groupBy({
-        by: ['name'],
+        by: ['name', 'code', 'id'],
       });
     } else if (model === 'floor') {
       result = prisma.floor.groupBy({
-        by: ['number'],
+        by: ['number', 'id'],
         where: {
             buildingId: parseInt(build)
         },
