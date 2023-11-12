@@ -44,7 +44,8 @@ const operation = (item: string) => {
                       id="openBuilding"
                       class="mb-4"
                       model="space" 
-                      :floor="String(floorIdFromQuery)" />
+                      :floor="String(floorIdFromQuery)"
+                      :floorNumber="String(floorFromQuery)"/>
             <div class="with-bottom-border"></div>
             <div class="verticalNav">
               <div class="buildingSelected"> Edificio: {{ buildingFromQuery }} </div>

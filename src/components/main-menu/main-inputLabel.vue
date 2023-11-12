@@ -10,6 +10,7 @@ const router = useRouter();
 const props = defineProps({
   model: String,
   floor: String,
+  floorNumber: String,
   build: String,
   buildCode: String,
   label: String,
@@ -54,8 +55,8 @@ const navigateSpace = (number, id) => {
   router.push({ path: '/space-menu/', query: { buildingCode: props.buildCode, floorNumber: number, floorId: id } });
 };
 
-const navigateInSpace = () => {
-  // TODO stampare solo i dati relativi al locale selezionato
+const navigateInSpace = (code, id) => {
+  router.push({ path: '/query-operation/modifie-space/', query: { spaceId: id, spaceCode: code, buildingCode: props.buildCode, floorNumber: props.floorNumber, floorId: props.floor } });
 };
 
 </script>
@@ -73,7 +74,7 @@ const navigateInSpace = () => {
       <li class="listModel" v-for="model in filteredModels" :key="model.id">
         <div v-if="props.model == 'building'" @click="navigateFloor(model.code, model.id)" >{{ model.name }}</div>
         <div v-if="props.model == 'floor'" @click="navigateSpace(model.number, model.id)" >Piano n. {{ model.number }}</div>
-        <div v-if="props.model == 'space'" @click="navigateInSpace()" >{{ model.name }}</div>
+        <div v-if="props.model == 'space'" @click="navigateInSpace(model.code, model.id)" >{{ model.name }}</div>
       </li>
     </ul>
   </div>

@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
       });
     } else if (model === 'space') {
       result = prisma.space.groupBy({
-        by: ['name'],
+        by: ['name', 'id', 'code'],
         where: {
             floorId: parseInt(floor)
         },
