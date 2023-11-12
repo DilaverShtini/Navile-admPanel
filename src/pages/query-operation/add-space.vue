@@ -268,7 +268,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
   border-radius: 0.5em;
 }
 
-.action:hover, .modifieAction:hover {
+.action:hover, .createAction:hover {
   background-color: #ed5959;
 }
 
