@@ -93,6 +93,26 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
         <div class="title" >Stai modificando: {{ buildingFromQuery }}</div>
           <div v-for="build in data">
             <div v-if="build.code == buildingFromQuery" class="listOfInput">
+              <label for="spaceName"> Nome dell'edificio presente </label>
+                <div>
+                  <input 
+                    type="text"
+                    name="buildName"
+                    id="buildName"
+                    :placeholder="build.name"
+                    readonly />
+                </div>
+              <label for="spaceDescription"> Descrizione presente </label>
+                <div>
+                  <textarea
+                    id="buildDescription"
+                    name="buildDescription"
+                    rows="3"
+                    :placeholder="build.description"
+                    readonly />
+                </div>
+            </div>
+            <div v-if="build.code == buildingFromQuery" class="listOfInput">
               <label for="buildingName"> Nome dell'edificio </label>
                 <div>
                   <input 

@@ -125,6 +125,35 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
         <div class="title" >Stai modificando: {{ spaceFromQuery }}</div>
           <div v-for="space in data">
             <div v-if="space.code == spaceFromQuery" class="listOfInput">
+              <label for="spaceName"> Nome del locale presente </label>
+                <div>
+                  <input 
+                    type="text"
+                    name="spaceName"
+                    id="spaceName"
+                    :placeholder="space.name"
+                    readonly />
+                </div>
+              <label for="spaceDescription"> Descrizione presente </label>
+                <div>
+                  <textarea
+                    id="spaceDescription"
+                    name="spaceDescription"
+                    rows="3"
+                    :placeholder="space.description"
+                    readonly />
+                </div>
+              <label for="spaceCapacity"> Capacità presente </label>
+                <div>
+                  <input
+                    type="number"
+                    name="spaceCapacity"
+                    id="spaceCapacity"
+                    :placeholder="space.capacity"
+                    readonly />
+                </div>
+            </div>
+            <div v-if="space.code == spaceFromQuery" class="listOfInput">
               <label for="spaceName"> Nome del locale </label>
                 <div>
                   <input 
@@ -144,7 +173,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
               <label for="spaceCapacity"> Capacità </label>
                 <div>
                   <input
-                    type="text"
+                    type="number"
                     name="spaceCapacity"
                     id="spaceCapacity"
                     v-model="spaceCapacity" />
