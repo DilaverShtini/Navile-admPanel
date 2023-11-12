@@ -28,27 +28,41 @@ const handleLinkClick = (building: string): void => {
 }
 
 const operation = async (item: string, buildName: string, buildDescription: string) => {
+  const { data: buildData } = await useFetch('/api/selected-build', {
+    method: 'POST',
+    body: {
+      buildId: buildingIdFromQuery
+    },
+  })
+
+  const oldBuildName = ref(buildData.value[0]?.name);
+  const oldBuildDescription = ref(buildData.value[0]?.description);
+  
   if (item === 'Conferma') {
-    if(buildName!=="") {
-      await useFetch('/api/modifie', {
-        method: 'PUT',
-        body: {
-          buildingId: buildingIdFromQuery.value,
-          buildingCode: buildingFromQuery.value,
-          buildingName: buildName,
-          buildingDesc: buildDescription,
-        },
-        onRequest () {
-          data.value.push(buildingIdFromQuery.value, buildingFromQuery.value, buildName, buildDescription)
-        },
-        onResponse: async () => {
-          await refreshNuxtData('buildings')
-          router.push({ path: '/main-menu/', query: { buildingCode: buildingFromQuery.value } })
-        }
-      });
-    }
+    if (buildName=="") buildName = oldBuildName.value;
+    if (buildDescription=="") buildDescription = oldBuildDescription.value;
+    
+    oldBuildName.value = buildName;
+    oldBuildDescription.value = buildDescription;
+
+    await useFetch('/api/update-build', {
+      method: 'PUT',
+      body: {
+        buildingId: buildingIdFromQuery.value,
+        buildingCode: buildingFromQuery.value,
+        buildingName: buildName,
+        buildingDesc: buildDescription,
+      },
+      onRequest () {
+        data.value.push(buildingIdFromQuery.value, buildingFromQuery.value, buildName, buildDescription)
+      },
+      onResponse: async () => {
+        await refreshNuxtData('buildings')
+        router.push({ path: '/main-menu/', query: { buildingCode: buildingFromQuery.value } })
+      }
+    });
   } else {
-    window.location.reload()
+
   }
 }
 
@@ -62,7 +76,11 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
   <div class="container">
     <div class="menu border p-4">
       <div class="box">
-        <MainInput type="text" placeholder="Search" id="openBuilding" class="mb-4" />
+        <MainInput type="text"
+                    placeholder="Search"
+                    id="openBuilding"
+                    class="mb-4" 
+                    model="building" />
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
             <div class="building-title"> Edifici </div>

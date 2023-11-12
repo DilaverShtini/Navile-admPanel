@@ -5,6 +5,9 @@ import { SpaceVerticalNav } from '../../utils';
 import { ref, watch } from 'vue';
 
 const selectedSpace = ref('');
+const spaceName = ref('');
+const spaceDescription = ref('');
+const spaceCapacity = ref('');
 const route = useRoute();
 const router = useRouter();
 
@@ -29,16 +32,38 @@ const operation = (item: string) => {
   }
 }
 
-const modifieOperation = (item: string) => {
-  // TODO logica delle operazioni di conferma/annulla modifica
-
-  if (item === 'Conferma') {
-
-  } else {
-    
+const createOperation = async (item: string, spaceName: string, spaceDescription:string, spaceCapacity: string) => {
+  try {
+    if (item === 'Conferma') {
+      if (spaceCapacity.length == 0) spaceCapacity = '0';
+      await useFetch('/api/create-space', {
+        method: 'PUT',
+        body: {
+          buildCode: buildingFromQuery,
+          floorNumber: floorFromQuery,
+          name: spaceName,
+          description: spaceDescription,
+          floorId: floorIdFromQuery,
+          legendId: 1,
+          capacity: spaceCapacity,
+        },
+        onResponse: async () => {
+          await refreshNuxtData('spaces');
+          router.push({
+            path: '/space-menu/',
+            query: {
+              buildingCode: buildingFromQuery,
+              floorNumber: floorFromQuery,
+              floorId: floorIdFromQuery,
+            },
+          });
+        },
+      });
+    }
+  } catch (error) {
+    console.error('Error in createOperation:', error);
   }
-}
-
+};
 
 // Funzione per gestire il clic del link
 const handleLinkClick = (space: string): void => {
@@ -56,13 +81,20 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
   <div class="container">
     <div class="menu border p-4">
       <div class="box">
-        <MainInput type="text" placeholder="Search" id="openBuilding" class="mb-4" />
+        <MainInput type="text"
+                      placeholder="Search"
+                      id="openBuilding"
+                      class="mb-4"
+                      model="space" 
+                      :floor="String(floorIdFromQuery)" />
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
             <div class="buildingSelected"> Edificio: {{ buildingFromQuery }} </div>
             <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
             <div class="space-title"> Locali </div>
-            <SpaceVerticalNav @linkClicked="handleLinkClick" :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
+            <div class="links">
+              <SpaceVerticalNav @linkClicked="handleLinkClick" :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
+            </div>
             <button 
               v-for="item, i in operations" :key="i" 
               class="action" :class="item.toLowerCase()"
@@ -82,7 +114,8 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
                     type="text"
                     name="spaceName"
                     id="spaceName"
-                    placeholder="Nome" />
+                    placeholder="Nome" 
+                    v-model="spaceName"/>
                 </div>
               <label for="spaceDescription"> Descrizione </label>
                 <div>
@@ -90,7 +123,8 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
                     id="spaceDescription"
                     name="spaceDescription"
                     rows="3"
-                    placeholder="Descrizione" />
+                    placeholder="Descrizione"
+                    v-model="spaceDescription"/>
                 </div>
               <label for="spaceCapacity"> Capacità </label>
                 <div>
@@ -98,7 +132,8 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
                     id="spaceCapacity"
                     name="spaceCapacity"
                     rows="3"
-                    placeholder="Capacità" />
+                    placeholder="Capacità"
+                    v-model="spaceCapacity"/>
                 </div>
             </div>
           </div>
@@ -106,8 +141,8 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
       <div class="buttonsOperation">
         <button
           v-for="item, i in modifieOperations" :key="i" 
-          class="modifieAction" :class="item.toLowerCase()"
-          @click="modifieOperation(item)"
+          class="createAction" :class="item.toLowerCase()"
+          @click="createOperation(item, spaceName, spaceDescription, spaceCapacity)"
           >{{item}}</button>
       </div>
     </div>
@@ -115,6 +150,11 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 </template>
  
 <style scoped>
+
+.links {
+  max-height: 64vh;
+  overflow-y: scroll;
+}
 
 .space-title {
   width: 96%;
@@ -201,7 +241,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
   width: 20em;
 }
 
-.modifieAction {
+.createAction {
   width: 100%;
   margin: 0 1%;
   padding: 0.8em 2em;
@@ -217,7 +257,8 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
   width: 40%;
   position: relative;
   display: inline-block;
-  margin-bottom: 3%;
+  margin-top: 2%;
+  margin-bottom: 2%;
   padding: 0.8em 2em;
   text-align: center;
   font-weight: bold;

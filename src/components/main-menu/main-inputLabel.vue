@@ -33,7 +33,7 @@ const { data, error } = await useFetch('/api/models', {
 if (error.value) {
   console.error('Error fetching data:', error.value);
 } else {
-  console.log('Data:', data.value);
+  // console.log('Data:', data.value);
 }
 
 const onInput = (event) => {
@@ -56,7 +56,6 @@ const navigateSpace = (number, id) => {
 
 const navigateInSpace = () => {
   // TODO stampare solo i dati relativi al locale selezionato
-  windows.location.reload()
 };
 
 </script>

@@ -36,28 +36,47 @@ const operation = (item: string) => {
   }
 }
 
-const modifieOperation = async (item: string, spaceName: string, spaceDescription: string, spaceCapacity: string) => {
+const modifieOperation = async (item: string, spaceName: string | undefined, spaceDescription: string | null | undefined, spaceCapacity: string) => {
+  const { data: spaceData } = await useFetch('/api/selected-space', {
+    method: 'POST',
+    body: {
+      spaceId: spaceIdFromQuery
+    },
+  })
+
+  const oldSpaceName = ref(spaceData.value[0]?.name);
+  const oldSpaceDescription = ref(spaceData.value[0]?.description);
+  const oldSpaceCapacity = ref(spaceData.value[0]?.capacity);
+
   if (item === 'Conferma') {
-    if(spaceName!=="") {
-      if(spaceCapacity.length == 0) spaceCapacity = '0'
-      await useFetch('/api/update-space', {
-        method: 'PUT',
-        body: {
-          floorId: floorIdFromQuery,
-          spaceId: spaceIdFromQuery,
-          spaceName: spaceName,
-          spaceDesc: spaceDescription,
-          spaceCapacity: spaceCapacity
-        },
-        onRequest () {
-          data.value.push(floorIdFromQuery, spaceIdFromQuery, spaceName, spaceDescription, spaceCapacity)
-        },
-        onResponse: async () => {
-          await refreshNuxtData('spaces')
-          router.push({ path: '/space-menu/', query: { buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } })
-        }
-      });
+    if (spaceName=="") spaceName = oldSpaceName.value;
+    if (spaceDescription=="") spaceDescription = oldSpaceDescription.value;
+    if (spaceCapacity=="" && String(oldSpaceCapacity.value)=="") {
+      spaceCapacity = "0"
+    }else if(spaceCapacity=="" && String(oldSpaceCapacity.value)!=="") {
+      spaceCapacity = String(oldSpaceCapacity.value)
     }
+    oldSpaceName.value = spaceName;
+    oldSpaceDescription.value = spaceDescription;
+    oldSpaceCapacity.value = parseInt(spaceCapacity);
+
+    await useFetch('/api/update-space', {
+      method: 'PUT',
+      body: {
+        floorId: floorIdFromQuery,
+        spaceId: spaceIdFromQuery,
+        spaceName: spaceName,
+        spaceDesc: spaceDescription,
+        spaceCapacity: spaceCapacity
+      },
+      onRequest () {
+        data.value.push(floorIdFromQuery, spaceIdFromQuery, spaceName, spaceDescription, spaceCapacity)
+      },
+      onResponse: async () => {
+        await refreshNuxtData('spaces')
+        router.push({ path: '/space-menu/', query: { buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } })
+      }
+    });
   } else {
     window.location.reload()
   }
@@ -79,13 +98,20 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
   <div class="container">
     <div class="menu border p-4">
       <div class="box">
-        <MainInput type="text" placeholder="Search" id="openBuilding" class="mb-4" />
+        <MainInput type="text"
+                    placeholder="Search"
+                    id="openBuilding"
+                    class="mb-4"
+                    model="space" 
+                    :floor="String(floorIdFromQuery)" />
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
             <div class="buildingSelected"> Edificio: {{ buildingFromQuery }} </div>
             <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
             <div class="space-title"> Locali </div>
-            <SpaceVerticalNav @linkClicked="handleLinkClick" :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
+            <div class="links">
+              <SpaceVerticalNav @linkClicked="handleLinkClick" :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
+            </div>
             <button 
               v-for="item, i in operations" :key="i" 
               class="action" :class="item.toLowerCase()"
@@ -118,7 +144,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
               <label for="spaceCapacity"> Capacità </label>
                 <div>
                   <input
-                    type="number"
+                    type="text"
                     name="spaceCapacity"
                     id="spaceCapacity"
                     v-model="spaceCapacity" />
@@ -138,6 +164,11 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 </template>
  
 <style scoped>
+
+.links {
+  max-height: 64vh;
+  overflow-y: scroll;
+}
 
 .space-title {
   width: 96%;
@@ -240,7 +271,8 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
   width: 40%;
   position: relative;
   display: inline-block;
-  margin-bottom: 3%;
+  margin-top: 2%;
+  margin-bottom: 2%;
   padding: 0.8em 2em;
   text-align: center;
   font-weight: bold;

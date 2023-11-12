@@ -60,14 +60,6 @@ const navigate = (buildingCode: any, floorNumber: any, floorId: any) => {
   margin-top: 1em;
 }
 
-.verticalNav {
-  width: 100%;
-  position: relative;
-  margin: auto;
-  overflow-y: auto;
-  text-align: center;
-}
-
 ul.listOfSpace {
   width: auto;
   list-style-type: none;

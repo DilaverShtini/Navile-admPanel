@@ -50,7 +50,9 @@ const operation = (item: string) => {
               <div class="buildingSelected"> Edificio: {{ buildingFromQuery }} </div>
               <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
               <div class="title"> Locali </div>
-              <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery"/>
+              <div class="links">
+                <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery"/>
+              </div>
               <button 
               v-for="item, i in operations" :key="i" 
               class="action" :class="item.toLowerCase()"
@@ -77,6 +79,11 @@ const operation = (item: string) => {
 </template>
 
 <style scoped>
+
+.links {
+  max-height: 64vh;
+  overflow-y: scroll;
+}
 
 .noLinks {
   color: #777;
@@ -183,7 +190,8 @@ const operation = (item: string) => {
   width: 40%;
   position: relative;
   display: inline-block;
-  margin-bottom: 3%;
+  margin-top: 2%;
+  margin-bottom: 2%;
   padding: 0.8em 2em;
   text-align: center;
   font-weight: bold;
