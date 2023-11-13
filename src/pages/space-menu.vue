@@ -20,11 +20,6 @@ const router = useRouter();
 
 const { data } = await useAsyncData('spaces', () => $fetch(`/api/space?floorIdNumber=${floorIdFromQuery}`)) as {data: any};
 
-const emit = defineEmits<{
-  (e: "change", item: string): void;
-  (e: "linkClicked", space: string): void;
-}>();
-
 const operation = (item: string) => {
   if (item === 'Aggiungi') {
     router.push({ path: '/query-operation/add-space/', query: { spaceCode: selectedSpace.value, buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });

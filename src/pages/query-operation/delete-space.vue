@@ -39,11 +39,6 @@ onMounted(async () => {
   }
 });
 
-const emits = defineEmits<{
-  (e: "change", item: string): void;
-  (e: "linkClicked", building: string): void;
-}>();
-
 const operation = (item: string) => {
   if (item === 'Aggiungi') {
     router.push({ path: '/query-operation/add-space/', query: { spaceCode: selectedSpace.value, buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
@@ -78,12 +73,6 @@ const deleteOperation = async (item: string, spaceId: string) => {
   }
 };
 
-// Funzione per gestire il clic del link
-const handleLinkClick = (space: string): void => {
-  selectedSpace.value = space;
-  emits('linkClicked', space);
-}
-
 watch(() => route.query.spaceCode, (newSpaceCode) => {
     spaceFromQuery.value = newSpaceCode;
 });
@@ -106,7 +95,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
             <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
             <div class="space-title"> Locali </div>
             <div class="links">
-              <SpaceVerticalNav @linkClicked="handleLinkClick" :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
+              <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
             </div>
             <button 
               v-for="item, i in operations" :key="i" 

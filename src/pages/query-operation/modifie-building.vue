@@ -6,26 +6,14 @@ import { ref, watch } from 'vue';
 
 const { data } = useNuxtData('buildings') as {data: any};
 const router = useRouter();
-
-const selectedBuilding = ref('');
 const route = useRoute();
+
 const buildName = ref('');
 const buildDescription = ref('');
 
 const operations = ref(['Conferma', 'Annulla']);
 let buildingFromQuery = ref(route.query.buildingCode);
 let buildingIdFromQuery = ref(route.query.buildingId);
-
-const emits = defineEmits<{
-  (e: "change", item: string): void;
-  (e: "linkClicked", building: string): void;
-}>();
-
-// Funzione per gestire il clic del link
-const handleLinkClick = (building: string): void => {
-  selectedBuilding.value = building;
-  emits('linkClicked', building);
-}
 
 const operation = async (item: string, buildName: string, buildDescription: string) => {
   const { data: buildData } = await useFetch('/api/selected-build', {
@@ -62,7 +50,7 @@ const operation = async (item: string, buildName: string, buildDescription: stri
       }
     });
   } else {
-
+    // TODO
   }
 }
 
@@ -84,7 +72,7 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
             <div class="building-title"> Edifici </div>
-            <MainVerticalNav @linkClicked="handleLinkClick" />
+            <MainVerticalNav />
           </div>
       </div>
     </div>
