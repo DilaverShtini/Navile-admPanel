@@ -241,7 +241,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 
 .container {
   height: 100%;
-  max-height: 97vh;
+  max-height: 95vh;
   display: flex;
   justify-content: left;
   flex: 1;

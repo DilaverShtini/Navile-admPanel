@@ -248,6 +248,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
   width: 100%;
   justify-content: flex-start;
   border-left: 1px solid #d5d5d5;
+  overflow-y: scroll;
 }
 
 .buttonsOperation {
@@ -258,6 +259,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 
 .container {
   height: 100%;
+  max-height: 95vh;
   display: flex;
   justify-content: left;
   flex: 1;
