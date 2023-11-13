@@ -40,38 +40,11 @@ const navigate = (buildingCode: any, floorNumber: any, floorId: any) => {
 </template>
 
 <style scoped>
-
-.row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.building-name {
-  flex-grow: 1;
-  cursor: pointer;
-}
-
-.edit-button {
-  margin-left: 10px;
-}
-
-.noLinks {
-  color: #777;
-  margin-top: 1em;
-}
-
 ul.listOfSpace {
   width: auto;
   list-style-type: none;
   text-align: left;
   padding: 0% 8% 0% 8%;
-}
-
-.linkSpace {
-  color: black;
-  text-decoration: none;
-  transition: 0.3s ease;
-  margin-bottom: 15em;
 }
 
 .listSpace {
@@ -87,4 +60,22 @@ ul.listOfSpace {
   border-radius: 0.2em;
 }
 
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.space-name {
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.edit-button {
+  margin-left: 10px;
+}
+
+.noLinks {
+  color: #777;
+  margin-top: 1em;
+}
 </style>

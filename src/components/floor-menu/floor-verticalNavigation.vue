@@ -55,17 +55,6 @@ onMounted(async () => {
   border-bottom: 1px solid #d5d5d5;
 }
 
-.allFloor {
-  width: 100%;
-  text-align: center;
-  padding: 2% 2% 5% 2%;
-  font-weight: bold;
-}
-
-.visualization {
-  display: flex;
-}
-
 ul.listOfFloor {
   width: auto;
   list-style-type: none;
@@ -73,11 +62,15 @@ ul.listOfFloor {
   padding: 0% 8% 0% 8%;
 }
 
-.linkFloor {
-  color: black;
-  text-decoration: none;
-  transition: 0.3s ease;
-  margin-bottom: 15em;
+.visualization {
+  display: flex;
+}
+
+.allFloor {
+  width: 100%;
+  text-align: center;
+  padding: 2% 2% 5% 2%;
+  font-weight: bold;
 }
 
 .listFloor {
@@ -92,5 +85,10 @@ ul.listOfFloor {
   background-color: #e2e8f0;
   border-radius: 0.2em;
 }
-
+.linkFloor {
+  color: black;
+  text-decoration: none;
+  transition: 0.3s ease;
+  margin-bottom: 15em;
+}
 </style>

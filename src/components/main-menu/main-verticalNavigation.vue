@@ -34,6 +34,25 @@ const navigate = (code: string, id: number) => {
 </template>
 
 <style scoped>
+ul.listOfBuilding {
+  width: auto;
+  list-style-type: none;
+  text-align: left;
+  padding: 0% 8% 0% 8%;
+}
+
+.listBuilding {
+  padding-left: 3%;
+  margin: 0.5em 0em 0.5em 0em;
+  background-size: 2em;
+  line-height: 2em;
+  text-transform: capitalize;
+}
+
+.listBuilding:hover {
+  background-color: #e2e8f0;
+  border-radius: 0.2em;
+}
 
 .row {
   display: flex;
@@ -53,40 +72,4 @@ const navigate = (code: string, id: number) => {
   color: #777;
   margin-top: 1em;
 }
-
-.verticalNav {
-  width: 100%;
-  position: relative;
-  margin: auto;
-  overflow-y: auto;
-  text-align: center;
-}
-
-ul.listOfBuilding {
-  width: auto;
-  list-style-type: none;
-  text-align: left;
-  padding: 0% 8% 0% 8%;
-}
-
-.linkBuilding {
-  color: black;
-  text-decoration: none;
-  transition: 0.3s ease;
-  margin-bottom: 15em;
-}
-
-.listBuilding {
-  padding-left: 3%;
-  margin: 0.5em 0em 0.5em 0em;
-  background-size: 2em;
-  line-height: 2em;
-  text-transform: capitalize;
-}
-
-.listBuilding:hover {
-  background-color: #e2e8f0;
-  border-radius: 0.2em;
-}
-
 </style>

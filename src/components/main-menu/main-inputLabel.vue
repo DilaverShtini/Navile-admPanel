@@ -81,7 +81,6 @@ const navigateInSpace = (code, id) => {
 </template>
 
 <style scoped>
-
 .inputModel {
   width: 100%;
 }
@@ -103,13 +102,6 @@ ul.listOfModel {
   margin: 3% 0% 3% 0%;
 }
 
-.linkModel {
-  color: black;
-  text-decoration: none;
-  transition: 0.3s ease;
-  margin-bottom: 15em;
-}
-
 .listModel {
   padding-left: 2%;
   margin: 0em;
@@ -122,13 +114,4 @@ ul.listOfModel {
   background-color: #e2e8f0;
   border-radius: 0.2em;
 }
-
-#openModel {
-  background-color: #e2e8f0;
-}
-
-#openModel:focus {
-  background-color: #e2e8f0;
-}
-
 </style>

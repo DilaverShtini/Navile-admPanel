@@ -193,10 +193,41 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 </template>
  
 <style scoped>
+.container {
+  height: 100%;
+  max-height: 95vh;
+  display: flex;
+  justify-content: left;
+  flex: 1;
+  border: 1px solid #d5d5d5;
+}
 
-.links {
-  max-height: 64vh;
-  overflow-y: scroll;
+.menu {
+  text-align: center;
+  width: 20em;
+  height: max-content;
+}
+
+.box {
+  border-right: 1px solid #d5d5d5;
+  overflow-y: hidden;
+  justify-content: left;
+  width: 20em;
+}
+
+.with-bottom-border {
+  border-bottom: 1px solid #d5d5d5;
+}
+
+.verticalNav {
+  text-align: center;
+}
+
+.buildingSelected, .floorSelected {
+  width: auto;
+  text-align: left;
+  padding: 5% 0% 5% 5%;
+  border-bottom: 1px solid #d5d5d5;
 }
 
 .space-title {
@@ -206,6 +237,60 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
   font-weight: bold;
 }
 
+.links {
+  max-height: 64vh;
+  overflow-y: scroll;
+}
+
+.action {
+  width: 40%;
+  position: relative;
+  display: inline-block;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  padding: 0.8em 2em;
+  text-align: center;
+  font-weight: bold;
+  color: #000;
+  letter-spacing: 2px;
+  background-color: #fff;
+  border-radius: 0.5em;
+}
+
+.action:hover, .modifieAction:hover {
+  background-color: #ed5959;
+}
+
+.aggiungi {
+  margin-right: 10px;
+}
+
+.elimina {
+  margin-left: 10px;
+}
+
+.form {
+  width: 100%;
+  justify-content: flex-start;
+  border-left: 1px solid #d5d5d5;
+  overflow-y: scroll;
+}
+
+.form-container {
+  width: 96%;
+  margin: 0%;
+  justify-content: flex-start;
+  background-color: #fff;
+  padding: 2% 2% 0% 2%;
+}
+
+.title {
+  text-align: left;
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
 
 .listOfInput {
   border: 1px solid #ddd;
@@ -236,55 +321,10 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
   resize: vertical;
 }
 
-.title {
-  text-align: left;
-  font-size: 1.5em;
-  color: #333;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.form {
-  width: 100%;
-  justify-content: flex-start;
-  border-left: 1px solid #d5d5d5;
-  overflow-y: scroll;
-}
-
 .buttonsOperation {
   text-align: end;
   margin-top: auto;
   padding: 10px;
-}
-
-.container {
-  height: 100%;
-  max-height: 95vh;
-  display: flex;
-  justify-content: left;
-  flex: 1;
-  border: 1px solid #d5d5d5;
-}
-
-.form-container {
-  width: 96%;
-  margin: 0%;
-  justify-content: flex-start;
-  background-color: #fff;
-  padding: 2% 2% 0% 2%;
-}
-
-.menu {
-  text-align: center;
-  width: 20em;
-  height: max-content;
-}
-
-.box {
-  border-right: 1px solid #d5d5d5;
-  overflow-y: hidden;
-  justify-content: left;
-  width: 20em;
 }
 
 .modifieAction {
@@ -298,32 +338,6 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
   background-color: #fff;
   border-radius: 0.5em;
 }
-.action {
-  width: 40%;
-  position: relative;
-  display: inline-block;
-  margin-top: 2%;
-  margin-bottom: 2%;
-  padding: 0.8em 2em;
-  text-align: center;
-  font-weight: bold;
-  color: #000;
-  letter-spacing: 2px;
-  background-color: #fff;
-  border-radius: 0.5em;
-}
-
-.action:hover, .modifieAction:hover {
-  background-color: #ed5959;
-}
-
-.aggiungi {
-  margin-right: 10px;
-}
-
-.elimina {
-  margin-left: 10px;
-}
 
 .conferma {
   height: 25%;
@@ -334,55 +348,4 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
   height: 25%;
   width: 10%;
 }
-
-
-.tab {
-  position: relative;
-  display: inline-block;
-  padding: 1rem 2rem;
-  text-align: center;
-  font-weight: bold;
-  color: #333;
-  letter-spacing: 2px;
-  background-color: #fff;
-  border: none;
-}
-
-.tab::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 2px;
-  width: calc(100% - 30px);
-  border-radius: 0 0 8px 8px;
-  background-color: rgb(255, 37, 37);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.tab.active {
-  color: rgb(234, 37, 37);
-}
-
-.tab.active::after {
-  opacity: 1;
-}
-
-.verticalNav {
-  text-align: center;
-}
-
-.with-bottom-border {
-  border-bottom: 1px solid #d5d5d5;
-}
-
-.buildingSelected, .floorSelected {
-  width: auto;
-  text-align: left;
-  padding: 5% 0% 5% 5%;
-  border-bottom: 1px solid #d5d5d5;
-}
-
 </style>

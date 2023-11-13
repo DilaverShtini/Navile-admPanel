@@ -2,15 +2,12 @@
 
 import { MainInput } from '~/utils';
 import { FloorVerticalNav } from '~/utils';
-import { defineEmits } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
 const buildingFromQuery = route.query.buildingCode
 const buildingIdFromQuery = String(route.query.buildingId)
-
-const emits = defineEmits();
 
 </script>
   
@@ -36,7 +33,6 @@ const emits = defineEmits();
   </div>
 </template>
 
-
 <style scoped>
 .container {
   height: 100%;
@@ -59,13 +55,12 @@ const emits = defineEmits();
   width: 20em;
 }
 
-.verticalNav {
-  text-align: center;
-}
-
 .with-bottom-border {
   border-bottom: 1px solid #d5d5d5;
 }
 
+.verticalNav {
+  text-align: center;
+}
 </style>
   

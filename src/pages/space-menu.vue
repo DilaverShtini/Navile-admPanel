@@ -80,91 +80,12 @@ const operation = (item: string) => {
 </template>
 
 <style scoped>
-
-.links {
-  max-height: 64vh;
-  overflow-y: scroll;
-}
-
-.noLinks {
-  color: #777;
-  margin-top: 1em;
-}
-
-.listOfInput {
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-}
-
-.listOfInput label {
-  display: block;
-  font-size: 1em;
-  margin-bottom: 8px;
-  color: #333;
-}
-
-.listOfInput input,
-.listOfInput textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-.listOfInput textarea {
-  resize: vertical;
-}
-
-.title-list {
-  text-align: left;
-  font-size: 1.5em;
-  color: #333;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.form {
-  overflow-y: scroll;
-  width: 100%;
-  justify-content: flex-start;
-}
-
-.form-container {
-  width: 96%;
-  margin: 0%;
-  justify-content: flex-start;
-  background-color: #fff;
-  padding: 2% 2% 0% 2%;
-}
-
-
-.title {
-  width: 96%;
-  text-align: center;
-  padding: 3% 2% 3% 2%;
-  font-weight: bold;
-}
-
 .container {
   max-height: 95vh;
   display: flex;
   justify-content: left;
   flex: 1;
   border: 1px solid #d5d5d5;
-}
-
-.form-container {
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #fff;
-  padding: 20px;
-  border-left: 1px solid #d5d5d5;
 }
 
 .menu {
@@ -180,11 +101,32 @@ const operation = (item: string) => {
   height: 100%;
 }
 
+.with-bottom-border {
+  border-bottom: 1px solid #d5d5d5;
+}
+
+.verticalNav {
+  height: 100%;
+  text-align: center;
+}
+
 .buildingSelected, .floorSelected {
   width: auto;
   text-align: left;
   padding: 5% 0% 5% 5%;
   border-bottom: 1px solid #d5d5d5;
+}
+
+.title {
+  width: 96%;
+  text-align: center;
+  padding: 3% 2% 3% 2%;
+  font-weight: bold;
+}
+
+.links {
+  max-height: 64vh;
+  overflow-y: scroll;
 }
 
 .action {
@@ -214,47 +156,46 @@ const operation = (item: string) => {
   margin-left: 10px;
 }
 
-.tab {
-  position: relative;
-  display: inline-block;
-  padding: 1rem 2rem;
-  text-align: center;
-  font-weight: bold;
-  color: #333;
-  letter-spacing: 2px;
-  background-color: #fff;
-  border: none;
+.form {
+  overflow-y: scroll;
+  width: 100%;
+  justify-content: flex-start;
 }
 
-.tab::after {
-  content: '';
-  position: absolute;
+.form-container {
+  top: 0;
+  right: 0;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 2px;
-  width: calc(100% - 30px);
-  border-radius: 0 0 8px 8px;
-  background-color: rgb(255, 37, 37);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  background-color: #fff;
+  padding: 20px;
+  border-left: 1px solid #d5d5d5;
 }
 
-.tab.active {
-  color: rgb(234, 37, 37);
+.title-list {
+  text-align: left;
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 
-.tab.active::after {
-  opacity: 1;
+.listOfInput {
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
 }
 
-.verticalNav {
-  height: 100%;
-  text-align: center;
+.listOfInput label {
+  display: block;
+  font-size: 1em;
+  margin-bottom: 8px;
+  color: #333;
 }
 
-.with-bottom-border {
-  border-bottom: 1px solid #d5d5d5;
+.noLinks {
+  color: #777;
+  margin-top: 1em;
 }
-
 </style>

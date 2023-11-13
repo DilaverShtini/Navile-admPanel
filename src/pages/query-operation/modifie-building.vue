@@ -144,11 +144,61 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
 </template>
  
 <style scoped>
+.container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex: 1;
+  border: 1px solid #d5d5d5;
+}
+
+.menu {
+  text-align: center;
+  width: 20em;
+  height: max-content;
+}
+
+.box {
+  border-right: 1px solid #d5d5d5;
+  overflow-y: hidden;
+  justify-content: left;
+  width: 20em;
+}
+
+.with-bottom-border {
+  border-bottom: 1px solid #d5d5d5;
+}
+
+.verticalNav {
+  text-align: center;
+}
 
 .building-title {
   width: 96%;
   text-align: center;
   padding: 3% 2% 3% 2%;
+  font-weight: bold;
+}
+
+.form {
+  width: 100%;
+  justify-content: flex-start;
+  border-left: 1px solid #d5d5d5;
+}
+
+.form-container {
+  width: 96%;
+  margin: 0%;
+  justify-content: flex-start;
+  background-color: #fff;
+  padding: 2% 2% 0% 2%;
+}
+
+.title {
+  text-align: left;
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 10px;
   font-weight: bold;
 }
 
@@ -181,53 +231,10 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
   resize: vertical;
 }
 
-.title {
-  text-align: left;
-  font-size: 1.5em;
-  color: #333;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.form {
-  width: 100%;
-  justify-content: flex-start;
-  border-left: 1px solid #d5d5d5;
-}
-
 .buttonsOperation {
   text-align: end;
   margin-top: auto;
   padding: 10px;
-}
-
-.container {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex: 1;
-  border: 1px solid #d5d5d5;
-}
-
-.form-container {
-  width: 96%;
-  margin: 0%;
-  justify-content: flex-start;
-  background-color: #fff;
-  padding: 2% 2% 0% 2%;
-}
-
-.menu {
-  text-align: center;
-  width: 20em;
-  height: max-content;
-}
-
-.box {
-  border-right: 1px solid #d5d5d5;
-  overflow-y: hidden;
-  justify-content: left;
-  width: 20em;
 }
 
 .action {
@@ -254,46 +261,5 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
 .annulla {
   height: 25%;
   width: 10%;
-}
-
-.tab {
-  position: relative;
-  display: inline-block;
-  padding: 1rem 2rem;
-  text-align: center;
-  font-weight: bold;
-  color: #333;
-  letter-spacing: 2px;
-  background-color: #fff;
-  border: none;
-}
-
-.tab::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 2px;
-  width: calc(100% - 30px);
-  border-radius: 0 0 8px 8px;
-  background-color: rgb(255, 37, 37);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.tab.active {
-  color: rgb(234, 37, 37);
-}
-
-.tab.active::after {
-  opacity: 1;
-}
-
-.verticalNav {
-  text-align: center;
-}
-.with-bottom-border {
-  border-bottom: 1px solid #d5d5d5;
 }
 </style>
