@@ -6,6 +6,7 @@ const emit = defineEmits();
 const userInput = ref('');
 const filteredModels = ref([]);
 const router = useRouter();
+const inputHeight = ref(0);
 
 const props = defineProps({
   model: String,
@@ -42,9 +43,28 @@ const onInput = (event) => {
   userInput.value = searchTerm;
   if(props.model == 'floor') {
     filteredModels.value = searchTerm ? data.value.filter((model) => String(model.number).includes(searchTerm)) : [];
-  }else {
+    if(filteredModels.value == "") {
+      const { data: filter } = useAsyncData('filteredFloor', () => "");
+    }else {
+      const { data: filter } = useAsyncData('filteredFloor', () => filteredModels);
+    }
+  } else if (props.model == 'building') {
     filteredModels.value = searchTerm ? data.value.filter((model) => model.name.toLowerCase().includes(searchTerm)) : [];
+    if(filteredModels.value == "") {
+      const { data: filter } = useAsyncData('filteredItem', () => "");
+    }else {
+      const { data: filter } = useAsyncData('filteredItem', () => filteredModels);
+    }
+  } else if (props.model == 'space') {
+    filteredModels.value = searchTerm ? data.value.filter((model) => model.name.toLowerCase().includes(searchTerm)) : [];
+    if(filteredModels.value == "") {
+      const { data: filter } = useAsyncData('filteredSpace', () => "");
+    }else {
+      const { data: filter } = useAsyncData('filteredSpace', () => filteredModels);
+    }
   }
+  const height = filteredModels.value.length * 2;
+  document.documentElement.style.setProperty('--input-height', `${height}em`);
 };
 
 const navigateFloor = (code, id) => {
@@ -104,7 +124,7 @@ ul.listOfModel {
 
 .listModel {
   padding-left: 2%;
-  margin: 0em;
+  height: 2em; /* Altezza dell'elemento */
   background-size: 2em;
   line-height: 2em;
   text-transform: capitalize;

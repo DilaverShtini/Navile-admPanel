@@ -95,7 +95,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
             <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
             <div class="space-title"> Locali </div>
             <div class="links">
-              <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
+              <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" all="true" />
             </div>
             <button 
               v-for="item, i in operations" :key="i" 
@@ -140,8 +140,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
  
 <style scoped>
 .container {
-  height: 100%;
-  max-height: 95vh;
+  max-height: 47em;
   display: flex;
   justify-content: left;
   flex: 1;
@@ -184,8 +183,8 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 }
 
 .links {
-  max-height: 64vh;
-  overflow-y: scroll;
+  max-height: calc(30em - var(--input-height, 0px));
+  overflow-y: auto;
 }
 
 .action {

@@ -6,6 +6,8 @@ const props = defineProps(['buildingCode']);
 const buildingNumber = props.buildingCode.replace(/[^\d]/g, '');
 const data = ref([]);
 
+const { data: filter } = useNuxtData('filteredFloor');
+
 onMounted(async () => {
   try {
     const response = await fetch(`/api/floor?buildingId=${buildingNumber}`);
@@ -30,7 +32,12 @@ onMounted(async () => {
           <div class="visualization">
             <div class="allFloor">Piani</div>
           </div>
-          <li v-for="link in data" :key="link.id" :title="link.floor" class="listFloor">
+          <li v-if="!filter" v-for="link in data" :key="link.id" :title="link.floor" class="listFloor">
+          <router-link :to="{ path: '/space-menu/', query: { buildingCode: props.buildingCode, floorNumber: link.number, floorId: link.id }}" class="linkFloor">
+              <div>Piano n.{{ link.number }}</div>
+          </router-link>
+          </li>
+          <li v-if="filter" v-for="link in filter" :key="link.id" :title="link.floor" class="listFloor">
           <router-link :to="{ path: '/space-menu/', query: { buildingCode: props.buildingCode, floorNumber: link.number, floorId: link.id }}" class="linkFloor">
               <div>Piano n.{{ link.number }}</div>
           </router-link>

@@ -35,8 +35,7 @@ const buildingIdFromQuery = String(route.query.buildingId)
 
 <style scoped>
 .container {
-  height: 100%;
-  margin-bottom: 5%;
+  max-height: 47em;
   display: flex;
   justify-content: left;
   flex: 1;

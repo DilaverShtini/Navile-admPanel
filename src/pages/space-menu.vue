@@ -40,14 +40,15 @@ const operation = (item: string) => {
                       class="mb-4"
                       model="space" 
                       :floor="String(floorIdFromQuery)"
-                      :floorNumber="String(floorFromQuery)"/>
+                      :floorNumber="String(floorFromQuery)"
+                      :buildCode="String(buildingFromQuery)"/>
             <div class="with-bottom-border"></div>
             <div class="verticalNav">
               <div class="buildingSelected"> Edificio: {{ buildingFromQuery }} </div>
               <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
               <div class="title"> Locali </div>
               <div class="links">
-                <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery"/>
+                <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
               </div>
               <button 
               v-for="item, i in operations" :key="i" 
@@ -76,7 +77,7 @@ const operation = (item: string) => {
 
 <style scoped>
 .container {
-  max-height: 95vh;
+  max-height: 47em;
   display: flex;
   justify-content: left;
   flex: 1;
@@ -120,8 +121,8 @@ const operation = (item: string) => {
 }
 
 .links {
-  max-height: 64vh;
-  overflow-y: scroll;
+  max-height: calc(30em - var(--input-height, 0px));
+  overflow-y: auto;
 }
 
 .action {

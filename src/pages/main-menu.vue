@@ -40,7 +40,7 @@ const { data } = await useAsyncData('buildings', () => $fetch('/api/building')) 
  
 <style scoped>
 .container {
-  max-height: 100%;
+  max-height: 47em;
   display: flex;
   justify-content: left;
   flex: 1;

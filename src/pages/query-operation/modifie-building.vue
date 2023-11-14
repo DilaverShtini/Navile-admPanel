@@ -72,7 +72,7 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
             <div class="building-title"> Edifici </div>
-            <MainVerticalNav />
+            <MainVerticalNav all="true" />
           </div>
       </div>
     </div>
@@ -133,12 +133,13 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
  
 <style scoped>
 .container {
-  height: 100%;
-  width: 100%;
+  max-height: 47em;
   display: flex;
+  justify-content: left;
   flex: 1;
   border: 1px solid #d5d5d5;
 }
+
 
 .menu {
   text-align: center;
