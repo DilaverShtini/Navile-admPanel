@@ -7,46 +7,48 @@ import { ref, watch } from 'vue';
 const { data } = useNuxtData('buildings') as {data: any};
 const router = useRouter();
 const route = useRoute();
-
-const buildName = ref('');
-const buildDescription = ref('');
-
 const operations = ref(['Conferma', 'Annulla']);
-let buildingFromQuery = ref(route.query.buildingCode);
-let buildingIdFromQuery = ref(route.query.buildingId);
 
-const operation = async (item: string, buildName: string, buildDescription: string) => {
-  const { data: buildData } = await useFetch('/api/selected-build', {
-    method: 'POST',
-    body: {
-      buildId: buildingIdFromQuery
-    },
-  })
+let buildingFromQuery = route.query.buildingCode;
+let buildingIdFromQuery = route.query.buildingId;
 
-  const oldBuildName = ref(buildData.value[0]?.name);
-  const oldBuildDescription = ref(buildData.value[0]?.description);
-  
+const oldBuildName = ref([]);
+const oldBuildDescription = ref([]);
+let buildData = ref([])
+
+const loadData = async () => {
+  try {
+    buildingIdFromQuery = route.query.buildingId;
+    buildingFromQuery = route.query.buildingCode;
+    const response = await fetch(`/api/selected-build?buildingId=${buildingIdFromQuery}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const result = await response.json();
+    buildData.value = result;
+    oldBuildName.value = buildData.value.name
+    oldBuildDescription.value = buildData.value.description;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
+
+const operation = async (item: string, buildName: any, buildDescription: any) => {
   if (item === 'Conferma') {
-    if (buildName=="") buildName = oldBuildName.value;
-    if (buildDescription=="") buildDescription = oldBuildDescription.value;
-    
-    oldBuildName.value = buildName;
-    oldBuildDescription.value = buildDescription;
-
     await useFetch('/api/update-build', {
       method: 'PUT',
       body: {
-        buildingId: buildingIdFromQuery.value,
-        buildingCode: buildingFromQuery.value,
+        buildingId: buildingIdFromQuery,
+        buildingCode: buildingFromQuery,
         buildingName: buildName,
         buildingDesc: buildDescription,
       },
       onRequest () {
-        data.value.push(buildingIdFromQuery.value, buildingFromQuery.value, buildName, buildDescription)
+        data.value.push(buildingIdFromQuery, buildingFromQuery, buildName, buildDescription)
       },
       onResponse: async () => {
         await refreshNuxtData('buildings')
-        router.push({ path: '/main-menu/', query: { buildingCode: buildingFromQuery.value } })
+        router.push({ path: '/main-menu/', query: { buildingCode: buildingFromQuery } })
       }
     });
   } else {
@@ -55,8 +57,12 @@ const operation = async (item: string, buildName: string, buildDescription: stri
 }
 
 watch(() => route.query.buildingCode, (newBuildingCode) => {
-  buildingFromQuery.value = newBuildingCode;
+  buildingFromQuery = newBuildingCode;
+  buildingIdFromQuery = route.query.buildingId;
+  loadData();
 });
+
+loadData();
 
 </script>
 
@@ -81,42 +87,22 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
         <div class="title" >Stai modificando: {{ buildingFromQuery }}</div>
           <div v-for="build in data">
             <div v-if="build.code == buildingFromQuery" class="listOfInput">
-              <label for="spaceName"> Nome dell'edificio presente </label>
+              <label for="spaceName"> Nome dell'edificio </label>
                 <div>
                   <input 
                     type="text"
                     name="buildName"
                     id="buildName"
-                    :placeholder="build.name"
-                    readonly />
+                    v-model="oldBuildName"/>
                 </div>
-              <label for="spaceDescription"> Descrizione presente </label>
+              <label for="spaceDescription"> Descrizione </label>
                 <div>
                   <textarea
                     id="buildDescription"
                     name="buildDescription"
                     rows="3"
-                    :placeholder="build.description"
-                    readonly />
+                    v-model="oldBuildDescription" />
                 </div>
-            </div>
-            <div v-if="build.code == buildingFromQuery" class="listOfInput">
-              <label for="buildingName"> Nome dell'edificio </label>
-                <div>
-                  <input 
-                    type="text"
-                    name="buildName"
-                    id="buildName"
-                    v-model="buildName" />
-                </div>
-              <label for="buildingDescription"> Descrizione </label>
-              <div>
-                <textarea
-                  id="buildDescription"
-                  name="buildDescription"
-                  rows="3"
-                  v-model="buildDescription" />
-              </div>
             </div>
           </div>
       </div>
@@ -124,7 +110,7 @@ watch(() => route.query.buildingCode, (newBuildingCode) => {
         <button
           v-for="item, i in operations" :key="i" 
           class="action" :class="item.toLowerCase()"
-          @click="operation(item, buildName, buildDescription)"
+          @click="operation(item, oldBuildName, oldBuildDescription)"
           >{{item}}</button>
       </div>
     </div>

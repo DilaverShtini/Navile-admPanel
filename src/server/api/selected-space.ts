@@ -1,20 +1,18 @@
-export default defineEventHandler(async (event) => {
-    const body = await readBody(event);
-    const { spaceId } = body;
+export default defineEventHandler((spaceStringId: string) => {
+    const spaceCodeString = spaceStringId ? String(spaceStringId) : '';
+    const spaceNumber = spaceCodeString.replace(/[^\d]/g, '');
+    const spaceId = parseInt(spaceNumber, 10);
 
-    let result = null
-    if (spaceId!==null) {
-        try {
-            result = await prisma.space.groupBy({
-                by: ['name', 'description', 'capacity'],
-                where: {
-                    id: parseInt(spaceId),
-                },
-            });
-        } catch (error) {
-            console.error('Errore durante l\'aggiornamento del record:', error);
-        }
-    }
+    const space = prisma.space.findUnique({
+        where: {
+            id: spaceId
+        },
+        select: {
+            name: true,
+            description: true,
+            capacity: true,
+        },
+    });
 
-    return result
+    return space;
 });

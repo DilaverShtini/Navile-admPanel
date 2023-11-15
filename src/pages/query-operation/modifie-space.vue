@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 
+import { useNuxtData, useFetch, refreshNuxtData } from 'nuxt/app';
+import { useRoute, useRouter } from 'vue-router';
 import { MainInput } from '../../utils';
 import { SpaceVerticalNav } from '../../utils';
 import { ref, watch } from 'vue';
@@ -15,13 +17,38 @@ const spaceCapacity = ref('');
 const buildingFromQuery = route.query.buildingCode
 const floorFromQuery = route.query.floorNumber
 const floorIdFromQuery = route.query.floorId
-const spaceIdFromQuery = ref(route.query.spaceId);
-const spaceFromQuery = ref(route.query.spaceCode);
+let spaceFromQuery = route.query.spaceCode;
+let spaceIdFromQuery = route.query.spaceId;
 
 const { data } = useNuxtData('spaces') as {data: any};
 
 const operations = ref(['Aggiungi', 'Elimina']);
 const modifieOperations = ref(['Conferma', 'Annulla']);
+
+const oldSpaceName = ref([])
+const oldSpaceDescription = ref([])
+const oldSpaceCapacity = ref([])
+let spaceData = ref([])
+
+const loadData = async() => {
+  try {
+    spaceIdFromQuery = route.query.spaceId;
+    spaceFromQuery = route.query.spaceCode;
+    console.log("spaceId: " + spaceIdFromQuery)
+    const response = await fetch(`/api/selected-space?spaceId=${spaceIdFromQuery}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const result = await response.json();
+    spaceData.value = result;
+    oldSpaceName.value = spaceData.value.name
+    oldSpaceDescription.value = spaceData.value.description;
+    oldSpaceCapacity.value = spaceData.value.capacity;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
+  
 
 const operation = (item: string) => {
   if (item === 'Aggiungi') {
@@ -31,30 +58,9 @@ const operation = (item: string) => {
   }
 }
 
-const modifieOperation = async (item: string, spaceName: string | undefined, spaceDescription: string | null | undefined, spaceCapacity: string) => {
-  const { data: spaceData } = await useFetch('/api/selected-space', {
-    method: 'POST',
-    body: {
-      spaceId: spaceIdFromQuery
-    },
-  })
-
-  const oldSpaceName = ref(spaceData.value[0]?.name);
-  const oldSpaceDescription = ref(spaceData.value[0]?.description);
-  const oldSpaceCapacity = ref(spaceData.value[0]?.capacity);
-
+const modifieOperation = async (item: string, spaceName: string, spaceDescription: string, spaceCapacity: any) => {
+  if (spaceCapacity==null) spaceCapacity = "0"
   if (item === 'Conferma') {
-    if (spaceName=="") spaceName = oldSpaceName.value;
-    if (spaceDescription=="") spaceDescription = oldSpaceDescription.value;
-    if (spaceCapacity=="" && String(oldSpaceCapacity.value)=="") {
-      spaceCapacity = "0"
-    }else if(spaceCapacity=="" && String(oldSpaceCapacity.value)!=="") {
-      spaceCapacity = String(oldSpaceCapacity.value)
-    }
-    oldSpaceName.value = spaceName;
-    oldSpaceDescription.value = spaceDescription;
-    oldSpaceCapacity.value = parseInt(spaceCapacity);
-
     await useFetch('/api/update-space', {
       method: 'PUT',
       body: {
@@ -78,8 +84,12 @@ const modifieOperation = async (item: string, spaceName: string | undefined, spa
 }
 
 watch(() => route.query.spaceCode, (newSpaceCode) => {
-    spaceFromQuery.value = newSpaceCode;
+    spaceFromQuery = newSpaceCode;
+    spaceIdFromQuery = route.query.spaceId;
+    loadData();
 });
+
+loadData();
 
 </script>
 
@@ -115,42 +125,13 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
         <div class="title" >Stai modificando: {{ spaceFromQuery }}</div>
           <div v-for="space in data">
             <div v-if="space.code == spaceFromQuery" class="listOfInput">
-              <label for="spaceName"> Nome del locale presente </label>
-                <div>
-                  <input 
-                    type="text"
-                    name="spaceName"
-                    id="spaceName"
-                    :placeholder="space.name"
-                    readonly />
-                </div>
-              <label for="spaceDescription"> Descrizione presente </label>
-                <div>
-                  <textarea
-                    id="spaceDescription"
-                    name="spaceDescription"
-                    rows="3"
-                    :placeholder="space.description"
-                    readonly />
-                </div>
-              <label for="spaceCapacity"> Capacità presente </label>
-                <div>
-                  <input
-                    type="number"
-                    name="spaceCapacity"
-                    id="spaceCapacity"
-                    :placeholder="space.capacity"
-                    readonly />
-                </div>
-            </div>
-            <div v-if="space.code == spaceFromQuery" class="listOfInput">
               <label for="spaceName"> Nome del locale </label>
                 <div>
                   <input 
                     type="text"
                     name="spaceName"
                     id="spaceName"
-                    v-model="spaceName" />
+                    v-model="oldSpaceName" />
                 </div>
               <label for="spaceDescription"> Descrizione </label>
                 <div>
@@ -158,7 +139,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
                     id="spaceDescription"
                     name="spaceDescription"
                     rows="3"
-                    v-model="spaceDescription" />
+                    v-model="oldSpaceDescription" />
                 </div>
               <label for="spaceCapacity"> Capacità </label>
                 <div>
@@ -166,7 +147,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
                     type="number"
                     name="spaceCapacity"
                     id="spaceCapacity"
-                    v-model="spaceCapacity" />
+                    v-model="oldSpaceCapacity" />
                 </div>
             </div>
           </div>
@@ -175,7 +156,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
         <button
           v-for="item, i in modifieOperations" :key="i" 
           class="modifieAction" :class="item.toLowerCase()"
-          @click="modifieOperation(item, spaceName, spaceDescription, spaceCapacity)"
+          @click="modifieOperation(item, oldSpaceName, oldSpaceDescription, oldSpaceCapacity)"
           >{{item}}</button>
       </div>
     </div>
