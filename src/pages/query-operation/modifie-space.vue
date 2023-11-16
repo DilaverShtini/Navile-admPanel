@@ -10,12 +10,8 @@ const selectedSpace = ref('');
 const route = useRoute();
 const router = useRouter();
 
-const spaceName = ref('');
-const spaceDescription = ref('');
-const spaceCapacity = ref('');
-
-const buildingFromQuery = route.query.buildingCode
-const floorFromQuery = route.query.floorNumber
+let buildingFromQuery = route.query.buildingCode
+let floorFromQuery = route.query.floorNumber
 const floorIdFromQuery = route.query.floorId
 let spaceFromQuery = route.query.spaceCode;
 let spaceIdFromQuery = route.query.spaceId;
@@ -25,8 +21,8 @@ const { data } = useNuxtData('spaces') as {data: any};
 const operations = ref(['Aggiungi', 'Elimina']);
 const modifieOperations = ref(['Conferma', 'Annulla']);
 
-const oldSpaceName = ref([])
-const oldSpaceDescription = ref([])
+const oldSpaceName = ref("")
+const oldSpaceDescription = ref("")
 const oldSpaceCapacity = ref([])
 let spaceData = ref([])
 
@@ -34,7 +30,9 @@ const loadData = async() => {
   try {
     spaceIdFromQuery = route.query.spaceId;
     spaceFromQuery = route.query.spaceCode;
-    console.log("spaceId: " + spaceIdFromQuery)
+    buildingFromQuery = route.query.buildingCode
+    floorFromQuery = route.query.floorNumber
+
     const response = await fetch(`/api/selected-space?spaceId=${spaceIdFromQuery}`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -86,6 +84,9 @@ const modifieOperation = async (item: string, spaceName: string, spaceDescriptio
 watch(() => route.query.spaceCode, (newSpaceCode) => {
     spaceFromQuery = newSpaceCode;
     spaceIdFromQuery = route.query.spaceId;
+    buildingFromQuery = route.query.buildingCode
+    floorFromQuery = route.query.floorNumber
+
     loadData();
 });
 
@@ -103,6 +104,7 @@ loadData();
                     class="mb-4"
                     model="space" 
                     :floor="String(floorIdFromQuery)"
+                    :floorNumber="String(floorFromQuery)"
                     :buildCode="String(buildingFromQuery)" />
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
@@ -110,7 +112,7 @@ loadData();
             <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
             <div class="space-title"> Locali </div>
             <div class="links">
-              <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" all="true" />
+              <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
             </div>
             <button 
               v-for="item, i in operations" :key="i" 
@@ -125,6 +127,12 @@ loadData();
         <div class="title" >Stai modificando: {{ spaceFromQuery }}</div>
           <div v-for="space in data">
             <div v-if="space.code == spaceFromQuery" class="listOfInput">
+              <div class="floor-image">
+                <img
+                  :src="`/res/floors/${buildingFromQuery}_${(floorFromQuery as string).replace('-', '&#45;')}.svg`"
+                  :alt="`Immagine ${buildingFromQuery}_${floorFromQuery}.svg non trovata`"
+                />
+              </div>
               <label for="spaceName"> Nome del locale </label>
                 <div>
                   <input 
@@ -165,7 +173,7 @@ loadData();
  
 <style scoped>
 .container {
-  max-height: 47em;
+  max-height: 54em;
   display: flex;
   justify-content: left;
   flex: 1;
@@ -208,7 +216,8 @@ loadData();
 }
 
 .links {
-  max-height: calc(30em - var(--input-height, 0px));
+  height: auto;
+  max-height: calc(37em - var(--input-height, 10em));
   overflow-y: auto;
 }
 
@@ -268,6 +277,10 @@ loadData();
   padding: 15px;
   margin-bottom: 15px;
   border-radius: 8px;
+}
+
+.floor-image {
+  text-align: center;
 }
 
 .listOfInput label {

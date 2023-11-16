@@ -88,14 +88,16 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
                     id="openBuilding"
                     class="mb-4"
                     model="space" 
-                    :floor="String(floorIdFromQuery)" />
+                    :floor="String(floorIdFromQuery)"
+                    :floorNumber="String(floorFromQuery)"
+                    :buildCode="String(buildingFromQuery)" />
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
             <div class="buildingSelected"> Edificio: {{ buildingFromQuery }} </div>
             <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
             <div class="space-title"> Locali </div>
             <div class="links">
-              <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" all="true" />
+              <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
             </div>
             <button 
               v-for="item, i in operations" :key="i" 

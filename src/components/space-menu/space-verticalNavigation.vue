@@ -7,25 +7,26 @@ const buildingFromQuery = route.query.buildingCode
 const floorFromQuery = route.query.floorNumber
 const floorIdFromQuery = route.query.floorId
 
-const props = defineProps(['all']);
-
 const { data } = useNuxtData('spaces') as {data: any};
-let { data: filter } = useNuxtData('filteredSpace') as {data: any};
 
 const edit = (code: number, id: string) => {
+  const { data: filter } = useAsyncData('filteredSpace', () => "");
   router.push({ path: '/query-operation/modifie-space/', query: { spaceId: id, spaceCode: code, buildingCode:buildingFromQuery, floorNumber:floorFromQuery, floorId:floorIdFromQuery } });
 }
 
 const navigate = (buildingCode: any, floorNumber: any, floorId: any) => {
+  const { data: filter } = useAsyncData('filteredSpace', () => "");
   router.push({ path: '/space-menu/', query: {buildingCode: buildingCode, floorNumber: floorNumber, floorId: floorId} });
 };
+
+let { data: filter } = useNuxtData('filteredSpace') as {data: any};
 
 </script>
 
 <template>
     <nav class="bg-gray-800 text-white">
       <ul class="listOfSpace">
-        <li v-if="props.all || !filter" v-for="link in data" :key="link.code" class="listSpace">
+        <li v-if="filter" v-for="link in filter" :key="link.code" class="listSpace">
           <div class="row">
             <div class="space-name" @click="navigate(buildingFromQuery, floorFromQuery, floorIdFromQuery)">
               {{ link.name }}
@@ -37,7 +38,7 @@ const navigate = (buildingCode: any, floorNumber: any, floorId: any) => {
             </div>
           </div>
         </li>
-        <li v-if="!props.all && filter" v-for="link in filter" :key="link.code" class="listSpace">
+        <li v-if="!filter" v-for="link in data" :key="link.code" class="listSpace">
           <div class="row">
             <div class="space-name" @click="navigate(buildingFromQuery, floorFromQuery, floorIdFromQuery)">
               {{ link.name }}

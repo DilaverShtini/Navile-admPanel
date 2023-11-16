@@ -68,14 +68,20 @@ const onInput = (event) => {
 };
 
 const navigateFloor = (code, id) => {
+  document.documentElement.style.setProperty('--input-height', 0);
+  const { data: filter } = useAsyncData('filteredSpace', () => "");
   router.push({ path: '/floor-menu/', query: { buildingId: id, buildingCode: code } });
 };
 
 const navigateSpace = (number, id) => {
+  document.documentElement.style.setProperty('--input-height', 0);
+  const { data: filter } = useAsyncData('filteredSpace', () => "");
   router.push({ path: '/space-menu/', query: { buildingCode: props.buildCode, floorNumber: number, floorId: id } });
 };
 
 const navigateInSpace = (code, id) => {
+  document.documentElement.style.setProperty('--input-height', 0);
+  const { data: filter } = useAsyncData('filteredSpace', () => "");
   router.push({ path: '/query-operation/modifie-space/', query: { spaceId: id, spaceCode: code, buildingCode: props.buildCode, floorNumber: props.floorNumber, floorId: props.floor } });
 };
 

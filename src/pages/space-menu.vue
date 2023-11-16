@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+//TODO modificare il calcolo dell'altezza della classe .links dopo la ricerca nel MainInput
 
 import { MainInput } from '~/utils';
 import { SpaceVerticalNav} from '~/utils';
@@ -48,7 +49,7 @@ const operation = (item: string) => {
               <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
               <div class="title"> Locali </div>
               <div class="links">
-                <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
+                <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" all="true"/>
               </div>
               <button 
               v-for="item, i in operations" :key="i" 
