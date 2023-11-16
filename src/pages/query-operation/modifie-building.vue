@@ -14,7 +14,28 @@ let buildingIdFromQuery = route.query.buildingId;
 
 const oldBuildName = ref([]);
 const oldBuildDescription = ref([]);
+const buildName = ref([]);
+const buildDescription = ref([]);
 let buildData = ref([])
+
+const isFormDirty = ref(false);
+
+onBeforeRouteLeave((_to, _from, next) => {
+  if (isFormDirty.value) {
+    const leave = window.confirm('Hai apportato modifiche non salvate. Vuoi davvero lasciare la pagina?');
+    if (leave) {
+      next();
+    } else {
+      next(false);
+    }
+  } else {
+    next();
+  }
+});
+
+const markFormDirty = () => {
+  isFormDirty.value = true;
+};
 
 const loadData = async () => {
   try {
@@ -28,23 +49,26 @@ const loadData = async () => {
     buildData.value = result;
     oldBuildName.value = buildData.value.name
     oldBuildDescription.value = buildData.value.description;
+    buildName.value = oldBuildName.value;
+    buildDescription.value = oldBuildDescription.value; 
   } catch (error) {
     console.error('Error fetching data:', error);
   }
 }
 
-const operation = async (item: string, buildName: any, buildDescription: any) => {
+const operation = async (item: string, newBuildName: any, newBuildDescription: any) => {
+  isFormDirty.value = false
   if (item === 'Conferma') {
     await useFetch('/api/update-build', {
       method: 'PUT',
       body: {
         buildingId: buildingIdFromQuery,
         buildingCode: buildingFromQuery,
-        buildingName: buildName,
-        buildingDesc: buildDescription,
+        buildingName: newBuildName,
+        buildingDesc: newBuildDescription,
       },
       onRequest () {
-        data.value.push(buildingIdFromQuery, buildingFromQuery, buildName, buildDescription)
+        data.value.push(buildingIdFromQuery, buildingFromQuery, newBuildName, newBuildDescription)
       },
       onResponse: async () => {
         await refreshNuxtData('buildings')
@@ -52,7 +76,9 @@ const operation = async (item: string, buildName: any, buildDescription: any) =>
       }
     });
   } else {
-    // TODO
+    oldBuildName.value = buildName.value;
+    oldBuildDescription.value = buildDescription.value;
+    isFormDirty.value = false;
   }
 }
 
@@ -78,7 +104,7 @@ loadData();
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
             <div class="building-title"> Edifici </div>
-            <MainVerticalNav all="true" />
+            <MainVerticalNav />
           </div>
       </div>
     </div>
@@ -90,6 +116,7 @@ loadData();
               <label for="spaceName"> Nome dell'edificio </label>
                 <div>
                   <input 
+                    @click="markFormDirty()"
                     type="text"
                     name="buildName"
                     id="buildName"
@@ -98,6 +125,7 @@ loadData();
               <label for="spaceDescription"> Descrizione </label>
                 <div>
                   <textarea
+                    @click="markFormDirty()"
                     id="buildDescription"
                     name="buildDescription"
                     rows="3"
@@ -119,13 +147,12 @@ loadData();
  
 <style scoped>
 .container {
-  max-height: 47em;
+  max-height: 53em;
   display: flex;
   justify-content: left;
   flex: 1;
   border: 1px solid #d5d5d5;
 }
-
 
 .menu {
   text-align: center;

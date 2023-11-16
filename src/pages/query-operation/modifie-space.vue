@@ -23,8 +23,30 @@ const modifieOperations = ref(['Conferma', 'Annulla']);
 
 const oldSpaceName = ref("")
 const oldSpaceDescription = ref("")
-const oldSpaceCapacity = ref([])
+const oldSpaceCapacity = ref<number>(0);
+const spaceName = ref("")
+const spaceDescription = ref("")
+const spaceCapacity = ref<number>(0)
 let spaceData = ref([])
+
+const isFormDirty = ref(false);
+
+onBeforeRouteLeave((_to, _from, next) => {
+  if (isFormDirty.value) {
+    const leave = window.confirm('Hai apportato modifiche non salvate. Vuoi davvero lasciare la pagina?');
+    if (leave) {
+      next();
+    } else {
+      next(false);
+    }
+  } else {
+    next();
+  }
+});
+
+const markFormDirty = () => {
+  isFormDirty.value = true;
+};
 
 const loadData = async() => {
   try {
@@ -42,12 +64,14 @@ const loadData = async() => {
     oldSpaceName.value = spaceData.value.name
     oldSpaceDescription.value = spaceData.value.description;
     oldSpaceCapacity.value = spaceData.value.capacity;
+    spaceName.value = oldSpaceName.value
+    spaceDescription.value = oldSpaceDescription.value
+    spaceCapacity.value = oldSpaceCapacity.value
   } catch (error) {
     console.error('Error fetching data:', error);
   }
 }
   
-
 const operation = (item: string) => {
   if (item === 'Aggiungi') {
     router.push({ path: '/query-operation/add-space/', query: { spaceCode: selectedSpace.value, buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
@@ -56,20 +80,21 @@ const operation = (item: string) => {
   }
 }
 
-const modifieOperation = async (item: string, spaceName: string, spaceDescription: string, spaceCapacity: any) => {
-  if (spaceCapacity==null) spaceCapacity = "0"
+const modifieOperation = async (item: string, newSpaceName: string, newSpaceDescription: string, newSpaceCapacity: any) => {
+  isFormDirty.value = false
+  if (newSpaceCapacity==null) newSpaceCapacity = "0"
   if (item === 'Conferma') {
     await useFetch('/api/update-space', {
       method: 'PUT',
       body: {
         floorId: floorIdFromQuery,
         spaceId: spaceIdFromQuery,
-        spaceName: spaceName,
-        spaceDesc: spaceDescription,
-        spaceCapacity: spaceCapacity
+        spaceName: newSpaceName,
+        spaceDesc: newSpaceDescription,
+        spaceCapacity: newSpaceCapacity
       },
       onRequest () {
-        data.value.push(floorIdFromQuery, spaceIdFromQuery, spaceName, spaceDescription, spaceCapacity)
+        data.value.push(floorIdFromQuery, spaceIdFromQuery, newSpaceName, newSpaceDescription, newSpaceCapacity)
       },
       onResponse: async () => {
         await refreshNuxtData('spaces')
@@ -77,7 +102,11 @@ const modifieOperation = async (item: string, spaceName: string, spaceDescriptio
       }
     });
   } else {
-    // TODO
+    selectedSpace.value = '';
+    oldSpaceName.value = spaceName.value;
+    oldSpaceDescription.value = spaceDescription.value;
+    oldSpaceCapacity.value = spaceCapacity.value;
+    isFormDirty.value = false;
   }
 }
 
@@ -136,6 +165,7 @@ loadData();
               <label for="spaceName"> Nome del locale </label>
                 <div>
                   <input 
+                    @click="markFormDirty()"
                     type="text"
                     name="spaceName"
                     id="spaceName"
@@ -144,6 +174,7 @@ loadData();
               <label for="spaceDescription"> Descrizione </label>
                 <div>
                   <textarea
+                    @click="markFormDirty()"
                     id="spaceDescription"
                     name="spaceDescription"
                     rows="3"
@@ -152,6 +183,7 @@ loadData();
               <label for="spaceCapacity"> Capacità </label>
                 <div>
                   <input
+                    @click="markFormDirty()"
                     type="number"
                     name="spaceCapacity"
                     id="spaceCapacity"
@@ -173,7 +205,7 @@ loadData();
  
 <style scoped>
 .container {
-  max-height: 54em;
+  max-height: 53em;
   display: flex;
   justify-content: left;
   flex: 1;

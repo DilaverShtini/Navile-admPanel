@@ -19,6 +19,25 @@ const operations = ref(['Aggiungi', 'Elimina']);
 const modifieOperations = ref(['Conferma', 'Annulla']);
 let spaceFromQuery = ref(route.query.spaceCode);
 
+const isFormDirty = ref(false);
+
+onBeforeRouteLeave((_to, _from, next) => {
+  if (isFormDirty.value) {
+   const leave = window.confirm('Hai apportato modifiche non salvate. Vuoi davvero lasciare la pagina?');
+    if (leave) {
+      next();
+    } else {
+      next(false);
+    }
+  } else {
+    next();
+  }
+});
+
+const markFormDirty = () => {
+  isFormDirty.value = true
+}
+
 const operation = (item: string) => {
   if (item === 'Aggiungi') {
     router.push({ path: '/query-operation/add-space/', query: { spaceCode: selectedSpace.value, buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
@@ -27,20 +46,21 @@ const operation = (item: string) => {
   }
 }
 
-const createOperation = async (item: string, spaceName: string, spaceDescription:string, spaceCapacity: string) => {
+const createOperation = async (item: string, newSpaceName: string, newSpaceDescription:string, newSpaceCapacity: string) => {
+  isFormDirty.value = false;
   try {
     if (item === 'Conferma') {
-      if (spaceCapacity.length == 0) spaceCapacity = '0';
+      if (newSpaceCapacity.length == 0) newSpaceCapacity = '0';
       await useFetch('/api/create-space', {
         method: 'PUT',
         body: {
           buildCode: buildingFromQuery,
           floorNumber: floorFromQuery,
-          name: spaceName,
-          description: spaceDescription,
+          name: newSpaceName,
+          description: newSpaceDescription,
           floorId: floorIdFromQuery,
           legendId: 1,
-          capacity: spaceCapacity,
+          capacity: newSpaceCapacity,
         },
         onResponse: async () => {
           await refreshNuxtData('spaces');
@@ -54,6 +74,12 @@ const createOperation = async (item: string, spaceName: string, spaceDescription
           });
         },
       });
+    } else {
+      selectedSpace.value = '';
+      spaceName.value = '';
+      spaceDescription.value = '';
+      spaceCapacity.value = '';
+      isFormDirty.value = false;
     }
   } catch (error) {
     console.error('Error in createOperation:', error);
@@ -101,7 +127,8 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
             <div class="listOfInput">
               <label for="spaceName"> Nome del locale </label>
                 <div>
-                  <input 
+                  <input
+                    @change="markFormDirty()"
                     type="text"
                     name="spaceName"
                     id="spaceName"
@@ -111,6 +138,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
               <label for="spaceDescription"> Descrizione </label>
                 <div>
                   <textarea
+                    @change="markFormDirty()"
                     id="spaceDescription"
                     name="spaceDescription"
                     rows="3"
@@ -120,6 +148,8 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
               <label for="spaceCapacity"> Capacità </label>
                 <div>
                   <input
+                    @change="markFormDirty()"
+                    type="number"
                     id="spaceCapacity"
                     name="spaceCapacity"
                     rows="3"
@@ -142,7 +172,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
  
 <style scoped>
 .container {
-  max-height: 47em;
+  max-height: 53em;
   display: flex;
   justify-content: left;
   flex: 1;

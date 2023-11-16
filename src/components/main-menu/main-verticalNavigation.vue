@@ -3,14 +3,15 @@
 const { data } = useNuxtData('buildings') as {data: any};
 let { data: filter } = useNuxtData('filteredItem') as {data: any};
 
-const props = defineProps(['all']);
 const router = useRouter();
 
 const edit = (code: string, id: number) => {
+  const { data: filter } = useAsyncData('filteredItem', () => "");
   router.push({ path: '/query-operation/modifie-building/', query: { buildingId: id, buildingCode: code} });
 }
 
 const navigate = (code: string, id: number) => {
+  const { data: filter } = useAsyncData('filteredItem', () => "");
   router.push({ path: '/floor-menu/', query: { buildingId: id, buildingCode: code } });
 };
 
@@ -19,7 +20,7 @@ const navigate = (code: string, id: number) => {
 <template>
   <nav class="bg-gray-800 text-white">
     <ul class="listOfBuilding">
-      <li v-if="!filter || props.all" v-for="link in data" :key="link.id" :title="link.buildingCode" class="listBuilding">
+      <li v-if="!filter" v-for="link in data" :key="link.id" :title="link.buildingCode" class="listBuilding">
         <div class="row">
           <div class="building-name" @click="navigate(link.code, link.id)">
             {{ link.name }}
@@ -31,7 +32,7 @@ const navigate = (code: string, id: number) => {
           </div>
         </div>
       </li>
-      <li v-if="filter && !props.all" v-for="link in filter" :key="link.code" class="listBuilding">
+      <li v-if="filter" v-for="link in filter" :key="link.code" class="listBuilding">
         <div class="row">
           <div class="building-name" @click="navigate(link.code, link.id)">
             {{ link.name }}

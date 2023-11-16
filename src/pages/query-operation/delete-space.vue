@@ -47,13 +47,13 @@ const operation = (item: string) => {
   }
 }
 
-const deleteOperation = async (item: string, spaceId: string) => {
+const deleteOperation = async (item: string, spaceIdToDelete: string) => {
   try {
     if (item === 'Conferma') {
       await useFetch('/api/delete-space', {
         method: 'DELETE',
         body: {
-          id: parseInt(spaceId),
+          id: parseInt(spaceIdToDelete),
         },
         onResponse: async () => {
           await refreshNuxtData('spaces');
@@ -67,6 +67,9 @@ const deleteOperation = async (item: string, spaceId: string) => {
           });
         },
       });
+    } else {
+      selectedSpace.value = '';
+      spaceId.value = '';      
     }
   } catch (error) {
     console.error('Error in deleteOperation:', error);
@@ -120,7 +123,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
             <label for="spaceId"> Id del locale </label>
               <div>
                 <input 
-                  type="text"
+                  type="number"
                   name="spaceId"
                   id="spaceId"
                   placeholder="Inserisci l'id"
@@ -142,7 +145,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
  
 <style scoped>
 .container {
-  max-height: 47em;
+  max-height: 53em;
   display: flex;
   justify-content: left;
   flex: 1;
