@@ -188,7 +188,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 }
 
 .links {
-  max-height: calc(30em - var(--input-height, 0px));
+  max-height: calc(37em - var(--input-height, 10em));
   overflow-y: auto;
 }
 
@@ -221,7 +221,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 
 .form {
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   justify-content: flex-start;
   border-left: 1px solid #d5d5d5;
 }

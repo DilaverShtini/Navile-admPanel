@@ -158,7 +158,7 @@ loadData();
             <div v-if="space.code == spaceFromQuery" class="listOfInput">
               <div class="floor-image">
                 <img
-                  :src="`/res/floors/${buildingFromQuery}_${(floorFromQuery as string).replace('-', '&#45;')}.svg`"
+                  :src="`/res/floors/${buildingFromQuery}_${floorFromQuery}.svg`"
                   :alt="`Immagine ${buildingFromQuery}_${floorFromQuery}.svg non trovata`"
                 />
               </div>
@@ -284,7 +284,7 @@ loadData();
   width: 100%;
   justify-content: flex-start;
   border-left: 1px solid #d5d5d5;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .form-container {
