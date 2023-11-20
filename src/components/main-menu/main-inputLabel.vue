@@ -6,7 +6,6 @@ const emit = defineEmits();
 const userInput = ref('');
 const filteredModels = ref([]);
 const router = useRouter();
-const inputHeight = ref(0);
 
 const props = defineProps({
   model: String,
@@ -69,13 +68,13 @@ const onInput = (event) => {
 
 const navigateFloor = (code, id) => {
   document.documentElement.style.setProperty('--input-height', 0);
-  const { data: filter } = useAsyncData('filteredSpace', () => "");
+  const { data: filter } = useAsyncData('filteredItem', () => "");
   router.push({ path: '/floor-menu/', query: { buildingId: id, buildingCode: code } });
 };
 
 const navigateSpace = (number, id) => {
   document.documentElement.style.setProperty('--input-height', 0);
-  const { data: filter } = useAsyncData('filteredSpace', () => "");
+  const { data: filter } = useAsyncData('filteredFloor', () => "");
   router.push({ path: '/space-menu/', query: { buildingCode: props.buildCode, floorNumber: number, floorId: id } });
 };
 

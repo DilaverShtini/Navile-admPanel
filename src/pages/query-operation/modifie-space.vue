@@ -157,10 +157,12 @@ loadData();
           <div v-for="space in data">
             <div v-if="space.code == spaceFromQuery" class="listOfInput">
               <div class="floor-image">
-                <img
-                  :src="`/res/floors/${buildingFromQuery}_${floorFromQuery}.svg`"
-                  :alt="`Immagine ${buildingFromQuery}_${floorFromQuery}.svg non trovata`"
-                />
+                <div class="img">
+                  <img
+                    :src="`/res/floors/${buildingFromQuery}_${floorFromQuery}.svg`"
+                    :alt="`Immagine ${buildingFromQuery}_${floorFromQuery}.svg non trovata`"
+                  />
+                </div>
               </div>
               <label for="spaceName"> Nome del locale </label>
                 <div>
@@ -313,6 +315,13 @@ loadData();
 
 .floor-image {
   text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.img {
+  width: 80%;
+  height: 30%;
 }
 
 .listOfInput label {

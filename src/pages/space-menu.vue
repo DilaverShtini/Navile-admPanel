@@ -49,7 +49,7 @@ const operation = (item: string) => {
               <div class="floorSelected"> Piano: {{ floorFromQuery }} </div>
               <div class="title"> Locali </div>
               <div class="links">
-                <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" all="true"/>
+                <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
               </div>
               <button 
               v-for="item, i in operations" :key="i" 
@@ -122,7 +122,7 @@ const operation = (item: string) => {
 }
 
 .links {
-  max-height: calc(30em - var(--input-height, 0px));
+  max-height: calc(37em - var(--input-height, 10em));
   overflow-y: auto;
 }
 

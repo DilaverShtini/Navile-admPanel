@@ -5,6 +5,7 @@ import { ref, onMounted } from 'vue';
 const props = defineProps(['buildingCode']);
 const buildingNumber = props.buildingCode.replace(/[^\d]/g, '');
 const data = ref([]);
+const router = useRouter();
 
 const { data: filter } = useNuxtData('filteredFloor');
 
@@ -22,6 +23,11 @@ onMounted(async () => {
   }
 });
 
+const navigate = (buildingCode, floorNumber, floorId) => {
+  const { data: filter } = useAsyncData('filteredFloor', () => "");
+  router.push({ path: '/space-menu/', query: {buildingCode: buildingCode, floorNumber: floorNumber, floorId: floorId} });
+};
+
 </script>
 
 <template>
@@ -33,14 +39,14 @@ onMounted(async () => {
             <div class="allFloor">Piani</div>
           </div>
           <li v-if="!filter" v-for="link in data" :key="link.id" :title="link.floor" class="listFloor">
-          <router-link :to="{ path: '/space-menu/', query: { buildingCode: props.buildingCode, floorNumber: link.number, floorId: link.id }}" class="linkFloor">
+            <div class="floor" @click="navigate(props.buildingCode, link.number, link.id)">
               <div>Piano n.{{ link.number }}</div>
-          </router-link>
+            </div>
           </li>
           <li v-if="filter" v-for="link in filter" :key="link.id" :title="link.floor" class="listFloor">
-          <router-link :to="{ path: '/space-menu/', query: { buildingCode: props.buildingCode, floorNumber: link.number, floorId: link.id }}" class="linkFloor">
+            <div class="floor" @click="navigate(props.buildingCode, link.number, link.id)">
               <div>Piano n.{{ link.number }}</div>
-          </router-link>
+            </div>
           </li>
       </ul>
       </nav>
@@ -86,6 +92,11 @@ ul.listOfFloor {
   background-size: 2em;
   line-height: 2em;
   text-transform: capitalize;
+}
+
+.floor {
+  flex-grow: 1;
+  cursor: pointer;
 }
 
 .listFloor:hover {
