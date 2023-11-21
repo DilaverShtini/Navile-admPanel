@@ -126,18 +126,18 @@
 <rect id="tl02009" x="1463.4" y="788.3" style="fill:#C7C7C9;" width="45" height="76.9"/>
 <path id="tl02009_1_" style="fill:#C7C7C9;" d="M1619,864.8h-106.8v-76.5h96.8C1612.3,813.8,1615.7,839.4,1619,864.8z"/>
 <path id="tuf2003" style="fill:#C7C7C9;" d="M595.3,864.8h-86.2v-76.9h65.7C581.6,813.6,588.5,839.2,595.3,864.8z"/>
-<path id="Aule_Ue4_0_L.TosoMontanari" style="fill:#C7C7C9;" d="M498.9,497l-213,95.9l-26.3-101.3l42.2-42.2l22.5,22.5l133.2-133.2
+<path id="Ue4_0_L.TosoMontanari" style="fill:#C7C7C9;" d="M498.9,497l-213,95.9l-26.3-101.3l42.2-42.2l22.5,22.5l133.2-133.2
 	C471.4,391.5,485.1,444.3,498.9,497z"/>
-<path id="Aule_Ue4_0_G.Ciamician" style="fill:#C7C7C9;" d="M541.5,660.4H285.9v-62.8l214-96.6
+<path id="Ue4_0_G.Ciamician" style="fill:#C7C7C9;" d="M541.5,660.4H285.9v-62.8l214-96.6
 	C513.8,554.1,527.6,607.3,541.5,660.4z"/>
 <polygon id="bagno3" style="fill:#C7C7C9;" points="303.7,447.6 324.4,468.2 396.5,396 362.8,362.3 313.1,411.9 326.2,425.1 "/>
-<path id="Servizi_Ue4_0_SalaRiunioni1" style="fill:#C7C7C9;" d="M189,487l-66.5,66.5l-50-50c24.3-29.9,46.3-53.9,62.5-70.7L189,487
+<path id="Ue4_0_SalaRiunioni1" style="fill:#C7C7C9;" d="M189,487l-66.5,66.5l-50-50c24.3-29.9,46.3-53.9,62.5-70.7L189,487
 	z"/>
-<path id="Servizi_Ue4_0_SalaRiunioni2" style="fill:#C7C7C9;" d="M258.6,418.1L192,484.7l-54.5-54.5c2.1-2.2,4.1-4.2,5.9-6
+<path id="Ue4_0_SalaRiunioni2" style="fill:#C7C7C9;" d="M258.6,418.1L192,484.7l-54.5-54.5c2.1-2.2,4.1-4.2,5.9-6
 	c21.7-22,42.9-41.5,62.6-58.6L258.6,418.1z"/>
-<path id="Servizi_Ue4_0_SalaRiunioni3" style="fill:#C7C7C9;" d="M363.9,312.8L261.2,415.5l-52.4-52.4c46.5-40,84.3-65.6,99.6-75.8
+<path id="Ue4_0_SalaRiunioni3" style="fill:#C7C7C9;" d="M363.9,312.8L261.2,415.5l-52.4-52.4c46.5-40,84.3-65.6,99.6-75.8
 	c5.7-3.8,11.7-7.7,18.1-11.8L363.9,312.8z"/>
-<path id="Servizi_Ue4_0_ServiziAmministrativiStudenti" style="fill:#C7C7C9;" d="M443,282.8l-40.7,9.4l-8.9-8.9l-26.9,26.9
+<path id="Ue4_0_ServiziAmministrativiStudenti" style="fill:#C7C7C9;" d="M443,282.8l-40.7,9.4l-8.9-8.9l-26.9,26.9
 	l-36.7-36.7c26.3-16.5,58.7-35.2,96.8-53.7C432,240.8,437.5,261.8,443,282.8z"/>
 <path id="vanoscala1" style="fill:#C7C7C9;" d="M595.3,300.4v45.8c-16.9,7.1-33.8,14.1-50.6,21.2c-8.5-22.3-16.9-44.8-25.4-67.1
 	L595.3,300.4L595.3,300.4z"/>
@@ -169,9 +169,9 @@
 <rect id="tlt006" x="848.3" y="710.7" style="fill:#C7C7C9;" width="33.8" height="32.2"/>
 <rect id="tuf2002" x="441.9" y="788" style="fill:#C7C7C9;" width="63.8" height="76.8"/>
 <rect id="tuf2001" x="380.1" y="788" style="fill:#C7C7C9;" width="58.1" height="76.8"/>
-<rect id="Bagni_Ue4_0_BagnoHandicap01" x="379.3" y="664.1" style="fill:#C7C7C9;" width="59" height="78.8"/>
-<polygon id="Bagni_Ue4_0_Bagno01" style="fill:#C7C7C9;" points="563,742.9 441.9,742.9 441.9,664.1 541.8,664.1 "/>
-<polygon id="Servizi_Ue4_0_Portineria" style="fill:#C7C7C9;" points="237.2,673.5 237.2,704.9 152.8,704.9 142.5,694.6
+<rect id="Ue4_0_BagnoHandicap01" x="379.3" y="664.1" style="fill:#C7C7C9;" width="59" height="78.8"/>
+<polygon id="Ue4_0_Bagno01" style="fill:#C7C7C9;" points="563,742.9 441.9,742.9 441.9,664.1 541.8,664.1 "/>
+<polygon id="Ue4_0_Portineria" style="fill:#C7C7C9;" points="237.2,673.5 237.2,704.9 152.8,704.9 142.5,694.6
 	200.4,636.7 "/>
 <path id="Ue4_0_AulaP" style="fill:#C7C7C9;" d="M196.9,633.2L139,691.1l-1.2-1.2c-19.7-19.7-39.4-39.3-59-59
 	c-19.4-19.4-38.8-38.8-58.1-58.2c12.6-18.3,28.5-40.2,47.7-64.2c0.6-0.7,1.1-1.4,1.7-2.1L196.9,633.2z"/>
@@ -499,5 +499,5 @@
 		</g>
 	</g>
 </g>
-<rect id="ALMAmap_Ue4_0_Kiosk" x="202" y="639.3" transform="matrix(0.7071 0.7071 -0.7071 0.7071 516.0682 39.1794)" style="fill:none;" width="17.5" height="6.5"/>
+<rect id="Ue4_0_Kiosk" x="202" y="639.3" transform="matrix(0.7071 0.7071 -0.7071 0.7071 516.0682 39.1794)" style="fill:none;" width="17.5" height="6.5"/>
 </svg>

@@ -28,6 +28,8 @@ const spaceName = ref("")
 const spaceDescription = ref("")
 const spaceCapacity = ref<number>(0)
 let spaceData = ref([])
+const svg = ref<string>()
+const id = ref(spaceFromQuery)
 
 const isFormDirty = ref(false);
 
@@ -67,6 +69,14 @@ const loadData = async() => {
     spaceName.value = oldSpaceName.value
     spaceDescription.value = oldSpaceDescription.value
     spaceCapacity.value = oldSpaceCapacity.value
+
+    const selectedPath = document.getElementById(String(spaceFromQuery));
+    if (selectedPath) {
+      selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
+      selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
+    } else {
+      console.log("Selected Path Not Found in watch");
+    }
   } catch (error) {
     console.error('Error fetching data:', error);
   }
@@ -115,8 +125,62 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
     spaceIdFromQuery = route.query.spaceId;
     buildingFromQuery = route.query.buildingCode
     floorFromQuery = route.query.floorNumber
-
     loadData();
+});
+
+onMounted(() => {
+  setTimeout(() => {
+    const selectedPath = document.getElementById(String(spaceFromQuery));
+    if (selectedPath) {
+      selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
+      selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
+    } else {
+      console.log("Selected Path Not Found in mounted");
+    }
+  }, 0);
+})
+
+// TODO cambiare la logica del click, non devo evidenziare la stanza cliccata ma spostarmi nella pagina
+// di modifica di tale locale
+const addClickEventToSvg = () => {
+  const svgElement = document.querySelector(".img svg");
+  if (svgElement) {
+    svgElement.addEventListener("click", (e) => {
+      id.value = (e.target as HTMLElement).getAttribute("id") ?? "";
+      const selectedPath = document.getElementById(id.value);
+      if (selectedPath) {
+        selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
+        selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
+      }
+    });
+  }
+};
+
+const loadSvg = async () => {
+  const svgPath = `/res/floors/${buildingFromQuery}_${floorFromQuery}.svg`;
+
+  try {
+    const response = await fetch(svgPath);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const svgData = await response.text();
+    const blob = new Blob([svgData], { type: "image/svg+xml" });
+
+    var reader = new FileReader();
+    reader.readAsText(blob, "UTF-8");
+    reader.onload = (e) => {
+      svg.value = e.target?.result as string;
+      addClickEventToSvg();
+    };
+  } catch (error) {
+    console.error('Error loading SVG:', error);
+  }
+};
+
+onBeforeMount(() => {
+  loadSvg();
 });
 
 loadData();
@@ -156,14 +220,7 @@ loadData();
         <div class="title" >Stai modificando: {{ spaceFromQuery }}</div>
           <div v-for="space in data">
             <div v-if="space.code == spaceFromQuery" class="listOfInput">
-              <div class="floor-image">
-                <div class="img">
-                  <img
-                    :src="`/res/floors/${buildingFromQuery}_${floorFromQuery}.svg`"
-                    :alt="`Immagine ${buildingFromQuery}_${floorFromQuery}.svg non trovata`"
-                  />
-                </div>
-              </div>
+              <div class="img" v-html="svg" @click="addClickEventToSvg()" />
               <label for="spaceName"> Nome del locale </label>
                 <div>
                   <input 
@@ -204,7 +261,7 @@ loadData();
     </div>
   </div>
 </template>
- 
+
 <style scoped>
 .container {
   max-height: 53em;
@@ -311,12 +368,6 @@ loadData();
   padding: 15px;
   margin-bottom: 15px;
   border-radius: 8px;
-}
-
-.floor-image {
-  text-align: center;
-  align-items: center;
-  justify-content: center;
 }
 
 .img {

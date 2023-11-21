@@ -5,7 +5,6 @@ import { ref, defineProps } from 'vue';
 const emit = defineEmits();
 const userInput = ref('');
 const filteredModels = ref([]);
-const router = useRouter();
 
 const props = defineProps({
   model: String,
@@ -66,24 +65,6 @@ const onInput = (event) => {
   document.documentElement.style.setProperty('--input-height', `${height}em`);
 };
 
-const navigateFloor = (code, id) => {
-  document.documentElement.style.setProperty('--input-height', 0);
-  const { data: filter } = useAsyncData('filteredItem', () => "");
-  router.push({ path: '/floor-menu/', query: { buildingId: id, buildingCode: code } });
-};
-
-const navigateSpace = (number, id) => {
-  document.documentElement.style.setProperty('--input-height', 0);
-  const { data: filter } = useAsyncData('filteredFloor', () => "");
-  router.push({ path: '/space-menu/', query: { buildingCode: props.buildCode, floorNumber: number, floorId: id } });
-};
-
-const navigateInSpace = (code, id) => {
-  document.documentElement.style.setProperty('--input-height', 0);
-  const { data: filter } = useAsyncData('filteredSpace', () => "");
-  router.push({ path: '/query-operation/modifie-space/', query: { spaceId: id, spaceCode: code, buildingCode: props.buildCode, floorNumber: props.floorNumber, floorId: props.floor } });
-};
-
 </script>
 
 <template>
@@ -95,13 +76,6 @@ const navigateInSpace = (code, id) => {
       :id="id"
       :name="id"
     />
-    <ul class="listOfModel" v-if="filteredModels.length">
-      <li class="listModel" v-for="model in filteredModels" :key="model.id">
-        <div v-if="props.model == 'building'" @click="navigateFloor(model.code, model.id)" >{{ model.name }}</div>
-        <div v-if="props.model == 'floor'" @click="navigateSpace(model.number, model.id)" >Piano n. {{ model.number }}</div>
-        <div v-if="props.model == 'space'" @click="navigateInSpace(model.code, model.id)" >{{ model.name }}</div>
-      </li>
-    </ul>
   </div>
 </template>
 
