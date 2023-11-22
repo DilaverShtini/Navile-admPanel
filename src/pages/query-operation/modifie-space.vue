@@ -140,18 +140,17 @@ onMounted(() => {
   }, 0);
 })
 
-// TODO cambiare la logica del click, non devo evidenziare la stanza cliccata ma spostarmi nella pagina
-// di modifica di tale locale
-const addClickEventToSvg = () => {
+const addClickEventToSvg = async () => {
   const svgElement = document.querySelector(".img svg");
   if (svgElement) {
-    svgElement.addEventListener("click", (e) => {
+    svgElement.addEventListener("click", async (e) => {
       id.value = (e.target as HTMLElement).getAttribute("id") ?? "";
-      const selectedPath = document.getElementById(id.value);
-      if (selectedPath) {
-        selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
-        selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
-      }
+      try {
+        const { data: result } = await useFetch(`/api/room?spaceCode=${id.value}`);
+        router.push({ path: '/query-operation/modifie-space/', query: { spaceId: result.value.id, spaceCode: id.value, buildingCode:buildingFromQuery, floorNumber:floorFromQuery, floorId:floorIdFromQuery } });
+      } catch (error) {
+        console.error("Errore nella chiamata API:", error);
+      }      
     });
   }
 };
@@ -179,10 +178,7 @@ const loadSvg = async () => {
   }
 };
 
-onBeforeMount(() => {
-  loadSvg();
-});
-
+loadSvg();
 loadData();
 
 </script>
