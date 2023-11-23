@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-//TODO modificare il calcolo dell'altezza della classe .links dopo la ricerca nel MainInput
 
 import { MainInput } from '~/utils';
 import { SpaceVerticalNav} from '~/utils';

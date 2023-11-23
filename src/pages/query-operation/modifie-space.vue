@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 
 import { useNuxtData, useFetch, refreshNuxtData } from 'nuxt/app';
+import { MainInput, SpaceVerticalNav } from '../../utils';
 import { useRoute, useRouter } from 'vue-router';
-import { MainInput } from '../../utils';
-import { SpaceVerticalNav } from '../../utils';
-import { ref, watch } from 'vue';
+import { ref, watch, reactive } from 'vue';
 
 const selectedSpace = ref('');
 const route = useRoute();
@@ -29,9 +28,58 @@ const spaceDescription = ref("")
 const spaceCapacity = ref<number>(0)
 let spaceData = ref([])
 const svg = ref<string>()
-const id = ref(spaceFromQuery)
 
 const isFormDirty = ref(false);
+
+const state = reactive<{
+  svgElement: HTMLElement | null;
+}>({
+  svgElement: null,
+});
+
+watch(() => route.query.spaceCode, (newSpaceCode) => {
+    spaceFromQuery = newSpaceCode;
+    spaceIdFromQuery = route.query.spaceId;
+    buildingFromQuery = route.query.buildingCode
+    floorFromQuery = route.query.floorNumber
+    loadData();
+
+    if (state.svgElement) {
+    state.svgElement.removeEventListener("click", handleSvgClick);
+    }
+
+    state.svgElement = document.querySelector(".img svg");
+
+    if (state.svgElement) {
+      state.svgElement.addEventListener("click", handleSvgClick);
+    }
+});
+
+onBeforeMount(() => {
+  loadSvg();
+  loadData();
+  if (state.svgElement) {
+    state.svgElement.removeEventListener("click", handleSvgClick);
+  }
+})
+
+onMounted(() => {
+  setTimeout(() => {
+    const selectedPath = document.getElementById(String(spaceFromQuery));
+    if (selectedPath) {
+      selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
+      selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
+    } else {
+      console.log("Selected Path Not Found in mounted");
+    }
+  }, 0);
+
+  state.svgElement = document.querySelector(".img svg");
+
+  if (state.svgElement) {
+    state.svgElement.addEventListener("click", handleSvgClick);
+  }
+})
 
 onBeforeRouteLeave((_to, _from, next) => {
   if (isFormDirty.value) {
@@ -50,38 +98,6 @@ const markFormDirty = () => {
   isFormDirty.value = true;
 };
 
-const loadData = async() => {
-  try {
-    spaceIdFromQuery = route.query.spaceId;
-    spaceFromQuery = route.query.spaceCode;
-    buildingFromQuery = route.query.buildingCode
-    floorFromQuery = route.query.floorNumber
-
-    const response = await fetch(`/api/selected-space?spaceId=${spaceIdFromQuery}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    const result = await response.json();
-    spaceData.value = result;
-    oldSpaceName.value = spaceData.value.name
-    oldSpaceDescription.value = spaceData.value.description;
-    oldSpaceCapacity.value = spaceData.value.capacity;
-    spaceName.value = oldSpaceName.value
-    spaceDescription.value = oldSpaceDescription.value
-    spaceCapacity.value = oldSpaceCapacity.value
-
-    const selectedPath = document.getElementById(String(spaceFromQuery));
-    if (selectedPath) {
-      selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
-      selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
-    } else {
-      console.log("Selected Path Not Found in watch");
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
-}
-  
 const operation = (item: string) => {
   if (item === 'Aggiungi') {
     router.push({ path: '/query-operation/add-space/', query: { spaceCode: selectedSpace.value, buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
@@ -120,40 +136,37 @@ const modifieOperation = async (item: string, newSpaceName: string, newSpaceDesc
   }
 }
 
-watch(() => route.query.spaceCode, (newSpaceCode) => {
-    spaceFromQuery = newSpaceCode;
+const loadData = async() => {
+  try {
     spaceIdFromQuery = route.query.spaceId;
+    spaceFromQuery = route.query.spaceCode;
     buildingFromQuery = route.query.buildingCode
     floorFromQuery = route.query.floorNumber
-    loadData();
-});
 
-onMounted(() => {
-  setTimeout(() => {
+    const response = await fetch(`/api/selected-space?spaceId=${spaceIdFromQuery}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const result = await response.json();
+    spaceData.value = result;
+    oldSpaceName.value = spaceData.value.name
+    oldSpaceDescription.value = spaceData.value.description;
+    oldSpaceCapacity.value = spaceData.value.capacity;
+    spaceName.value = oldSpaceName.value
+    spaceDescription.value = oldSpaceDescription.value
+    spaceCapacity.value = oldSpaceCapacity.value
+
     const selectedPath = document.getElementById(String(spaceFromQuery));
     if (selectedPath) {
       selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
       selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
     } else {
-      console.log("Selected Path Not Found in mounted");
+      console.log("Selected Path Not Found in watch");
     }
-  }, 0);
-})
-
-const addClickEventToSvg = async () => {
-  const svgElement = document.querySelector(".img svg");
-  if (svgElement) {
-    svgElement.addEventListener("click", async (e) => {
-      id.value = (e.target as HTMLElement).getAttribute("id") ?? "";
-      try {
-        const { data: result } = await useFetch(`/api/room?spaceCode=${id.value}`);
-        router.push({ path: '/query-operation/modifie-space/', query: { spaceId: result.value.id, spaceCode: id.value, buildingCode:buildingFromQuery, floorNumber:floorFromQuery, floorId:floorIdFromQuery } });
-      } catch (error) {
-        console.error("Errore nella chiamata API:", error);
-      }      
-    });
+  } catch (error) {
+    console.error('Error fetching data:', error);
   }
-};
+}
 
 const loadSvg = async () => {
   const svgPath = `/res/floors/${buildingFromQuery}_${floorFromQuery}.svg`;
@@ -171,15 +184,30 @@ const loadSvg = async () => {
     reader.readAsText(blob, "UTF-8");
     reader.onload = (e) => {
       svg.value = e.target?.result as string;
-      addClickEventToSvg();
     };
   } catch (error) {
     console.error('Error loading SVG:', error);
   }
 };
 
-loadSvg();
-loadData();
+const handleSvgClick = async (e: MouseEvent) => {
+  const idValue = (e.target as HTMLElement)?.getAttribute("id") ?? "";
+  try {
+    const { data: result } = await useFetch(`/api/room?spaceCode=${idValue}`);
+    if(result.value) {
+      router.push({
+        path: '/query-operation/modifie-space/',
+        query: { spaceId: result.value.id,
+                  spaceCode: idValue,
+                  buildingCode: buildingFromQuery,
+                  floorNumber: floorFromQuery,
+                  floorId: floorIdFromQuery },
+      });
+    }
+  } catch (error) {
+    window.confirm('Stanza non esistente o non accessibile');
+  }
+};
 
 </script>
 
@@ -216,7 +244,7 @@ loadData();
         <div class="title" >Stai modificando: {{ spaceFromQuery }}</div>
           <div v-for="space in data">
             <div v-if="space.code == spaceFromQuery" class="listOfInput">
-              <div class="img" v-html="svg" @click="addClickEventToSvg()" />
+              <div class="img" v-html="svg" @click="handleSvgClick"/>
               <label for="spaceName"> Nome del locale </label>
                 <div>
                   <input 
