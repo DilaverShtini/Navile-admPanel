@@ -50,13 +50,15 @@ const operation = (item: string) => {
               <div class="links">
                 <SpaceVerticalNav :buildingCode="buildingFromQuery" :floorNumber="floorFromQuery" :floorId="floorIdFromQuery" />
               </div>
-              <button 
-              v-for="item, i in operations" :key="i" 
-              class="action" :class="item.toLowerCase()"
-              @click="operation(item)"
-              >{{item}}</button>
             </div>
         </div>
+        <div class="operationButton">
+                <button 
+                  v-for="item, i in operations" :key="i" 
+                  class="action" :class="item.toLowerCase()"
+                  @click="operation(item)"
+                  >{{item}}</button>
+              </div>
       </div>
       <div class="form">
         <div class="form-container">
@@ -87,14 +89,13 @@ const operation = (item: string) => {
 .menu {
   text-align: center;
   width: 20em;
-  height: 100%;
 }
 
 .box {
+  height: 49em;
   border-right: 1px solid #d5d5d5;
   overflow-y: hidden;
   width: 20em;
-  height: 100%;
 }
 
 .with-bottom-border {
@@ -121,8 +122,37 @@ const operation = (item: string) => {
 }
 
 .links {
-  max-height: calc(37em - var(--input-height, 10em));
+  max-height: 69vh;
+}
+
+.links, .form {
   overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #ed5959; /* Colore normale della barra di scorrimento */
+    transition: background-color 0.3s ease; /* Effetto di transizione */
+    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #b92929; /* Colore della barra di scorrimento al passaggio del mouse */
+    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #ecf0f1; /* Colore dello sfondo della barra di scorrimento */
+    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
+  }
+}
+
+.operationButton {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
 }
 
 .action {
@@ -153,7 +183,6 @@ const operation = (item: string) => {
 }
 
 .form {
-  overflow-y: scroll;
   width: 100%;
   justify-content: flex-start;
 }

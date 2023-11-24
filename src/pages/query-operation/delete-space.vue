@@ -188,8 +188,31 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 }
 
 .links {
-  max-height: calc(37em - var(--input-height, 10em));
+  max-height: 69vh;
+}
+
+.links, .form {
   overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #ed5959; /* Colore normale della barra di scorrimento */
+    transition: background-color 0.3s ease; /* Effetto di transizione */
+    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #b92929; /* Colore della barra di scorrimento al passaggio del mouse */
+    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #ecf0f1; /* Colore dello sfondo della barra di scorrimento */
+    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
+  }
 }
 
 .action {
@@ -221,7 +244,6 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 
 .form {
   width: 100%;
-  overflow-y: auto;
   justify-content: flex-start;
   border-left: 1px solid #d5d5d5;
 }
@@ -297,6 +319,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 .listOfInput textarea {
   resize: vertical;
 }
+
 .buttonsOperation {
   text-align: end;
   margin-top: auto;
@@ -306,13 +329,14 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 .deleteAction {
   width: 100%;
   margin: 0 1%;
-  padding: 0.8em 2em;
+  padding: 0.8em 0.5em;
   text-align: center;
   font-weight: bold;
   color: #000;
   letter-spacing: 2px;
   background-color: #fff;
   border-radius: 0.5em;
+  overflow: hidden;
 }
 
 .conferma {

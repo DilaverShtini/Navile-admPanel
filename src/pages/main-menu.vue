@@ -77,6 +77,27 @@ const { data } = await useAsyncData('buildings', () => $fetch('/api/building')) 
 .form {
   width: 100%;
   justify-content: flex-start;
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #ed5959; /* Colore normale della barra di scorrimento */
+    transition: background-color 0.3s ease; /* Effetto di transizione */
+    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #b92929; /* Colore della barra di scorrimento al passaggio del mouse */
+    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #ecf0f1; /* Colore dello sfondo della barra di scorrimento */
+    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
+  }
 }
 
 .form-container {
