@@ -11,6 +11,7 @@ export default defineEventHandler((spaceStringId: string) => {
             name: true,
             description: true,
             capacity: true,
+            legendId: true,
         },
     });
 
