@@ -2,6 +2,7 @@
 
 import { MainInput } from "../utils";
 import { MainVerticalNav } from '../utils';
+import "~/assets/css/main.css"
 
 const { data } = await useAsyncData('buildings', () => $fetch('/api/building')) as {data: any};
 
@@ -25,7 +26,7 @@ const { data } = await useAsyncData('buildings', () => $fetch('/api/building')) 
     </div>
     <div class="form">
       <div class="form-container">
-        <div class="title-list" >Dati realtivi agli edifici: </div>
+        <div class="titlePage" >Dati realtivi agli edifici: </div>
           <div v-for="build in data">
             <div class="listOfInput">
               <label for="buildingCode"> Codice: {{ build.code }} </label>
@@ -37,99 +38,3 @@ const { data } = await useAsyncData('buildings', () => $fetch('/api/building')) 
     </div>
   </div>
 </template>
- 
-<style scoped>
-.container {
-  max-height: 53em;
-  display: flex;
-  justify-content: left;
-  flex: 1;
-  border: 1px solid #d5d5d5;
-}
-
-.menu {
-  text-align: center;
-  width: 20em;
-  height: max-content;
-}
-
-.box {
-  border-right: 1px solid #d5d5d5;
-  overflow-y: hidden;
-  width: 20em;
-}
-
-.with-bottom-border {
-  border-bottom: 1px solid #d5d5d5;
-}
-
-.verticalNav {
-  text-align: center;
-}
-
-.title {
-  width: 96%;
-  text-align: center;
-  padding: 3% 2% 3% 2%;
-  font-weight: bold;
-}
-
-.form {
-  width: 100%;
-  justify-content: flex-start;
-  overflow-y: auto;
-  
-  &::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #ed5959; /* Colore normale della barra di scorrimento */
-    transition: background-color 0.3s ease; /* Effetto di transizione */
-    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: #b92929; /* Colore della barra di scorrimento al passaggio del mouse */
-    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: #ecf0f1; /* Colore dello sfondo della barra di scorrimento */
-    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
-  }
-}
-
-.form-container {
-  max-height: 92vh;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #fff;
-  padding: 20px;
-  border-left: 1px solid #d5d5d5;
-}
-
-.title-list {
-  text-align: left;
-  font-size: 1.5em;
-  color: #333;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.listOfInput {
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-}
-
-.listOfInput label {
-  display: block;
-  font-size: 1em;
-  margin-bottom: 8px;
-  color: #333;
-}
-</style>

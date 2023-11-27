@@ -4,6 +4,7 @@ import { MainInput } from '~/utils';
 import { SpaceVerticalNav} from '~/utils';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import "~/assets/css/main.css"
 
 const operations = ref(['Aggiungi', 'Elimina']);
 
@@ -53,16 +54,16 @@ const operation = (item: string) => {
             </div>
         </div>
         <div class="operationButton">
-                <button 
-                  v-for="item, i in operations" :key="i" 
-                  class="action" :class="item.toLowerCase()"
-                  @click="operation(item)"
-                  >{{item}}</button>
-              </div>
+          <button 
+            v-for="item, i in operations" :key="i" 
+            class="action" :class="item.toLowerCase()"
+            @click="operation(item)"
+            >{{item}}</button>
+        </div>
       </div>
       <div class="form">
         <div class="form-container">
-          <div class="title-list" >Dati realtivi ai locali presenti nel piano {{ floorFromQuery }}: </div>
+          <div class="titlePage" >Dati realtivi ai locali presenti nel piano {{ floorFromQuery }}: </div>
             <div v-for="space in data">
               <div class="listOfInput">
                 <label for="spaceCode"> Codice: {{ space.code }} </label>
@@ -76,151 +77,3 @@ const operation = (item: string) => {
       </div>
     </div>
 </template>
-
-<style scoped>
-.container {
-  max-height: 53em;
-  display: flex;
-  justify-content: left;
-  flex: 1;
-  border: 1px solid #d5d5d5;
-}
-
-.menu {
-  text-align: center;
-  width: 20em;
-}
-
-.box {
-  height: 49em;
-  border-right: 1px solid #d5d5d5;
-  overflow-y: hidden;
-  width: 20em;
-}
-
-.with-bottom-border {
-  border-bottom: 1px solid #d5d5d5;
-}
-
-.verticalNav {
-  height: 100%;
-  text-align: center;
-}
-
-.buildingSelected, .floorSelected {
-  width: auto;
-  text-align: left;
-  padding: 5% 0% 5% 5%;
-  border-bottom: 1px solid #d5d5d5;
-}
-
-.title {
-  width: 96%;
-  text-align: center;
-  padding: 3% 2% 3% 2%;
-  font-weight: bold;
-}
-
-.links {
-  max-height: 69vh;
-}
-
-.links, .form {
-  overflow-y: auto;
-  
-  &::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #ed5959; /* Colore normale della barra di scorrimento */
-    transition: background-color 0.3s ease; /* Effetto di transizione */
-    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: #b92929; /* Colore della barra di scorrimento al passaggio del mouse */
-    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: #ecf0f1; /* Colore dello sfondo della barra di scorrimento */
-    border-radius: 10px; /* Bordi arrotondati per la barra di scorrimento */
-  }
-}
-
-.operationButton {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-}
-
-.action {
-  width: 40%;
-  position: relative;
-  display: inline-block;
-  margin-top: 2%;
-  margin-bottom: 2%;
-  padding: 0.8em 2em;
-  text-align: center;
-  font-weight: bold;
-  color: #000;
-  letter-spacing: 2px;
-  background-color: #fff;
-  border-radius: 0.5em;
-}
-
-.action:hover {
-  background-color: #ed5959;
-}
-
-.aggiungi {
-  margin-right: 10px;
-}
-
-.elimina {
-  margin-left: 10px;
-}
-
-.form {
-  width: 100%;
-  justify-content: flex-start;
-}
-
-.form-container {
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #fff;
-  padding: 20px;
-  border-left: 1px solid #d5d5d5;
-}
-
-.title-list {
-  text-align: left;
-  font-size: 1.5em;
-  color: #333;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.listOfInput {
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-}
-
-.listOfInput label {
-  display: block;
-  font-size: 1em;
-  margin-bottom: 8px;
-  color: #333;
-}
-
-.noLinks {
-  color: #777;
-  margin-top: 1em;
-}
-</style>

@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
 import { createApp } from 'vue';
-import { MainMenu, Floor, Space, NotFoundComponent } from './utils/index'; 
-import { AddSpace, DeleteSpace, ModifieSpace, ModifieBuilding } from './utils/index';
+import { MainMenu, FloorMenu, SpaceMenu, NotFoundComponent } from './utils/index'; 
+import { AddSpace, DeleteSpace, ModifySpace, ModifyBuilding } from './utils/index';
 
 const routes: RouteRecordRaw[] = [
   { path: '/main-menu', component: MainMenu },
-  { path: '/floor-menu', component: Floor },
-  { path: '/space-menu', component: Space },
+  { path: '/floor-menu', component: FloorMenu },
+  { path: '/space-menu', component: SpaceMenu },
   { path: '/query-operation/add-space', component: AddSpace },
   { path: '/query-operation/delete-space', component: DeleteSpace },
-  { path: '/query-operation/modifie-space', component: ModifieSpace },
-  { path: '/query-operation/modifie-building', component: ModifieBuilding },
+  { path: '/query-operation/modify-space', component: ModifySpace },
+  { path: '/query-operation/modify-building', component: ModifyBuilding },
   { path: '/error', component: NotFoundComponent },
 ];
 

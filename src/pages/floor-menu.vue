@@ -3,6 +3,7 @@
 import { MainInput } from '~/utils';
 import { FloorVerticalNav } from '~/utils';
 import { useRoute } from 'vue-router';
+import "~/assets/css/main.css"
 
 const route = useRoute();
 
@@ -24,6 +25,8 @@ const buildingIdFromQuery = String(route.query.buildingId)
                     :buildCode="String(buildingFromQuery)" />
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
+            <div class="buildingSelected"> Edificio: {{ buildingFromQuery }} </div>
+            <div class="title"> Piano </div>
             <FloorVerticalNav :buildingCode="buildingFromQuery"/>
           </div>
       </div>
@@ -32,34 +35,3 @@ const buildingIdFromQuery = String(route.query.buildingId)
     <div></div>
   </div>
 </template>
-
-<style scoped>
-.container {
-  max-height: 53em;
-  display: flex;
-  justify-content: left;
-  flex: 1;
-  border: 1px solid #d5d5d5;
-}
-
-.menu {
-  text-align: center;
-  width: 20em;
-  height: max-content;
-}
-
-.box {
-  border-right: 1px solid #d5d5d5;
-  overflow-y: hidden;
-  width: 20em;
-}
-
-.with-bottom-border {
-  border-bottom: 1px solid #d5d5d5;
-}
-
-.verticalNav {
-  text-align: center;
-}
-</style>
-  

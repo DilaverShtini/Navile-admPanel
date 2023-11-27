@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 
+import "~/assets/css/component.css"
+
 const route = useRoute();
 const router = useRouter();
 
@@ -11,7 +13,7 @@ const { data } = useNuxtData('spaces') as {data: any};
 
 const edit = (code: number, id: string) => {
   const { data: filter } = useAsyncData('filteredSpace', () => "");
-  router.push({ path: '/query-operation/modifie-space/', query: { spaceId: id, spaceCode: code, buildingCode:buildingFromQuery, floorNumber:floorFromQuery, floorId:floorIdFromQuery } });
+  router.push({ path: '/query-operation/modify-space/', query: { spaceId: id, spaceCode: code, buildingCode:buildingFromQuery, floorNumber:floorFromQuery, floorId:floorIdFromQuery } });
 }
 
 const navigate = (buildingCode: any, floorNumber: any, floorId: any) => {
@@ -28,10 +30,10 @@ let { data: filter } = useNuxtData('filteredSpace') as {data: any};
       <ul class="listOfSpace">
         <li v-if="filter" v-for="link in filter" :key="link.code" class="listSpace">
           <div class="row">
-            <div class="space-name" @click="navigate(buildingFromQuery, floorFromQuery, floorIdFromQuery)">
+            <div class="spaceName" @click="navigate(buildingFromQuery, floorFromQuery, floorIdFromQuery)">
               {{ link.name }}
             </div>
-            <div class="edit-button">
+            <div class="editButton">
               <button @click.stop="edit(link.code, link.id)">
                 Edit
               </button>
@@ -40,10 +42,10 @@ let { data: filter } = useNuxtData('filteredSpace') as {data: any};
         </li>
         <li v-if="!filter" v-for="link in data" :key="link.code" class="listSpace">
           <div class="row">
-            <div class="space-name" @click="navigate(buildingFromQuery, floorFromQuery, floorIdFromQuery)">
+            <div class="spaceName" @click="navigate(buildingFromQuery, floorFromQuery, floorIdFromQuery)">
               {{ link.name }}
             </div>
-            <div class="edit-button">
+            <div class="editButton">
               <button @click.stop="edit(link.code, link.id)">
                 Edit
               </button>
@@ -54,44 +56,3 @@ let { data: filter } = useNuxtData('filteredSpace') as {data: any};
       </ul>
     </nav>
 </template>
-
-<style scoped>
-ul.listOfSpace {
-  width: auto;
-  list-style-type: none;
-  text-align: left;
-  padding: 0% 8% 0% 8%;
-}
-
-.listSpace {
-  padding-left: 3%;
-  margin: 0.5em 0em 0.5em 0em;
-  background-size: 2em;
-  line-height: 2em;
-  text-transform: capitalize;
-}
-
-.listSpace:hover {
-  background-color: #e2e8f0;
-  border-radius: 0.2em;
-}
-
-.row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.space-name {
-  flex-grow: 1;
-  cursor: pointer;
-}
-
-.edit-button {
-  margin-left: 10px;
-}
-
-.noLinks {
-  color: #777;
-  margin-top: 1em;
-}
-</style>

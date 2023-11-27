@@ -1,6 +1,7 @@
 <script setup>
 
 import { ref } from 'vue';
+import "~/assets/css/component.css"
 
 const emit = defineEmits();
 const userInput = ref('');
@@ -78,39 +79,3 @@ const onInput = (event) => {
     />
   </div>
 </template>
-
-<style scoped>
-.inputModel {
-  width: 100%;
-}
-
-input {
-  width: 100%;
-  height: 3.5em;
-  box-sizing: border-box;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.2em;
-  border: none;
-}
-
-ul.listOfModel {
-  width: auto;
-  list-style-type: none;
-  text-align: left;
-  padding: 0% 8% 0% 8%;
-  margin: 3% 0% 3% 0%;
-}
-
-.listModel {
-  padding-left: 2%;
-  height: 2em; /* Altezza dell'elemento */
-  background-size: 2em;
-  line-height: 2em;
-  text-transform: capitalize;
-}
-
-.listModel:hover {
-  background-color: #e2e8f0;
-  border-radius: 0.2em;
-}
-</style>
