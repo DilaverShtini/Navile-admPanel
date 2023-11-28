@@ -11,16 +11,65 @@ const spaceDescription = ref('');
 const spaceCapacity = ref('');
 const route = useRoute();
 const router = useRouter();
+const svg = ref<string>()
+let selectedSvgSpace: string | null = null
 
-const buildingFromQuery = route.query.buildingCode
-const floorFromQuery = route.query.floorNumber
-const floorIdFromQuery = route.query.floorId
+let buildingFromQuery = route.query.buildingCode
+let floorFromQuery = route.query.floorNumber
+let floorIdFromQuery = route.query.floorId
 
 const operations = ref(['Aggiungi', 'Elimina']);
 const modifyOperations = ref(['Conferma', 'Annulla']);
 let spaceFromQuery = ref(route.query.spaceCode);
+let newSpaceCode: { value: string; } = ref('')
 
 const isFormDirty = ref(false);
+
+const state = reactive<{
+  svgElement: HTMLElement | null;
+}>({
+  svgElement: null,
+});
+
+watch(() => route.query.spaceCode, (newSpaceCode) => {
+    spaceFromQuery.value = newSpaceCode;
+    loadData();
+    if (state.svgElement) {
+    state.svgElement.removeEventListener("click", handleSvgClick);
+    }
+
+    state.svgElement = document.querySelector(".img svg");
+
+    if (state.svgElement) {
+      state.svgElement.addEventListener("click", handleSvgClick);
+    }
+});
+
+onBeforeMount(async() => {
+  loadSvg();
+  loadData();
+  if (state.svgElement) {
+    state.svgElement.removeEventListener("click", handleSvgClick);
+  }
+})
+
+onMounted(async () => {
+  setTimeout(async () => {
+    const selectedPath = document.getElementById(String(selectedSvgSpace));
+    if (selectedPath) {
+      selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
+      selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
+    } else {
+      console.log("Selected Path Not Found in mounted");
+    }
+  }, 0);
+
+  state.svgElement = document.querySelector(".img svg");
+
+  if (state.svgElement) {
+    state.svgElement.addEventListener("click", handleSvgClick);
+  }
+})
 
 onBeforeRouteLeave((_to, _from, next) => {
   if (isFormDirty.value) {
@@ -47,6 +96,7 @@ const operation = (item: string) => {
   }
 }
 
+// TODO rivedere l'assegnazione del legendId
 const createOperation = async (item: string, newSpaceName: string, newSpaceDescription:string, newSpaceCapacity: string) => {
   isFormDirty.value = false;
   try {
@@ -55,6 +105,7 @@ const createOperation = async (item: string, newSpaceName: string, newSpaceDescr
       await useFetch('/api/create-space', {
         method: 'PUT',
         body: {
+          code: newSpaceCode.value,
           buildCode: buildingFromQuery,
           floorNumber: floorFromQuery,
           name: newSpaceName,
@@ -87,9 +138,67 @@ const createOperation = async (item: string, newSpaceName: string, newSpaceDescr
   }
 };
 
-watch(() => route.query.spaceCode, (newSpaceCode) => {
-    spaceFromQuery.value = newSpaceCode;
-});
+const loadData = async() => {
+  try {
+    spaceFromQuery.value = route.query.spaceCode;
+    buildingFromQuery = route.query.buildingCode
+    floorFromQuery = route.query.floorNumber
+
+    const selectedPath = document.getElementById(String(selectedSvgSpace));
+    if (selectedPath) {
+      selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
+      selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
+    } else {
+      console.log("Selected Path Not Found in watch");
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
+
+const loadSvg = async () => {
+  const svgPath = `/res/floors/${buildingFromQuery}_${floorFromQuery}.svg`;
+
+  try {
+    const response = await fetch(svgPath);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const svgData = await response.text();
+    const blob = new Blob([svgData], { type: "image/svg+xml" });
+
+    var reader = new FileReader();
+    reader.readAsText(blob, "UTF-8");
+    reader.onload = (e) => {
+      svg.value = e.target?.result as string;
+    };
+  } catch (error) {
+    console.error('Error loading SVG:', error);
+  }
+};
+
+const handleSvgClick = async (e: MouseEvent) => {
+  const idValue = (e.target as HTMLElement)?.getAttribute("id") ?? "";
+  const spaceCode = idValue.split('_').slice(1).join('_');
+  try {
+    const { data: result } = await useFetch(`/api/room?spaceCode=${spaceCode}`);
+    if(!result.value) {
+      const selectedPath = document.getElementById(String(idValue));
+      if (selectedPath) {
+        selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
+        selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
+        newSpaceCode.value = idValue;
+      } else {
+        console.log("Selected Path Not Found in watch");
+      }
+    }else {
+      window.confirm('Stanza già memorizzata');
+    }
+  } catch (error) {
+    window.confirm('Errore nella selezione della stanza.. '+error);
+  }
+};
 
 </script>
 
@@ -128,6 +237,7 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
         <div class="titlePage" >Stai aggiungendo un nuovo locale al piano: {{ floorFromQuery }}</div>
           <div>
             <div class="listOfInput">
+              <div class="img" v-html="svg" @click="handleSvgClick"/>
               <label for="spaceName"> Nome del locale </label>
                 <div>
                   <input

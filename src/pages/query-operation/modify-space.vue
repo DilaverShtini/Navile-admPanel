@@ -116,8 +116,20 @@ const updateLegend = async() => {
     }
     const legendCodeResult = await legendIdResponse.json();
     legendData.value = legendCodeResult;
-
-    selectedSvgSpace = legendData.value.name + "_" + spaceFromQuery;
+    
+    if(spaceFromQuery){
+      const parts = String(spaceFromQuery).split('_');
+      if (parts.length >= 3) {
+      const stringAfterSecondUnderscore = parts.slice(2).join('_');
+      const regex = /^[A-Z][a-z.]/;
+      selectedSvgSpace = stringAfterSecondUnderscore;
+        if (regex.test(String(selectedSvgSpace))) {
+          selectedSvgSpace = legendData.value.name + "_" + spaceFromQuery;
+        } else {
+          selectedSvgSpace = stringAfterSecondUnderscore
+        }
+      }
+    }
 
     return Promise.resolve();
   } catch (error) {
@@ -237,8 +249,21 @@ const handleSvgClick = async (e: MouseEvent) => {
                   floorNumber: floorFromQuery,
                   floorId: floorIdFromQuery },
       });
-    }else {
-      window.confirm('Stanza non esistente o non accessibile');
+    } else {
+      const newCode = buildingFromQuery + "_" + floorFromQuery + "_" + idValue;
+      const { data: result } = await useFetch(`/api/room?spaceCode=${newCode}`);
+      if(result.value) {
+        router.push({
+          path: '/query-operation/modify-space/',
+          query: { spaceId: result.value.id,
+                    spaceCode: newCode,
+                    buildingCode: buildingFromQuery,
+                    floorNumber: floorFromQuery,
+                    floorId: floorIdFromQuery },
+        });
+      }else{
+        window.confirm('Stanza non esistente o non accessibile :/');
+      }
     }
   } catch (error) {
     window.confirm('Stanza non esistente o non accessibile');
