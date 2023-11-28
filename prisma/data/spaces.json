@@ -918,5 +918,13 @@
     "description": "",
     "floorId": 7,
     "legendId": 1
+  },
+  {
+    "id": 233,
+    "code": "Ue4_0_tl02006",
+    "name": "nuovo2",
+    "description": "",
+    "floorId": 7,
+    "legendId": 5
   }
 ]

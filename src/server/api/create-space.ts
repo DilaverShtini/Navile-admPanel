@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
         const body = await readBody(event);
 
         const { code, buildCode, floorNumber, name, description, floorId, legendId, capacity } = body;
-        if (!buildCode || !floorNumber || !name) {
+        if (!buildCode || !floorNumber || !name || !legendId) {
             console.error("Missing parameter");
             return null;
         }

@@ -9,9 +9,11 @@ const selectedSpace = ref('');
 const spaceName = ref('');
 const spaceDescription = ref('');
 const spaceCapacity = ref('');
+const spaceLegend = ref('');
 const route = useRoute();
 const router = useRouter();
 const svg = ref<string>()
+const legendData = ref<{ id: number }[]>([]);
 let selectedSvgSpace: string | null = null
 
 let buildingFromQuery = route.query.buildingCode
@@ -96,9 +98,16 @@ const operation = (item: string) => {
   }
 }
 
-// TODO rivedere l'assegnazione del legendId
-const createOperation = async (item: string, newSpaceName: string, newSpaceDescription:string, newSpaceCapacity: string) => {
+const createOperation = async (item: string, newSpaceName: string, newSpaceDescription:string, newSpaceCapacity: string, newSpaceLegend: string) => {
   isFormDirty.value = false;
+  
+  const legendIdResponse = await fetch(`/api/legend-number?legendName=${newSpaceLegend}`);
+  if (!legendIdResponse.ok) {
+      throw new Error(`HTTP error! Status: ${legendIdResponse.status}`);
+    }
+  const legendIdResult = await legendIdResponse.json();
+  legendData.value = legendIdResult;
+
   try {
     if (item === 'Conferma') {
       if (newSpaceCapacity.length == 0) newSpaceCapacity = '0';
@@ -111,7 +120,7 @@ const createOperation = async (item: string, newSpaceName: string, newSpaceDescr
           name: newSpaceName,
           description: newSpaceDescription,
           floorId: floorIdFromQuery,
-          legendId: 1,
+          legendId: legendData.value.id,
           capacity: newSpaceCapacity,
         },
         onResponse: async () => {
@@ -133,8 +142,11 @@ const createOperation = async (item: string, newSpaceName: string, newSpaceDescr
       spaceCapacity.value = '';
       isFormDirty.value = false;
     }
+
+    return Promise.resolve();
   } catch (error) {
     console.error('Error in createOperation:', error);
+    return Promise.reject(error);
   }
 };
 
@@ -269,6 +281,16 @@ const handleSvgClick = async (e: MouseEvent) => {
                     placeholder="Capacità"
                     v-model="spaceCapacity"/>
                 </div>
+              <label for="spaceCapacity"> Tipologia stanza </label>
+                <div>
+                  <input
+                    @change="markFormDirty()"
+                    type="text"
+                    id="spaceLegend"
+                    name="spaceLegend"
+                    placeholder="Tipologia"
+                    v-model="spaceLegend"/>
+                </div>
             </div>
           </div>
       </div>
@@ -276,7 +298,7 @@ const handleSvgClick = async (e: MouseEvent) => {
         <button
           v-for="item, i in modifyOperations" :key="i" 
           class="createAction" :class="item.toLowerCase()"
-          @click="createOperation(item, spaceName, spaceDescription, spaceCapacity)"
+          @click="createOperation(item, spaceName, spaceDescription, spaceCapacity, spaceLegend)"
           >{{item}}</button>
       </div>
     </div>
