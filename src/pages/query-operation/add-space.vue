@@ -14,6 +14,8 @@ const route = useRoute();
 const router = useRouter();
 const svg = ref<string>()
 const legendData = ref<{ id: number }[]>([]);
+const legends = ref([])
+let idValue: string | null = null
 let selectedSvgSpace: string | null = null
 
 let buildingFromQuery = route.query.buildingCode
@@ -71,6 +73,13 @@ onMounted(async () => {
   if (state.svgElement) {
     state.svgElement.addEventListener("click", handleSvgClick);
   }
+
+  const legendList = await fetch(`/api/legend-list`);
+    if (!legendList.ok) {
+      throw new Error(`HTTP error! Status: ${legendList.status}`);
+    }
+    const legendResult = await legendList.json();
+    legends.value = legendResult;    
 })
 
 onBeforeRouteLeave((_to, _from, next) => {
@@ -100,16 +109,16 @@ const operation = (item: string) => {
 
 const createOperation = async (item: string, newSpaceName: string, newSpaceDescription:string, newSpaceCapacity: string, newSpaceLegend: string) => {
   isFormDirty.value = false;
-  
-  const legendIdResponse = await fetch(`/api/legend-number?legendName=${newSpaceLegend}`);
-  if (!legendIdResponse.ok) {
-      throw new Error(`HTTP error! Status: ${legendIdResponse.status}`);
-    }
-  const legendIdResult = await legendIdResponse.json();
-  legendData.value = legendIdResult;
 
   try {
     if (item === 'Conferma') {
+      const legendIdResponse = await fetch(`/api/legend-number?legendName=${newSpaceLegend}`);
+      if (!legendIdResponse.ok) {
+          throw new Error(`HTTP error! Status: ${legendIdResponse.status}`);
+        }
+      const legendIdResult = await legendIdResponse.json();
+      legendData.value = legendIdResult;
+
       if (newSpaceCapacity.length == 0) newSpaceCapacity = '0';
       await useFetch('/api/create-space', {
         method: 'PUT',
@@ -140,12 +149,14 @@ const createOperation = async (item: string, newSpaceName: string, newSpaceDescr
       spaceName.value = '';
       spaceDescription.value = '';
       spaceCapacity.value = '';
+      spaceLegend.value = ''
       isFormDirty.value = false;
     }
 
     return Promise.resolve();
   } catch (error) {
     console.error('Error in createOperation:', error);
+    window.confirm('Mancano dei parametri');
     return Promise.reject(error);
   }
 };
@@ -191,11 +202,21 @@ const loadSvg = async () => {
 };
 
 const handleSvgClick = async (e: MouseEvent) => {
-  const idValue = (e.target as HTMLElement)?.getAttribute("id") ?? "";
+  const oldSvg = idValue
+  idValue = (e.target as HTMLElement)?.getAttribute("id") ?? "";
   const spaceCode = idValue.split('_').slice(1).join('_');
   try {
     const { data: result } = await useFetch(`/api/room?spaceCode=${spaceCode}`);
+    
     if(!result.value) {
+      if (oldSvg) {
+        const previousSelectedPath = document.getElementById(oldSvg);
+        if (previousSelectedPath) {
+          previousSelectedPath.style.fill = 'rgba(0, 0, 0, 0.1)';
+          previousSelectedPath.style.stroke = '';
+        }
+      }
+      
       const selectedPath = document.getElementById(String(idValue));
       if (selectedPath) {
         selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
@@ -205,6 +226,13 @@ const handleSvgClick = async (e: MouseEvent) => {
         console.log("Selected Path Not Found in watch");
       }
     }else {
+      if (oldSvg) {
+        const previousSelectedPath = document.getElementById(oldSvg);
+        if (previousSelectedPath) {
+          previousSelectedPath.style.fill = 'rgba(0, 0, 0, 0.1)';
+          previousSelectedPath.style.stroke = '';
+        }
+      }
       window.confirm('Stanza già memorizzata');
     }
   } catch (error) {
@@ -282,15 +310,10 @@ const handleSvgClick = async (e: MouseEvent) => {
                     v-model="spaceCapacity"/>
                 </div>
               <label for="spaceCapacity"> Tipologia stanza </label>
-                <div>
-                  <input
-                    @change="markFormDirty()"
-                    type="text"
-                    id="spaceLegend"
-                    name="spaceLegend"
-                    placeholder="Tipologia"
-                    v-model="spaceLegend"/>
-                </div>
+                <select id="buildingSelector" v-model="spaceLegend" required>
+                  <option value="" disabled selected>Seleziona una opzione...</option>
+                  <option v-for="legend in legends" :key="legend">{{ legend.name }}</option>
+                </select>
             </div>
           </div>
       </div>

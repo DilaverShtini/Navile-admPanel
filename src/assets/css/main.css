@@ -220,6 +220,22 @@
     font-weight: bold;
 }
 
+/* Styles for AddSpace */
+select {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 1rem;
+}
+
+option {
+    background-color: #fff;
+    color: #333;
+}
+
 /* Styles for ModifySpace */
 .img {
     width: 80%;
