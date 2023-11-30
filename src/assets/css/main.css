@@ -220,6 +220,63 @@
     font-weight: bold;
 }
 
+.deleteOption {
+    width: 100%;
+    text-align: center;
+}
+
+.action {
+    width: 40%;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 3%;
+    padding: 0.8em 2em;
+    text-align: center;
+    font-weight: bold;
+    color: #000;
+    letter-spacing: 2px;
+    background-color: #fff;
+    border-radius: 0.5em;
+}
+
+.action:hover {
+    background-color: #ed5959;
+}
+
+.tab {
+    position: relative;
+    display: inline-block;
+    padding: 1rem 2rem;
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+    letter-spacing: 2px;
+    background-color: #fff;
+    border: none;
+}
+
+.tab::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 2px;
+    width: calc(100% - 30px);
+    border-radius: 0 0 8px 8px;
+    background-color: rgb(255, 37, 37);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tab.active {
+    color: rgb(234, 37, 37);
+}
+
+.tab.active::after {
+    opacity: 1;
+}
+
 /* Styles for AddSpace */
 select {
     width: 100%;
