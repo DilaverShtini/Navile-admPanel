@@ -15,8 +15,9 @@ const router = useRouter();
 const svg = ref<string>()
 const legendData = ref<{ id: number }[]>([]);
 const legends = ref([])
+const registeredRoom = ref(true)
 let idValue: string | null = null
-let selectedSvgSpace: string | null = null
+let selectedSvgSpaces: string[] = [];
 
 let buildingFromQuery = route.query.buildingCode
 let floorFromQuery = route.query.floorNumber
@@ -37,7 +38,6 @@ const state = reactive<{
 
 watch(() => route.query.spaceCode, (newSpaceCode) => {
     spaceFromQuery.value = newSpaceCode;
-    loadData();
     if (state.svgElement) {
     state.svgElement.removeEventListener("click", handleSvgClick);
     }
@@ -51,7 +51,6 @@ watch(() => route.query.spaceCode, (newSpaceCode) => {
 
 onBeforeMount(async() => {
   loadSvg();
-  loadData();
   if (state.svgElement) {
     state.svgElement.removeEventListener("click", handleSvgClick);
   }
@@ -59,20 +58,17 @@ onBeforeMount(async() => {
 
 onMounted(async () => {
   setTimeout(async () => {
-    const selectedPath = document.getElementById(String(selectedSvgSpace));
+    const selectedPath = document.getElementById(String(selectedSvgSpaces[selectedSvgSpaces.length-1]));
     if (selectedPath) {
       selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
       selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
     } else {
       console.log("Selected Path Not Found in mounted");
     }
+    selectedSvgSpaces.pop()
+    loadRoom();
   }, 0);
-
   state.svgElement = document.querySelector(".img svg");
-
-  if (state.svgElement) {
-    state.svgElement.addEventListener("click", handleSvgClick);
-  }
 
   const legendList = await fetch(`/api/legend-list`);
     if (!legendList.ok) {
@@ -161,24 +157,6 @@ const createOperation = async (item: string, newSpaceName: string, newSpaceDescr
   }
 };
 
-const loadData = async() => {
-  try {
-    spaceFromQuery.value = route.query.spaceCode;
-    buildingFromQuery = route.query.buildingCode
-    floorFromQuery = route.query.floorNumber
-
-    const selectedPath = document.getElementById(String(selectedSvgSpace));
-    if (selectedPath) {
-      selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
-      selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
-    } else {
-      console.log("Selected Path Not Found in watch");
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
-}
-
 const loadSvg = async () => {
   const svgPath = `/res/floors/${buildingFromQuery}_${floorFromQuery}.svg`;
 
@@ -207,9 +185,11 @@ const handleSvgClick = async (e: MouseEvent) => {
   const spaceCode = idValue.split('_').slice(1).join('_');
   try {
     const { data: result } = await useFetch(`/api/room?spaceCode=${spaceCode}`);
-    
-    if(!result.value) {
-      if (oldSvg) {
+    loadRoom()
+
+    if(!result.value && !selectedSvgSpaces?.includes(idValue)) {
+      if (oldSvg && !registeredRoom.value) {
+        registeredRoom.value = !registeredRoom.value
         const previousSelectedPath = document.getElementById(oldSvg);
         if (previousSelectedPath) {
           previousSelectedPath.style.fill = 'rgba(0, 0, 0, 0.1)';
@@ -219,24 +199,56 @@ const handleSvgClick = async (e: MouseEvent) => {
       
       const selectedPath = document.getElementById(String(idValue));
       if (selectedPath) {
+        registeredRoom.value = !registeredRoom.value
         selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
         selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
         newSpaceCode.value = idValue;
       } else {
         console.log("Selected Path Not Found in watch");
       }
-    }else {
-      if (oldSvg) {
+    } else {
+      if (oldSvg && !registeredRoom.value) {
+        registeredRoom.value = !registeredRoom.value
         const previousSelectedPath = document.getElementById(oldSvg);
         if (previousSelectedPath) {
           previousSelectedPath.style.fill = 'rgba(0, 0, 0, 0.1)';
           previousSelectedPath.style.stroke = '';
         }
       }
+      selectedSvgSpaces.pop()
       window.confirm('Stanza già memorizzata');
     }
   } catch (error) {
     window.confirm('Errore nella selezione della stanza.. '+error);
+  }
+};
+
+const loadRoom = async () => {
+  try {
+    const { data: allRoomCode } = await useFetch('/api/all-room');
+    if (allRoomCode.value) {
+      for (const element of allRoomCode.value) {
+        const buildingFloorCode = `${buildingFromQuery}_${floorFromQuery}`;
+        if (element.code.startsWith(buildingFloorCode) || element.code.includes(buildingFloorCode)) {
+          const parts = String(element.code).split('_');
+          const stringAfterSecondUnderscore = parts.slice(2).join('_');
+          const regex = /^[A-Z][a-z.]/;
+          if (regex.test(String(stringAfterSecondUnderscore))) {
+            selectedSvgSpaces.push(element.code);
+          } else {
+            selectedSvgSpaces.push(stringAfterSecondUnderscore)
+          }
+          const selectedPath = document.querySelector(`[id*="${selectedSvgSpaces[selectedSvgSpaces.length-1]}"]`) as HTMLElement;
+          if (selectedPath) { 
+            selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
+            selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
+          }
+        }
+      }
+    }
+
+  } catch (error) {
+    console.error('Error loading SVG:', error);
   }
 };
 

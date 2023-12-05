@@ -926,5 +926,13 @@
     "description": "",
     "floorId": 7,
     "legendId": 5
+  },
+  {
+    "id": 222,
+    "code": "Ue4_0_tl001",
+    "name": "prova1",
+    "description": "",
+    "floorId": 7,
+    "legendId": 1
   }
 ]

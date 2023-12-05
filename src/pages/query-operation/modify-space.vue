@@ -120,9 +120,9 @@ const updateLegend = async() => {
     if(spaceFromQuery){
       const parts = String(spaceFromQuery).split('_');
       if (parts.length >= 3) {
-      const stringAfterSecondUnderscore = parts.slice(2).join('_');
-      const regex = /^[A-Z][a-z.]/;
-      selectedSvgSpace = stringAfterSecondUnderscore;
+        const stringAfterSecondUnderscore = parts.slice(2).join('_');
+        const regex = /^[A-Z][a-z.]/;
+        selectedSvgSpace = stringAfterSecondUnderscore;
         if (regex.test(String(selectedSvgSpace))) {
           selectedSvgSpace = legendData.value.name + "_" + spaceFromQuery;
         } else {
