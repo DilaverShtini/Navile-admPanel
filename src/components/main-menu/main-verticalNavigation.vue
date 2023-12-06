@@ -2,9 +2,11 @@
 
 import "~/assets/css/component.css"
 
+/* Variable to access the current cached value (es. of useAsyncData)*/
 const { data } = useNuxtData('buildings') as {data: any};
 let { data: filter } = useNuxtData('filteredItem') as {data: any};
 
+/* Variables for navigation */
 const router = useRouter();
 
 const edit = (code: string, id: number) => {

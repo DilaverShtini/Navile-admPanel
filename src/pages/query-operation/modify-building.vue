@@ -5,20 +5,28 @@ import { MainVerticalNav } from '../../utils';
 import { ref, watch } from 'vue';
 import "~/assets/css/main.css"
 
+/* Variable to access the current cached value (es. of useAsyncData)*/
 const { data } = useNuxtData('buildings') as {data: any};
+
+/* Variables for retrieving values from URL and for navigation */
 const router = useRouter();
 const route = useRoute();
+
+/* Variables for user operations */
 const operations = ref(['Conferma', 'Annulla']);
 
+/* Variables for the parameters passed in the URL */
 let buildingFromQuery = route.query.buildingCode;
 let buildingIdFromQuery = route.query.buildingId;
 
+/* Variables for inserting user fields */
 const oldBuildName = ref([]);
 const oldBuildDescription = ref([]);
 const buildName = ref([]);
 const buildDescription = ref([]);
 let buildData = ref([])
 
+/* Variable for check if the user has any unsaved operations */
 const isFormDirty = ref(false);
 
 onBeforeRouteLeave((_to, _from, next) => {
@@ -105,7 +113,7 @@ loadData();
           <div class="with-bottom-border"></div>
           <div class="verticalNav">
             <div class="title"> Edifici </div>
-            <MainVerticalNav />
+            <MainVerticalNav allBuilding="true"/>
           </div>
       </div>
     </div>

@@ -2,13 +2,16 @@
 
 import "~/assets/css/component.css"
 
+/* Variables for retrieving values from URL and for navigation */
 const route = useRoute();
 const router = useRouter();
 
+/* Variables for the parameters passed in the URL */
 const buildingFromQuery = route.query.buildingCode
 const floorFromQuery = route.query.floorNumber
 const floorIdFromQuery = route.query.floorId
 
+/* Variable to access the current cached value (es. of useAsyncData)*/
 const { data } = useNuxtData('spaces') as {data: any};
 
 const edit = (code: number, id: string) => {
@@ -21,7 +24,8 @@ const navigate = (buildingCode: any, floorNumber: any, floorId: any) => {
   router.push({ path: '/space-menu/', query: {buildingCode: buildingCode, floorNumber: floorNumber, floorId: floorId} });
 };
 
-let { data: filter } = useNuxtData('filteredSpace') as {data: any};
+/* Variable to access the current cached value (es. of useAsyncData)*/
+const { data: filter } = useNuxtData('filteredSpace') as {data: any};
 
 </script>
 

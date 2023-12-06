@@ -6,10 +6,14 @@ import { useRoute, useRouter } from 'vue-router';
 import { ref, watch, reactive } from 'vue';
 import "~/assets/css/main.css"
 
-const selectedSpace = ref('');
+/* Variable to access the current cached value (es. of useAsyncData)*/
+const { data } = useNuxtData('spaces') as {data: any};
+
+/* Variables for retrieving values from URL and for navigation */
 const route = useRoute();
 const router = useRouter();
 
+/* Variables for the parameters passed in the URL */
 let buildingFromQuery = route.query.buildingCode
 let floorFromQuery = route.query.floorNumber
 const floorIdFromQuery = route.query.floorId
@@ -17,11 +21,11 @@ let spaceFromQuery = route.query.spaceCode;
 let spaceIdFromQuery = route.query.spaceId;
 let selectedSvgSpace: string | null = null
 
-const { data } = useNuxtData('spaces') as {data: any};
-
+/* Variables for user operations */
 const operations = ref(['Aggiungi', 'Elimina']);
 const modifyOperations = ref(['Conferma', 'Annulla']);
 
+/* Variables for user fields */
 const oldSpaceName = ref("")
 const oldSpaceDescription = ref("")
 const oldSpaceCapacity = ref<number>(0);
@@ -29,9 +33,14 @@ const spaceName = ref("")
 const spaceDescription = ref("")
 const spaceCapacity = ref<number>(0)
 let spaceData = ref([])
+
+/* Variable to get the legend ID */
 let legendData = ref([])
+
+/* Variables to manage the rooms */
 const svg = ref<string>()
 
+/* Variable for check if the user has any unsaved operations */
 const isFormDirty = ref(false);
 
 const state = reactive<{
@@ -143,9 +152,9 @@ const markFormDirty = () => {
 
 const operation = (item: string) => {
   if (item === 'Aggiungi') {
-    router.push({ path: '/query-operation/add-space/', query: { spaceCode: selectedSpace.value, buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
+    router.push({ path: '/query-operation/add-space/', query: { buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
   } else {
-    router.push({ path: '/query-operation/delete-space/', query: { spaceCode: selectedSpace.value, buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
+    router.push({ path: '/query-operation/delete-space/', query: { buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
   }
 }
 
@@ -171,7 +180,6 @@ const modifyOperation = async (item: string, newSpaceName: string, newSpaceDescr
       }
     });
   } else {
-    selectedSpace.value = '';
     oldSpaceName.value = spaceName.value;
     oldSpaceDescription.value = spaceDescription.value;
     oldSpaceCapacity.value = spaceCapacity.value;

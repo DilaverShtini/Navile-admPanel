@@ -4,6 +4,7 @@ import { MainInput } from "../utils";
 import { MainVerticalNav } from '../utils';
 import "~/assets/css/main.css"
 
+/* Define the variable to be able to access it in other pages */
 const { data } = await useAsyncData('buildings', () => $fetch('/api/building')) as {data: any};
 
 </script>

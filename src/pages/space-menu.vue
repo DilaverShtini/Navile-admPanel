@@ -6,26 +6,26 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import "~/assets/css/main.css"
 
+/* Variable for user operations */
 const operations = ref(['Aggiungi', 'Elimina']);
 
+/* Variables for retrieving values from URL and for navigation */
 const route = useRoute();
+const router = useRouter();
 
+/* Variables for the parameters passed in the URL */
 const buildingFromQuery = route.query.buildingCode
 const floorFromQuery = route.query.floorNumber
 const floorIdFromQuery = route.query.floorId
 
-// Stato per il titolo del link selezionato
-const selectedSpace = ref('');
-
-const router = useRouter();
-
+/* Define the variable to be able to access it in other pages */
 const { data } = await useAsyncData('spaces', () => $fetch(`/api/space?floorIdNumber=${floorIdFromQuery}`)) as {data: any};
 
 const operation = (item: string) => {
   if (item === 'Aggiungi') {
-    router.push({ path: '/query-operation/add-space/', query: { spaceCode: selectedSpace.value, buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
+    router.push({ path: '/query-operation/add-space/', query: { buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
   } else {
-    router.push({ path: '/query-operation/delete-space/', query: { spaceCode: selectedSpace.value, buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
+    router.push({ path: '/query-operation/delete-space/', query: { buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
   }
 }
 

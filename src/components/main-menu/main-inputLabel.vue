@@ -3,10 +3,11 @@
 import { ref } from 'vue';
 import "~/assets/css/component.css"
 
-const emit = defineEmits();
+/* Variable for the searches made by the user*/
 const userInput = ref('');
 const filteredModels = ref([]);
 
+/* Variable to read the values passed into the component */
 const props = defineProps({
   model: String,
   floor: String,
@@ -22,6 +23,7 @@ const props = defineProps({
   id: String,
 });
 
+/* Variable for the main data of the selected model */
 const { data, error } = await useFetch('/api/models', {
   method: 'post',
   body: {
@@ -33,8 +35,6 @@ const { data, error } = await useFetch('/api/models', {
 
 if (error.value) {
   console.error('Error fetching data:', error.value);
-} else {
-  // console.log('Data:', data.value);
 }
 
 const onInput = (event) => {

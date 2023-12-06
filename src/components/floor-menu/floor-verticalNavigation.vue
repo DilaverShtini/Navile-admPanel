@@ -3,11 +3,17 @@
 import { ref, onMounted } from 'vue';
 import "~/assets/css/component.css"
 
+/* Variable to read the values passed into the component */
 const props = defineProps(['buildingCode']);
 const buildingNumber = props.buildingCode.replace(/[^\d]/g, '');
+
+/* Variable for the data to be displayed to the user */
 const data = ref([]);
+
+/* Variables for navigation */
 const router = useRouter();
 
+/* Variable to access the current cached value (es. of useAsyncData)*/
 const { data: filter } = useNuxtData('filteredFloor');
 
 onMounted(async () => {
@@ -17,7 +23,6 @@ onMounted(async () => {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const result = await response.json();
-    //console.log('Result from API:', result);
     data.value = result;
   } catch (error) {
     console.error('Error fetching data:', error);

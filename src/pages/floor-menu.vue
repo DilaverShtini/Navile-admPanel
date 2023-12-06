@@ -5,8 +5,10 @@ import { FloorVerticalNav } from '~/utils';
 import { useRoute } from 'vue-router';
 import "~/assets/css/main.css"
 
+/* Variables for retrieving values from URL */
 const route = useRoute();
 
+/* Variables for the parameters passed in the URL */
 const buildingFromQuery = route.query.buildingCode
 const buildingIdFromQuery = String(route.query.buildingId)
 

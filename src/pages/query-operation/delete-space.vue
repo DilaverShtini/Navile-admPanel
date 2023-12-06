@@ -11,28 +11,36 @@ interface SpaceItem {
   name: string;
 }
 
+/* Variables to set mode for deletion */
 const mapMode = ref(false)
-const options = ref(['Codici', 'Mappa'])
 const activeViewOption = ref('Codici')
+const options = ref(['Codici', 'Mappa'])
+
+/* Variables to manage the rooms */
 const svg = ref<string>()
 const selectedRoom = ref('')
 const isRoom = ref(true)
 let idValue: string | null = null
 let selectedSvgSpaces: string[] = [];
 
-const selectedSpace = ref('');
+/* Variable for insertion into user fields */
 const spaceId = ref('');
+
+/* Variables for retrieving values from URL and for navigation */
 const route = useRoute();
 const router = useRouter();
 
+/* Variables for the parameters passed in the URL */
 const buildingFromQuery = route.query.buildingCode
 const floorFromQuery = route.query.floorNumber
 const floorIdFromQuery = route.query.floorId
-
-const operations = ref(['Aggiungi', 'Elimina']);
-const modifyOperations = ref(['Conferma', 'Annulla']);
 let spaceFromQuery = ref(route.query.spaceCode);
 
+/* Variables for user operations */
+const operations = ref(['Aggiungi', 'Elimina']);
+const modifyOperations = ref(['Conferma', 'Annulla']);
+
+/* Variable for the data to be displayed to the user */
 const data = ref<SpaceItem[]>([]);
 
 watch(() => route.query.spaceCode, (newSpaceCode) => {
@@ -74,9 +82,9 @@ const changeTab = (item: string) => {
 
 const operation = (item: string) => {
   if (item === 'Aggiungi') {
-    router.push({ path: '/query-operation/add-space/', query: { spaceCode: selectedSpace.value, buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
+    router.push({ path: '/query-operation/add-space/', query: { buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
   } else {
-    router.push({ path: '/query-operation/delete-space/', query: { spaceCode: selectedSpace.value, buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
+    router.push({ path: '/query-operation/delete-space/', query: { buildingCode: buildingFromQuery, floorNumber: floorFromQuery, floorId: floorIdFromQuery } });
   }
 }
 
@@ -101,7 +109,6 @@ const deleteOperation = async (item: string, spaceIdToDelete: string) => {
         },
       });
     } else {
-      selectedSpace.value = '';
       spaceId.value = '';      
     }
   } catch (error) {
