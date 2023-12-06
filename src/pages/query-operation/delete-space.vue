@@ -15,7 +15,10 @@ const mapMode = ref(false)
 const options = ref(['Codici', 'Mappa'])
 const activeViewOption = ref('Codici')
 const svg = ref<string>()
+const selectedRoom = ref('')
+const isRoom = ref(true)
 let idValue: string | null = null
+let selectedSvgSpaces: string[] = [];
 
 const selectedSpace = ref('');
 const spaceId = ref('');
@@ -34,12 +37,19 @@ const data = ref<SpaceItem[]>([]);
 
 watch(() => route.query.spaceCode, (newSpaceCode) => {
     spaceFromQuery.value = newSpaceCode;
-    loadData();
 });
 
 onMounted(async () => {
   loadSvg();
-  loadData();
+  const selectedPath = document.getElementById(String(selectedSvgSpaces[selectedSvgSpaces.length-1]));
+  if (selectedPath) {
+    selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
+    selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
+  } else {
+    console.log("Selected Path Not Found in mounted");
+  }
+  loadRoom();
+
   try {
     const response = await fetch(`/api/space?floorIdNumber=${floorIdFromQuery}`);
     if (!response.ok) {
@@ -56,6 +66,7 @@ const changeTab = (item: string) => {
   activeViewOption.value = item;
   if (item === 'Mappa') {
     mapMode.value = true;
+    loadRoom()
   } else {
     mapMode.value = false;
   }
@@ -98,20 +109,6 @@ const deleteOperation = async (item: string, spaceIdToDelete: string) => {
   }
 };
 
-const loadData = async() => {
-  try {
-    const selectedPath = document.getElementById(String(idValue));
-    if (selectedPath) {
-      selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
-      selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
-    } else {
-      console.log("Selected Path Not Found in watch");
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
-}
-
 const loadSvg = async () => {
   const svgPath = `/res/floors/${buildingFromQuery}_${floorFromQuery}.svg`;
 
@@ -138,8 +135,21 @@ const handleSvgClick = async (e: MouseEvent) => {
   const oldSvg = idValue
   idValue = (e.target as HTMLElement)?.getAttribute("id") ?? "";
   const spaceCode = idValue.split('_').slice(1).join('_');
+  const parts = String(idValue).split('_');
+  const stringAfterSecondUnderscore = parts.slice(3).join('_');
+  const regex = /^[A-Z][a-z.]/;
+  if (regex.test(String(stringAfterSecondUnderscore))) {
+    selectedRoom.value = spaceCode
+  } else {
+    selectedRoom.value = buildingFromQuery+'_'+floorFromQuery+'_'+idValue
+  }
   try {
     const { data: result } = await useFetch(`/api/room?spaceCode=${spaceCode}`);
+    
+    setTimeout(async () => {
+      loadRoom();
+    }, 0);
+    
     if(result.value) {
       if (oldSvg) {
         const previousSelectedPath = document.getElementById(oldSvg);
@@ -154,23 +164,25 @@ const handleSvgClick = async (e: MouseEvent) => {
         selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
         selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
       }
+      isRoom.value = true
     } else {
       const newCode = buildingFromQuery + "_" + floorFromQuery + "_" + idValue;
       const { data: result } = await useFetch(`/api/room?spaceCode=${newCode}`);
       if(result.value) {
         if (oldSvg) {
-        const previousSelectedPath = document.getElementById(oldSvg);
-        if (previousSelectedPath) {
-          previousSelectedPath.style.fill = 'rgba(0, 0, 0, 0.1)';
-          previousSelectedPath.style.stroke = '';
+          const previousSelectedPath = document.getElementById(oldSvg);
+          if (previousSelectedPath) {
+            previousSelectedPath.style.fill = 'rgba(0, 0, 0, 0.1)';
+            previousSelectedPath.style.stroke = '';
+          }
         }
-      }
         spaceId.value = String(result.value.id)
         const selectedPath = document.getElementById(String(idValue));
         if (selectedPath) {
           selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
           selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
         }
+        isRoom.value = true
       }else{
         if (oldSvg) {
           const previousSelectedPath = document.getElementById(oldSvg);
@@ -179,11 +191,42 @@ const handleSvgClick = async (e: MouseEvent) => {
             previousSelectedPath.style.stroke = '';
           }
         }
+        isRoom.value = false
         window.confirm('Stanza non esistente o non accessibile :/');
       }
     }
   } catch (error) {
+    isRoom.value = false
     window.confirm('Stanza non esistente o non accessibile');
+  }
+};
+
+const loadRoom = async () => {
+  try {
+    const { data: allRoomCode } = await useFetch('/api/all-room');
+    if (allRoomCode.value) {
+      for (const element of allRoomCode.value) {
+        const buildingFloorCode = `${buildingFromQuery}_${floorFromQuery}`;
+        if (element.code.startsWith(buildingFloorCode) || element.code.includes(buildingFloorCode)) {
+          const parts = String(element.code).split('_');
+          const stringAfterSecondUnderscore = parts.slice(2).join('_');
+          const regex = /^[A-Z][a-z.]/;
+          if (regex.test(String(stringAfterSecondUnderscore))) {
+            selectedSvgSpaces.push(element.code);
+          } else {
+            selectedSvgSpaces.push(stringAfterSecondUnderscore)
+          }
+          const selectedPath = document.querySelector(`[id*="${selectedSvgSpaces[selectedSvgSpaces.length-1]}"]`) as HTMLElement;
+          if (selectedPath) { 
+            selectedPath.style.fill = 'rgba(255, 255, 0, 0.4)';
+            selectedPath.style.stroke = 'rgba(255, 255, 0, 0.4)';
+          }
+        }
+      }
+    }
+
+  } catch (error) {
+    console.error('Error loading SVG:', error);
   }
 };
 
@@ -236,8 +279,9 @@ const handleSvgClick = async (e: MouseEvent) => {
           <label>{{ link.id }}</label>
         </div>
         <div v-else="activeViewOption == 'Mappa'" class="listOfSpaces">
-        <div class="img" v-html="svg" @click="handleSvgClick"/>
+          <div class="img" v-html="svg" @click="handleSvgClick"/>
         </div>
+        <div v-if="activeViewOption == 'Mappa' && isRoom" class="listOfInput">Stanza selezionata: {{ selectedRoom }}</div>
         <div v-if="activeViewOption == 'Codici'">
           <div class="listOfInput">
             <label for="spaceId"> Id del locale </label>
