@@ -10,7 +10,7 @@ useHead({
 const router = useRouter();
 
 if (typeof window !== 'undefined') {
-  router.push({ path: '/main-menu/' });
+  router.push({ path: '/mode-menu/' });
 }
 
 </script>

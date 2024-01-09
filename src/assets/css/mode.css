@@ -1,0 +1,55 @@
+.modeContainer {
+    height: 93vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d5d5d5;
+    background-color: #fff;
+    padding: 20px;
+}  
+
+.modeTitle{
+    text-align: center;
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.modeOperation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modeChose{
+    position: relative;
+    display: inline-block;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    padding: 0.8em 2em;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #000;
+    letter-spacing: 2px;
+    background-color: #fff;
+    border-radius: 0.5em;
+}
+
+.modifica {
+    height: 7em;
+    width: 12em;
+    margin-right: 10px;
+}
+
+.visualizza {
+    height: 7em;
+    width: 12em;
+    margin-left: 10px;
+}
+
+.modeChose:hover {
+    background-color: #ed5959;
+}
