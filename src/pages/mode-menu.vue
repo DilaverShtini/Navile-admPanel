@@ -6,7 +6,7 @@ import "~/assets/css/mode.css"
 const router = useRouter();
 
 /* Variable for the choice of mode */
-const modeOption = ref(['Modifica', 'Visualizza']);
+const modeOption = ref(['CRUD OPERATION', 'DATA VISUALIZATION']);
 
 const createOperation = async (item: string) => {
     try {

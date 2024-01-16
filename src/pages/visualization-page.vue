@@ -1,11 +1,20 @@
-<script lang="ts" setup>
+<script>
+    import BarChart from '../components/chart/BarChart.vue'
+    import PolarAreaChart from '../components/chart/PolarAreaChart.vue'
 
-import "~/assets/css/visualization.css"
-
+    export default {
+        name: 'App',
+        components: { BarChart, PolarAreaChart },
+        data() {
+            return {
+                dataBarAnalysis: ['URL', 'Road'],
+                dataPolarAreaAnalysis: ['Indietro'],
+            };
+        },
+    }
 </script>
 
 <template>
-    <div>
-            
-    </div>
+    <BarChart :dataProp="dataBarAnalysis" />
+    <PolarAreaChart :dataProp="dataPolarAreaAnalysis"/>
 </template>
