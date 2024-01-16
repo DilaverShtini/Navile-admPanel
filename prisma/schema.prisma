@@ -174,3 +174,10 @@ model SensorAggregatedValue {
 
   @@unique([sensorCode, aggregator, mode])
 }
+
+model DataSet {
+  id Int @id @default(autoincrement())
+  type String @db.VarChar(255)
+  counter Int
+  data Json?
+}

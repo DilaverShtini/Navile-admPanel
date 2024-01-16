@@ -1,0 +1,179 @@
+[
+    {
+      "id": 1,
+      "type": "URL",
+      "counter": 110,
+      "data": {
+        "data": "building=4"
+      }
+    },
+    {
+      "id": 2,
+      "type": "URL",
+      "counter": 6,
+      "data": {
+        "data": "building=5"
+      }
+    },
+    {
+      "id": 3,
+      "type": "URL",
+      "counter": 5,
+      "data": {
+        "data": "building=4&floor=7&space=173"
+      }
+    },
+    {
+      "id": 4,
+      "type": "URL",
+      "counter": 5,
+      "data": {
+        "data": "building=4&floor=7&space=180"
+      }
+    },
+    {
+      "id": 49,
+      "type": "Button",
+      "counter": 5,
+      "data": {
+        "data": "Torna alla tua posizione"
+      }
+    },
+    {
+      "id": 50,
+      "type": "URL",
+      "counter": 1,
+      "data": {
+        "data": {
+          "data": "building=5&floor=18&space=126"
+        }
+      }
+    },
+    {
+      "id": 51,
+      "type": "Button",
+      "counter": 11,
+      "data": {
+        "data": "Indietro"
+      }
+    },
+    {
+      "id": 52,
+      "type": "Button",
+      "counter": 7,
+      "data": {
+        "data": "Su"
+      }
+    },
+    {
+      "id": 53,
+      "type": "Button",
+      "counter": 9,
+      "data": {
+        "data": "Giù"
+      }
+    },
+    {
+      "id": 54,
+      "type": "Button",
+      "counter": 6,
+      "data": {
+        "data": "Riproduci percorso"
+      }
+    },
+    {
+      "id": 55,
+      "type": "Button",
+      "counter": 6,
+      "data": {
+        "data": "Uscita direzione percorso"
+      }
+    },
+    {
+      "id": 57,
+      "type": "Road",
+      "counter": 2,
+      "data": [
+        {
+          "start": 183
+        },
+        {
+          "end": 178
+        }
+      ]
+    },
+    {
+      "id": 59,
+      "type": "Road",
+      "counter": 2,
+      "data": [
+        {
+          "start": 183
+        },
+        {
+          "end": 177
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "type": "URL",
+      "counter": 2,
+      "data": {
+        "data": "building=4&floor=7&space=181"
+      }
+    },
+    {
+      "id": 61,
+      "type": "Road",
+      "counter": 1,
+      "data": [
+        {
+          "start": 183
+        },
+        {
+          "end": 181
+        }
+      ]
+    },
+    {
+      "id": 62,
+      "type": "URL",
+      "counter": 1,
+      "data": {
+        "data": "building=5&floor=16&space=102"
+      }
+    },
+    {
+      "id": 63,
+      "type": "URL",
+      "counter": 1,
+      "data": {
+        "data": "building=5&floor=17"
+      }
+    },
+    {
+      "id": 64,
+      "type": "URL",
+      "counter": 1,
+      "data": {
+        "data": "building=5&floor=18"
+      }
+    },
+    {
+      "id": 65,
+      "type": "URL",
+      "counter": 1,
+      "data": {
+        "data": "building=5&floor=19"
+      }
+    },
+    {
+      "id": 66,
+      "type": "URL",
+      "counter": 1,
+      "data": {
+        "data": "building=5&floor=20"
+      }
+    }
+  ]

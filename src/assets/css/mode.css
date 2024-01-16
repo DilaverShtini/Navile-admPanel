@@ -21,6 +21,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 50em;
 }
 
 .modeChose{
@@ -28,6 +29,8 @@
     display: inline-block;
     margin-top: 2%;
     margin-bottom: 2%;
+    margin-left: 3%;
+    margin-right: 3%;
     padding: 0.8em 2em;
     text-align: center;
     font-weight: bold;
