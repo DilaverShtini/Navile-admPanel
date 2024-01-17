@@ -65,7 +65,19 @@ export default {
               dataName.value.push(el.data[0]?.start + "->" + el.data[1]?.end);
               dataCount.value.push(el.counter);
             });
-          }
+          } else if(name == 'Sidebar') {
+          
+            result.forEach((el: { data: any; counter: any; }) => {
+              dataName.value.push(el.data.data);
+              dataCount.value.push(el.counter);
+            });
+          } else if(name == 'Mappa') {
+          
+            result.forEach((el: { data: any; counter: any; }) => {
+              dataName.value.push(el.data.data);
+              dataCount.value.push(el.counter);
+            });
+        }
 
           const chartData = {
             labels: dataName,
@@ -89,7 +101,7 @@ export default {
       }
     };
 
-    await Promise.all(dataProp.value.map((name: string) => fetchData(name)));
+    await Promise.all(dataProp.value.map((name: any) => fetchData(name)));
 
     // Verifico se la lunghezza dei due vettori è uguale (deve esserci corrispondenza, altrimenti non stampo nessun grafico)    
     if (dataName.value.length !== dataCount.value.length) {

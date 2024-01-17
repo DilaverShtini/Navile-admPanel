@@ -7,7 +7,7 @@
         components: { BarChart, PolarAreaChart },
         data() {
             return {
-                dataBarAnalysis: ['URL', 'Road'],
+                dataBarAnalysis: ['URL', 'Road', 'Sidebar', 'Mappa'],
                 dataPolarAreaAnalysis: ['Indietro'],
             };
         },
