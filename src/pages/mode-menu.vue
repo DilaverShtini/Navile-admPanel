@@ -10,7 +10,7 @@ const modeOption = ref(['CRUD OPERATION', 'DATA VISUALIZATION']);
 
 const createOperation = async (item: string) => {
     try {
-        if (item === 'Modifica') {
+        if (item === 'CRUD OPERATION') {
             router.push({ path: '/main-menu/' });
         } else {
             router.push({ path: '/visualization-page/' });

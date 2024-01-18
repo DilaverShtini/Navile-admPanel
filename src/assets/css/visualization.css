@@ -1,5 +1,5 @@
 /* Styles for BarChart and PolarAreaChar */
-.bar, .polarArea {
+.bar, .polarArea, .pie {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
