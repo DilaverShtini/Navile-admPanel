@@ -18,6 +18,12 @@
 
 <template>
     <BarChart :dataProp="dataBarAnalysis" />
-    <PolarAreaChart :dataProp="dataPolarAreaAnalysis"/>
-    <PieChart :dataProp="dataPieAnalysis"/>
+    <div>
+        <div>
+            <PolarAreaChart :dataProp="dataPolarAreaAnalysis"/>
+        </div>
+        <div>
+            <PieChart :dataProp="dataPieAnalysis"/>
+        </div>
+    </div>
 </template>

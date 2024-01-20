@@ -2,6 +2,9 @@
 import { ref } from 'vue';
 import { Bar } from 'vue-chartjs';
 import "~/assets/css/visualization.css"
+import { type ChartOptions } from 'chart.js';
+import 'chartjs-plugin-datalabels';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
   Chart as ChartJS,
   Title,
@@ -12,7 +15,7 @@ import {
   LinearScale,
 } from 'chart.js';
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels);
 
 export default {
   name: 'BarChart',
@@ -29,7 +32,6 @@ export default {
     const dataCount = ref(<any>[]);
     const { dataProp } = toRefs(props);
     const dataLoaded = ref(false);
-    const chartOptions = { responsive: true };
     const charts = ref<{ labels: any[]; datasets: { label: any; data: any; barThickness: number; backgroundColor: string[];}[] }[]>([]);
  
     const fetchData = async (name: string) => {
@@ -48,6 +50,8 @@ export default {
         }
 
         const result = await response.json();
+
+        result.sort((nameUrl1: { counter: number; }, nameUrl2: { counter: number; }) => nameUrl2.counter - nameUrl1.counter);
 
         if (result?.length) {
           const dataName = ref(<any>[]);;
@@ -109,7 +113,10 @@ export default {
       return {
         dataLoaded,
         chartData: { labels: [], datasets: [] },
-        chartOptions: { responsive: true },
+        chartOptions: { 
+          responsive: true,
+          indexAxis: 'y',
+        } as ChartOptions<'bar'>,
       };
     }
 
@@ -118,7 +125,31 @@ export default {
       charts,
       chartOptions: {
         responsive: true,
-      },
+        indexAxis: 'y',
+        plugins: {
+          datalabels: {
+            color: 'black',
+            align: 'end',
+            anchor: 'end',
+            font: {
+              weight: 'bold',
+              size: 20,
+              family: 'Nuovo-Font',  // Aggiungi questa riga per impostare un nuovo tipo di font
+            },
+          },
+        },
+        scales: {
+          y: {
+            ticks: {
+              font: {
+                weight: 'bold',
+                size: 15,
+                family: 'Nuovo-Font',  // Aggiungi questa riga per impostare un nuovo tipo di font
+              },
+            },
+          },
+        },
+      } as ChartOptions<'bar'>,
     });
   },
 };
