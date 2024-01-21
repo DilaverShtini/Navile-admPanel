@@ -3,8 +3,10 @@ import BarChart from './BarChart.vue'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Pie } from 'vue-chartjs'
 import "~/assets/css/visualization.css"
+import 'chartjs-plugin-datalabels';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-ChartJS.register(ArcElement, Tooltip, Legend)
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels)
 
 export default {
   name: 'PieChart',
@@ -100,13 +102,21 @@ export default {
       charts,
       chartOptions: {
         responsive: true,
+        plugins: {
+          datalabels: {
+            color: 'white',
+            font: {
+              weight: 'bold',
+              size: 30,
+            },
+          },
+        },
       },
       showSecondChart,
       handleChartClick,
     });
 
   },
-
   
   options: {
     responsive: true,

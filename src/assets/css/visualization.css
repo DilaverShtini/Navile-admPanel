@@ -2,10 +2,7 @@
 .bar, .polarArea, .pie {
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box;
     margin-bottom: 1rem;
     max-height: 30em;
-}
-
-.polarArea, .pie {
+    max-width: 110em;
 }

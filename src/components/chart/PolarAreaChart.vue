@@ -2,6 +2,8 @@
 import { ref } from 'vue';
 import { PolarArea } from 'vue-chartjs';
 import "~/assets/css/visualization.css"
+import 'chartjs-plugin-datalabels';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
   Chart as ChartJS,
   RadialLinearScale,
@@ -10,7 +12,7 @@ import {
   Legend
 } from 'chart.js'
 
-ChartJS.register(RadialLinearScale, ArcElement, Tooltip, Legend)
+ChartJS.register(RadialLinearScale, ArcElement, Tooltip, Legend, ChartDataLabels)
 
 export default {
     name: 'PolarAreaChart',
@@ -102,6 +104,15 @@ export default {
             charts,
             chartOptions: {
                 responsive: true,
+                plugins: {
+                    datalabels: {
+                        color: 'black',
+                        font: {
+                        weight: 'bold',
+                        size: 17,
+                        },
+                    },
+                },
             },
         })
     },

@@ -89,7 +89,7 @@ export default {
               {
                 label: name,
                 data: dataCount,
-                barThickness: 15,
+                barThickness: 25,
                 backgroundColor: [
                   'rgba(0, 0, 0, 1)',
                 ],
@@ -125,26 +125,29 @@ export default {
       charts,
       chartOptions: {
         responsive: true,
-        indexAxis: 'y',
         plugins: {
           datalabels: {
-            color: 'black',
-            align: 'end',
-            anchor: 'end',
+            color: 'white',
             font: {
               weight: 'bold',
-              size: 20,
-              family: 'Nuovo-Font',  // Aggiungi questa riga per impostare un nuovo tipo di font
+              size: 17,
             },
           },
         },
         scales: {
+          x: {
+            ticks: {
+              font: {
+                weight: 'bold',
+                size: 17,
+              },
+            },
+          },
           y: {
             ticks: {
               font: {
                 weight: 'bold',
                 size: 15,
-                family: 'Nuovo-Font',  // Aggiungi questa riga per impostare un nuovo tipo di font
               },
             },
           },
