@@ -12,15 +12,15 @@ input {
     border: none;
 }
 
-/* Styles for MainVerticalNav, FloorVerticalNav, SpaceVerticalNav */
-.listOfBuilding, .listOfFloor, .listOfSpace {
+/* Styles for MainVerticalNav, FloorVerticalNav, SpaceVerticalNav, MainSidebar(View) */
+.listOfBuilding, .listOfFloor, .listOfSpace, .listOfChart, .listOfData {
     width: auto;
     list-style-type: none;
     text-align: left;
     padding: 0% 8% 0% 8%;
   }
   
-.listBuilding, .listFloor, .listSpace {
+.listBuilding, .listFloor, .listSpace, .listChart, .listData {
     padding-left: 3%;
     margin: 0.5em 0em 0.5em 0em;
     background-size: 2em;
@@ -28,7 +28,7 @@ input {
     text-transform: capitalize;
 }
 
-.listBuilding:hover, .listFloor:hover, .listSpace:hover {
+.listBuilding:hover, .listFloor:hover, .listSpace:hover, .listChart:hover, .listData:hover {
     background-color: #e2e8f0;
     border-radius: 0.2em;
 }
@@ -38,7 +38,7 @@ input {
     justify-content: space-between;
 }
 
-.buildingName, .floorNumber, .spaceName {
+.buildingName, .floorNumber, .spaceName, .chartName, .dataName {
     flex-grow: 1;
     cursor: pointer;
 }
