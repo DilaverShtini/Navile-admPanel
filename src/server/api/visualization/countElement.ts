@@ -3,7 +3,7 @@ export default defineEventHandler(async (event) => {
     try {
         const body = await readBody(event);
 
-        const { type } = body;
+        const { type, data } = body;
 
         if (!type) {
             console.error("Missing parameter");
@@ -12,7 +12,11 @@ export default defineEventHandler(async (event) => {
 
         const ds = await prisma.dataSet.count({
             where: {
-                type: type
+                type: type,
+                data: {
+                    path: '$.data',
+                    equals: data,
+                }
             },
         })
 

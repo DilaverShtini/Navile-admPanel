@@ -11,12 +11,25 @@ export default defineEventHandler(async (event) => {
         }
 
         const ds = await prisma.dataSet.findMany({
+            select:{
+                data: true,
+            },
             where: {
-                type: type
+                type: type,
             },
         })
 
-        return ds;
+        if(type == 'Road') {
+            const uniqueDataList = [...new Set(ds)];
+            const uniqueDataJSON = JSON.stringify(uniqueDataList);
+            return uniqueDataJSON;        
+        } else {
+            const dataList = ds.map(item => item.data?.data);
+            const uniqueDataList = [...new Set(dataList)];
+            const uniqueDataJSON = JSON.stringify(uniqueDataList);
+            return uniqueDataJSON;
+        }
+
     } catch(error) {
         console.error("Error getting data: ", error);
     }

@@ -3,18 +3,25 @@ export default defineEventHandler(async (event) => {
     try {
         const body = await readBody(event);
 
-        const { type } = body;
+        const { type, startPoint, endPoint } = body;
 
-        if (!type) {
+        if (!type || !startPoint || !endPoint) {
             console.error("Missing parameter");
             return null;
         }
 
+        var json = [{ start: startPoint }, { end: endPoint }]
+
         const ds = await prisma.dataSet.count({
             where: {
-                type: type
+                type: type,
+                data: {
+                    equals: json,
+                }
             },
         })
+
+        //console.log("count element: ", ds);
 
         return ds;
     } catch(error) {

@@ -28,8 +28,6 @@ export default {
     },
   },
   setup: async (props) => {
-    const dataName = ref(<any>[]);
-    const dataCount = ref(<any>[]);
     const { dataProp } = toRefs(props);
     const dataLoaded = ref(false);
     const charts = ref<{ labels: any[]; datasets: { label: any; data: any; barThickness: number; backgroundColor: string[];}[] }[]>([]);
@@ -48,56 +46,129 @@ export default {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-
         const result = await response.json();
-
-        result.sort((nameUrl1: { counter: number; }, nameUrl2: { counter: number; }) => nameUrl2.counter - nameUrl1.counter);
 
         if (result?.length) {
           const dataName = ref(<any>[]);;
           const dataCount = ref(<any>[]);;
-
-          if(name === 'URL') {
-            result.forEach((el: { data: { data: any; }; counter: any; }) => {
-              dataName.value.push(el.data.data);
-              dataCount.value.push(el.counter);
-            });
+          const promises: any[] = [];
           
+          if(name === 'URL') {
+            result.forEach( async (el: { data: { data: any; };}) => {
+              promises.push(new Promise<void>(async (resolve, reject) => {
+                // Codice all'interno del forEach
+                dataName.value.push(el);
+                const response1 = await fetch(`/api/visualization/countElement`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ type: name, data: el }),
+                });
+
+                if (!response1.ok) {
+                  throw new Error(`HTTP error! Status: ${response1.status}`);
+                }
+                const result = await response1.json();
+
+                dataCount.value.push(result);
+                resolve();
+              }))
+            });
+
           } else if(name == 'Road') {
           
-            result.forEach((el: { data: any; counter: any; }) => {
-              dataName.value.push(el.data[0]?.start + "->" + el.data[1]?.end);
-              dataCount.value.push(el.counter);
+            result.forEach( async(el: { data: any; counter: any; }) => {
+              promises.push(new Promise<void>(async (resolve, reject) => {
+
+                dataName.value.push(el.data[0]?.start + "->" + el.data[1]?.end);
+                const response1 = await fetch(`/api/visualization/countRoad`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ type: name, startPoint: el.data[0]?.start, endPoint: el.data[1]?.end }),
+                });
+
+                if (!response1.ok) {
+                  throw new Error(`HTTP error! Status: ${response1.status}`);
+                }
+                const result = await response1.json();
+
+                dataCount.value.push(result);
+                resolve();
+              }))
             });
+
           } else if(name == 'Sidebar') {
           
-            result.forEach((el: { data: any; counter: any; }) => {
-              dataName.value.push(el.data.data);
-              dataCount.value.push(el.counter);
+            result.forEach( async(el: { data: any; counter: any; }) => {
+              promises.push(new Promise<void>(async (resolve, reject) => {
+
+                dataName.value.push(el);
+                
+                const response = await fetch(`/api/visualization/countElement`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ type: name, data: el }),
+                });
+
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const result = await response.json();
+
+                dataCount.value.push(result);
+                resolve();
+              }))
             });
           } else if(name == 'Mappa') {
           
-            result.forEach((el: { data: any; counter: any; }) => {
-              dataName.value.push(el.data.data);
-              dataCount.value.push(el.counter);
+            result.forEach( async(el: { data: any; counter: any; }) => {
+              promises.push(new Promise<void>(async (resolve, reject) => {
+
+                dataName.value.push(el);
+                const response = await fetch(`/api/visualization/countElement`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ type: name, data: el }),
+                });
+
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const result = await response.json();
+
+                dataCount.value.push(result);
+                resolve();
+              }))
             });
         }
 
-          const chartData = {
-            labels: dataName,
-            datasets: [
-              {
-                label: name,
-                data: dataCount,
-                barThickness: 25,
-                backgroundColor: [
-                  'rgba(0, 0, 0, 1)',
-                ],
-              },
-            ],
-          };
+        await Promise.all(promises);
 
-          charts.value.push(chartData);
+        dataCount.value.sort((number1: number, number2: number) => number2 - number1);
+
+        const chartData = {
+          labels: dataName.value,
+          datasets: [
+            {
+              label: name,
+              data: dataCount.value,
+              barThickness: 25,
+              backgroundColor: [
+                'rgba(0, 0, 0, 1)',
+              ],
+            },
+          ],
+        };
+
+        charts.value.push(chartData);
+        
         }
           dataLoaded.value = true;
       } catch (error) {
@@ -106,19 +177,6 @@ export default {
     };
 
     await Promise.all(dataProp.value.map((name: any) => fetchData(name)));
-
-    // Verifico se la lunghezza dei due vettori è uguale (deve esserci corrispondenza, altrimenti non stampo nessun grafico)    
-    if (dataName.value.length !== dataCount.value.length) {
-      console.error('Error: dataName and dataCount have different lengths.');
-      return {
-        dataLoaded,
-        chartData: { labels: [], datasets: [] },
-        chartOptions: { 
-          responsive: true,
-          indexAxis: 'y',
-        } as ChartOptions<'bar'>,
-      };
-    }
 
     return ({
       dataLoaded,
