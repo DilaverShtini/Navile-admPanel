@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
             return null;
         }
 
-        const ds = await prisma.dataSet.findMany({
+        const ds = await prisma.dataset.findMany({
             select:{
                 data: true,
             },
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
             const uniqueDataJSON = JSON.stringify(uniqueDataList);
             return uniqueDataJSON;        
         } else {
-            const dataList = ds.map(item => item.data?.data);
+            const dataList = ds.map(item => item.data);
             const uniqueDataList = [...new Set(dataList)];
             const uniqueDataJSON = JSON.stringify(uniqueDataList);
             return uniqueDataJSON;

@@ -1,5 +1,5 @@
 export default defineEventHandler(() => {
-    const charts = prisma.dataSet.groupBy({
+    const charts = prisma.dataset.groupBy({
         by: ['type'],
     })
     return charts

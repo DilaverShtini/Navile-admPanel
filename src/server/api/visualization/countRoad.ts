@@ -10,18 +10,16 @@ export default defineEventHandler(async (event) => {
             return null;
         }
 
-        var json = [{ start: startPoint }, { end: endPoint }]
+        //var json = [{ start: startPoint }, { end: endPoint }]
 
-        const ds = await prisma.dataSet.count({
+        const ds = await prisma.dataset.count({
             where: {
                 type: type,
                 data: {
-                    equals: json,
+                    equals: JSON.stringify([{ start: startPoint }, { end: endPoint }])
                 }
             },
         })
-
-        //console.log("count element: ", ds);
 
         return ds;
     } catch(error) {

@@ -178,6 +178,6 @@ model SensorAggregatedValue {
 model DataSet {
   id Int @id @default(autoincrement())
   type String @db.VarChar(255)
-  date Date
+  date DateTime
   data Json?
 }

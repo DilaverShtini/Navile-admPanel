@@ -49,14 +49,13 @@ export default {
         const result = await response.json();
 
         if (result?.length) {
-          const dataName = ref(<any>[]);;
-          const dataCount = ref(<any>[]);;
+          const dataName = ref(<any>[]);
+          const dataCount = ref(<any>[]);
           const promises: any[] = [];
           
           if(name === 'URL') {
             result.forEach( async (el: { data: { data: any; };}) => {
               promises.push(new Promise<void>(async (resolve, reject) => {
-                // Codice all'interno del forEach
                 dataName.value.push(el);
                 const response1 = await fetch(`/api/visualization/countElement`, {
                   method: 'POST',
@@ -78,16 +77,16 @@ export default {
 
           } else if(name == 'Road') {
           
-            result.forEach( async(el: { data: any; counter: any; }) => {
+            result.forEach( async(el: { data: any; }) => {
               promises.push(new Promise<void>(async (resolve, reject) => {
-
-                dataName.value.push(el.data[0]?.start + "->" + el.data[1]?.end);
+                const road = JSON.parse(el.data)
+                dataName.value.push(road[0]?.start + "->" + road[1]?.end);
                 const response1 = await fetch(`/api/visualization/countRoad`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  body: JSON.stringify({ type: name, startPoint: el.data[0]?.start, endPoint: el.data[1]?.end }),
+                  body: JSON.stringify({ type: name, startPoint: road[0]?.start, endPoint: road[1]?.end }),
                 });
 
                 if (!response1.ok) {

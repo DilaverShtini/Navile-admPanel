@@ -10,11 +10,10 @@ export default defineEventHandler(async (event) => {
             return null;
         }
 
-        const ds = await prisma.dataSet.count({
+        const ds = await prisma.dataset.count({
             where: {
                 type: type,
                 data: {
-                    path: '$.data',
                     equals: data,
                 }
             },

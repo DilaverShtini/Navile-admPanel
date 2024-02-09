@@ -3,7 +3,7 @@
 import "~/assets/css/component.css"
 
 const { data } = useNuxtData('charts') as {data: any};
-const charts = ['BarChart', 'PolarAreaChart', 'PieChart'];
+const charts = ['BarChart', 'PolarAreaChart', 'PieChart', 'LineChart'];
 
 const showData = async (dataName: any) => {
   const { } = await useAsyncData('dataToShow', () => dataName) as {data: any};

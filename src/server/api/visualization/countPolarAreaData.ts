@@ -10,13 +10,15 @@ export default defineEventHandler(async (event) => {
             return null;
         }
 
-        const ds = await prisma.dataSet.count({
+        const parsedData = JSON.parse(data)
+        const buttonName = parsedData.data
+
+        const ds = await prisma.dataset.count({
             where: {
                 type: 'Button',
-                data: {
-                    path: '$.data',
-                    equals: data,
-                }
+                data: { 
+                    contains: buttonName
+                },
             },
         })
 

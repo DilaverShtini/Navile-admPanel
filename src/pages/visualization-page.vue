@@ -2,6 +2,7 @@
     import BarChart from '../components/chart/BarChart.vue'
     import PolarAreaChart from '../components/chart/PolarAreaChart.vue'
     import PieChart from '../components/chart/PieChart.vue'
+    import LineChart from '../components/chart/LineChart.vue'
     import { MainSidebar } from '../utils';
     import "~/assets/css/main.css"
 
@@ -9,12 +10,13 @@
     
     export default {
         name: 'App',
-        components: { BarChart, PolarAreaChart, PieChart, MainSidebar},
+        components: { BarChart, PolarAreaChart, PieChart, LineChart, MainSidebar},
         data() {
             return {
                 dataBarAnalysis: ['URL', 'Road'],
                 dataPolarAreaAnalysis: ['Indietro'],
                 dataPieAnalysis: ['Sidebar | Mappa'],
+                dataLineAnalysis: ['Storico'],
                 chartToDiplay: ref('All'),
             };
         },
@@ -45,6 +47,9 @@
                     <div v-if="chartToDiplay == 'PieChart'">
                         <PieChart :dataProp="dataPieAnalysis"/>
                     </div>
+                    <div v-if="chartToDiplay == 'LineChart'">
+                        <LineChart :dataProp="dataLineAnalysis"/>
+                    </div>
                 </div>
             </div>
             <div class="form-container" v-if="chartToDiplay == 'All'">
@@ -57,6 +62,9 @@
                     </div>
                     <div>
                         <PieChart :dataProp="dataPieAnalysis"/>
+                    </div>
+                    <div>
+                        <LineChart :dataProp="dataLineAnalysis"/>
                     </div>
                 </div>
             </div>
