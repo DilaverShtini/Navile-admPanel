@@ -54,9 +54,9 @@ export default {
           const promises: any[] = [];
           
           if(name === 'URL') {
-            result.forEach( async (el: { data: { data: any; };}) => {
+            result.forEach( async (el: any) => {
               promises.push(new Promise<void>(async (resolve, reject) => {
-                dataName.value.push(el);
+                dataName.value.push(JSON.parse(el).data);
                 const response1 = await fetch(`/api/visualization/countElement`, {
                   method: 'POST',
                   headers: {
@@ -101,10 +101,10 @@ export default {
 
           } else if(name == 'Sidebar') {
           
-            result.forEach( async(el: { data: any; counter: any; }) => {
+            result.forEach( async(el: any) => {
               promises.push(new Promise<void>(async (resolve, reject) => {
 
-                dataName.value.push(el);
+                dataName.value.push(JSON.parse(el).data);
                 
                 const response = await fetch(`/api/visualization/countElement`, {
                   method: 'POST',
@@ -125,10 +125,10 @@ export default {
             });
           } else if(name == 'Mappa') {
           
-            result.forEach( async(el: { data: any; counter: any; }) => {
+            result.forEach( async(el: any) => {
               promises.push(new Promise<void>(async (resolve, reject) => {
 
-                dataName.value.push(el);
+                dataName.value.push(JSON.parse(el).data);
                 const response = await fetch(`/api/visualization/countElement`, {
                   method: 'POST',
                   headers: {
