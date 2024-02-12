@@ -51,3 +51,38 @@ input {
     color: #777;
     margin-top: 1em;
 }
+
+/* MainSidebar(View) */
+.listChart,
+.listData {
+    cursor: pointer;
+    padding: 10px 20px;
+    margin: 5px 0;
+    background-color: #e87979;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+}
+
+.listChart:hover,
+.listData:hover {
+    transform: translateY(-2px);
+    background-color: #fb3d3d;
+    border-radius: 20px;
+}
+
+.titolo {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px 20px;
+    background-color: #eed5d5;
+    color: #000;
+}
+  
+
+.chartName, .dataName {
+    font-size: 20px;
+    padding: 1px;
+    color: #fff;
+}

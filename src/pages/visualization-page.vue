@@ -32,7 +32,6 @@
 <template>
     <div class="container">
         <div class="menu border">
-            <div class="title"> Dati da visualizzare </div>
             <MainSidebar @click="updateView()"/>
         </div>
         <div class="form">

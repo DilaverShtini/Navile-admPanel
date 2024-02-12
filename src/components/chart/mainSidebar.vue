@@ -14,7 +14,9 @@ const showData = async (dataName: any) => {
 
 <template>
   <nav class="bg-gray-800 text-white">
-    GRAFICI
+    <div class="titolo">
+      GRAFICI
+    </div>
     <ul class="listOfChart">
       <li v-for="link in charts" @click="showData(link)" class="listChart">
         <div class="row">
@@ -24,7 +26,9 @@ const showData = async (dataName: any) => {
         </div>
       </li>
     </ul>
-    DATI
+    <div class="titolo">
+      DATI
+    </div>
     <ul class="listOfData">
       <li v-for="link in data" @click="showData(link.type)" :key="link.id" :title="link.type" class="listData">
         <div class="row">
@@ -34,7 +38,9 @@ const showData = async (dataName: any) => {
         </div>
       </li>
     </ul>
-    TUTTI
+    <div class="titolo">
+      TUTTI
+    </div>
     <ul class="listOfData">
       <li @click="showData('All')" class="listData">
         <div class="row">
