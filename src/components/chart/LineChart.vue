@@ -66,7 +66,7 @@ export default {
                         labels: dataName.value,
                         datasets: [
                             {
-                                label: 'Storico',
+                                label: 'Storico interazioni',
                                 data: dataCount.value,
                                 tension: 0.3,
                                 pointRadius: 0,

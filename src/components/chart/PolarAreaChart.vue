@@ -50,9 +50,9 @@ export default {
                 if (result?.length) {
                     const promises: any[] = [];
 
-                    result.forEach( async(el: { data: { data: any; }; }) => {
+                    result.forEach( async(el: any) => {
                         promises.push(new Promise<void>(async (resolve, reject) => {
-                            dataName.value.push(el);
+                            dataName.value.push(JSON.parse(el).data);
                             const response1 = await fetch(`/api/visualization/countPolarAreaData`, {
                                 method: 'POST',
                                 headers: {
