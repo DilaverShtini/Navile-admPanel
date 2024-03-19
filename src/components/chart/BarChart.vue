@@ -17,6 +17,10 @@ import {
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels);
 
+function getSortedIndices(arr: any[]): number[] {
+  return arr.map((val, idx) => idx).sort((a, b) => arr[b] - arr[a]);
+}
+
 export default {
   name: 'BarChart',
   components: { Bar },
@@ -55,7 +59,7 @@ export default {
           
           if(name === 'URL') {
             result.forEach( async (el: any) => {
-              promises.push(new Promise<void>(async (resolve, reject) => {
+              promises.push(new Promise<void>(async (resolve, _reject) => {
                 dataName.value.push(JSON.parse(el).data);
                 const response1 = await fetch(`/api/visualization/countElement`, {
                   method: 'POST',
@@ -78,7 +82,7 @@ export default {
           } else if(name == 'Road') {
           
             result.forEach( async(el: { data: any; }) => {
-              promises.push(new Promise<void>(async (resolve, reject) => {
+              promises.push(new Promise<void>(async (resolve, _reject) => {
                 const road = JSON.parse(el.data)
                 dataName.value.push(road[0]?.start + "->" + road[1]?.end);
                 const response1 = await fetch(`/api/visualization/countRoad`, {
@@ -150,14 +154,16 @@ export default {
 
         await Promise.all(promises);
 
-        dataCount.value.sort((number1: number, number2: number) => number2 - number1);
+        const sortedIndices = getSortedIndices(dataCount.value);
+        const sortedLabels = sortedIndices.map(idx => dataName.value[idx]);
+        const sortedDataCount = sortedIndices.map(idx => dataCount.value[idx]);
 
         const chartData = {
-          labels: dataName.value,
+          labels: sortedLabels,
           datasets: [
             {
               label: name,
-              data: dataCount.value,
+              data: sortedDataCount,
               barThickness: 25,
               backgroundColor: [
                 'rgba(0, 0, 0, 1)',

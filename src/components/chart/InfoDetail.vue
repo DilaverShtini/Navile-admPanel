@@ -52,16 +52,13 @@ export default {
                 if (result?.length) {
                     const promises: any[] = [];
                     const promise: any[] = [];
-                    let index: number = 0;
 
                     result.forEach(async (el: any) => {
                         if(name == 'Road') {
                             const start = JSON.parse(el.data)
                             const end = JSON.parse(el.data)
-                            if(index % 2 == 0) {
-                                resultValues.value.push(start[0].start+"-"+end[1].end)
-                                index = index+1
-                            }
+                            resultValues.value.push(start[0].start+"-"+end[1].end)
+
                             promises.push(new Promise<void>(async (resolve, _reject) => {
                             const response1 = await fetch(`/api/visualization/detailTimeData`, {
                                 method: 'POST',
