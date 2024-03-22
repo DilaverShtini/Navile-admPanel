@@ -66,8 +66,8 @@ export default {
                     data: [resultSideBar, resultMappa],
                     barThickness: 15,
                     backgroundColor: [
-                        'rgba(0, 0, 100)',
-                        'rgba(200, 100, 0)',
+                        'rgba(255, 165, 0.8)',
+                        'rgba(175, 238, 238)',
                     ],
                 },
                 ],

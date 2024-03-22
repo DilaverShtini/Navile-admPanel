@@ -18,7 +18,7 @@ import {
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels);
 
 function getSortedIndices(arr: any[]): number[] {
-  return arr.map((val, idx) => idx).sort((a, b) => arr[b] - arr[a]);
+  return arr.map((_val, idx) => idx).sort((a, b) => arr[b] - arr[a]);
 }
 
 export default {
@@ -29,6 +29,10 @@ export default {
       type: Array,
       required: true,
       validator: (value: any) => value.every((str: any) => typeof str === 'string'),
+    },
+    activeViewOption: {
+      type: String,
+      required: true,
     },
   },
   setup: async (props) => {
@@ -57,8 +61,14 @@ export default {
           const dataCount = ref(<any>[]);
           const promises: any[] = [];
           
-          if(name === 'URL') {
-            result.forEach( async (el: any) => {
+          if(name === 'URL' && props.activeViewOption) {
+
+            // filtro per ottenere tutti gli url relativi all'edificio indicato in activeViewOption
+            const filteredResult = result.filter((el: any) =>
+                JSON.parse(el).data.includes(props.activeViewOption+"-")
+            );
+
+            filteredResult.forEach( async (el: any) => {
               promises.push(new Promise<void>(async (resolve, _reject) => {
                 dataName.value.push(JSON.parse(el).data);
                 const response1 = await fetch(`/api/visualization/countElement`, {
@@ -72,6 +82,7 @@ export default {
                 if (!response1.ok) {
                   throw new Error(`HTTP error! Status: ${response1.status}`);
                 }
+
                 const result = await response1.json();
 
                 dataCount.value.push(result);
@@ -106,7 +117,7 @@ export default {
           } else if(name == 'Sidebar') {
           
             result.forEach( async(el: any) => {
-              promises.push(new Promise<void>(async (resolve, reject) => {
+              promises.push(new Promise<void>(async (resolve, _reject) => {
 
                 dataName.value.push(JSON.parse(el).data);
                 
@@ -130,7 +141,7 @@ export default {
           } else if(name == 'Mappa') {
           
             result.forEach( async(el: any) => {
-              promises.push(new Promise<void>(async (resolve, reject) => {
+              promises.push(new Promise<void>(async (resolve, _reject) => {
 
                 dataName.value.push(JSON.parse(el).data);
                 const response = await fetch(`/api/visualization/countElement`, {
@@ -166,7 +177,7 @@ export default {
               data: sortedDataCount,
               barThickness: 25,
               backgroundColor: [
-                'rgba(0, 0, 0, 1)',
+                'rgba(110, 207, 235, 0.9)',
               ],
             },
           ],
@@ -188,6 +199,7 @@ export default {
       charts,
       chartOptions: {
         responsive: true,
+        indexAxis: 'y',
         plugins: {
           datalabels: {
             color: 'white',

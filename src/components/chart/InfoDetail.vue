@@ -23,6 +23,10 @@ export default {
             required: true,
             validator: (value: any) => value.every((str: any) => typeof str === 'string'),
         },
+        activeViewOption: {
+            type: String,
+            required: false,
+        },
     },
     setup: async (props) => {
         const dataName = ref(<any>[]);
@@ -53,56 +57,13 @@ export default {
                     const promises: any[] = [];
                     const promise: any[] = [];
 
-                    result.forEach(async (el: any) => {
-                        if(name == 'Road') {
-                            const start = JSON.parse(el.data)
-                            const end = JSON.parse(el.data)
-                            resultValues.value.push(start[0].start+"-"+end[1].end)
+                    if(name == 'URL') {
+                        // filtro per ottenere tutti gli url relativi all'edificio indicato in activeViewOption
+                        const filteredResult = result.filter((el: any) =>
+                            JSON.parse(el).data.includes(props.activeViewOption+"-")
+                        );
 
-                            promises.push(new Promise<void>(async (resolve, _reject) => {
-                            const response1 = await fetch(`/api/visualization/detailTimeData`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({ type: name, nameField: el, startPoint: start[0].start, endPoint: end[1].end }),
-                            });
-
-                            if (!response1.ok) {
-                                throw new Error(`HTTP error! Status: ${response1.status}`);
-                            }
-
-                            const timeData = await response1.json();
-
-                            const dataCountTemp: any[] = [];
-
-                            const monthCountMap: { [key: string]: number } = {};
-                            const monthNames = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
-                            
-                            monthNames.forEach(month => {
-                                monthCountMap[month] = 0;
-                            });
-
-                            const currentDate = new Date()
-                            const currentMonthIndex = currentDate.getMonth()
-                            timeData.filter((elem: { month: number; }) => elem.month - 1 <= currentMonthIndex)
-                                .forEach((elem: { month: any; count: any; }) => {
-                                    const monthIndex = elem.month - 1;
-                                    const monthName = monthNames[monthIndex];
-                                    monthCountMap[monthName] += elem.count;
-                            });
-
-                            Object.values(monthCountMap).forEach(count => {
-                                dataCountTemp.push(count);
-                            });
-
-                            dataName.value = monthNames.slice(0, currentMonthIndex + 1);
-                            dataCount.value.push(dataCountTemp);
-                            await Promise.all(promise);
-                            resolve();
-                        }));
-
-                        } else {
+                        filteredResult.forEach(async (el: any) => {
                             resultValues.value.push(JSON.parse(el).data)
 
                             promises.push(new Promise<void>(async (resolve, _reject) => {
@@ -124,7 +85,7 @@ export default {
 
                             const monthCountMap: { [key: string]: number } = {};
                             const monthNames = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
-                            
+
                             monthNames.forEach(month => {
                                 monthCountMap[month] = 0;
                             });
@@ -146,10 +107,105 @@ export default {
                             dataCount.value.push(dataCountTemp);
                             await Promise.all(promise);
                             resolve();
-                        }));
-                        }
+                            }));
+                        })
+                    } else {
+                        result.forEach(async (el: any) => {
+                            if(name == 'Road') {
+                                const start = JSON.parse(el.data)
+                                const end = JSON.parse(el.data)
+                                resultValues.value.push(start[0].start+"-"+end[1].end)
 
-                    });
+                                promises.push(new Promise<void>(async (resolve, _reject) => {
+                                    const response1 = await fetch(`/api/visualization/detailTimeData`, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({ type: name, nameField: el, startPoint: start[0].start, endPoint: end[1].end }),
+                                    });
+
+                                    if (!response1.ok) {
+                                        throw new Error(`HTTP error! Status: ${response1.status}`);
+                                    }
+
+                                    const timeData = await response1.json();
+
+                                    const dataCountTemp: any[] = [];
+
+                                    const monthCountMap: { [key: string]: number } = {};
+                                    const monthNames = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+                                    
+                                    monthNames.forEach(month => {
+                                        monthCountMap[month] = 0;
+                                    });
+
+                                    const currentDate = new Date()
+                                    const currentMonthIndex = currentDate.getMonth()
+                                    timeData.filter((elem: { month: number; }) => elem.month - 1 <= currentMonthIndex)
+                                        .forEach((elem: { month: any; count: any; }) => {
+                                            const monthIndex = elem.month - 1;
+                                            const monthName = monthNames[monthIndex];
+                                            monthCountMap[monthName] += elem.count;
+                                    });
+
+                                    Object.values(monthCountMap).forEach(count => {
+                                        dataCountTemp.push(count);
+                                    });
+
+                                    dataName.value = monthNames.slice(0, currentMonthIndex + 1);
+                                    dataCount.value.push(dataCountTemp);
+                                    await Promise.all(promise);
+                                    resolve();
+                                }));
+
+                            } else {
+                                resultValues.value.push(JSON.parse(el).data)
+                                promises.push(new Promise<void>(async (resolve, _reject) => {
+                                const response1 = await fetch(`/api/visualization/detailTimeData`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({ type: name, nameField: el, startPoint: 0, endPoint: 0 }),
+                                });
+
+                                if (!response1.ok) {
+                                    throw new Error(`HTTP error! Status: ${response1.status}`);
+                                }
+
+                                const timeData = await response1.json();
+
+                                const dataCountTemp: any[] = [];
+
+                                const monthCountMap: { [key: string]: number } = {};
+                                const monthNames = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+
+                                monthNames.forEach(month => {
+                                    monthCountMap[month] = 0;
+                                });
+
+                                const currentDate = new Date()
+                                const currentMonthIndex = currentDate.getMonth()
+                                timeData.filter((elem: { month: number; }) => elem.month - 1 <= currentMonthIndex)
+                                    .forEach((elem: { month: any; count: any; }) => {
+                                        const monthIndex = elem.month - 1;
+                                        const monthName = monthNames[monthIndex];
+                                        monthCountMap[monthName] += elem.count;
+                                });
+
+                                Object.values(monthCountMap).forEach(count => {
+                                    dataCountTemp.push(count);
+                                });
+
+                                dataName.value = monthNames.slice(0, currentMonthIndex + 1);
+                                dataCount.value.push(dataCountTemp);
+                                await Promise.all(promise);
+                                resolve();
+                                }));
+                            }
+                        });
+                    };
 
                     const datasets: any[] = [];
 

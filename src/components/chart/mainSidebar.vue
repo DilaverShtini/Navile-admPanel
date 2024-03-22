@@ -15,18 +15,6 @@ const showData = async (dataName: any) => {
 <template>
   <nav class="bg-gray-800 text-white">
     <div class="titolo">
-      GRAFICI
-    </div>
-    <ul class="listOfChart">
-      <li v-for="link in charts" @click="showData(link)" class="listChart">
-        <div class="row">
-          <div class="chartName">
-              {{ link }}
-          </div>
-        </div>
-      </li>
-    </ul>
-    <div class="titolo">
       DATI
     </div>
     <ul class="listOfData">

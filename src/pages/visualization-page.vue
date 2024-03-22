@@ -19,6 +19,8 @@
                 dataPieAnalysis: ['Sidebar | Mappa'],
                 dataLineAnalysis: ['Storico'],
                 chartToDiplay: ref('All'),
+                options: ref(['Edificio 4', 'Edificio 5']),
+                activeViewOption: ref('Edificio 4'),
             };
         },
         methods: {
@@ -26,6 +28,10 @@
                 const { data } = useNuxtData('dataToShow') as { data: any }
                 this.chartToDiplay = data.value
             },
+            changeTab(item: string) {
+                this.activeViewOption = item;
+            },
+
         },
     }
 </script>
@@ -36,22 +42,10 @@
             <MainSidebar @click="updateView()"/>
         </div>
         <div class="form">
-            <div class="form-container" v-if="chartToDiplay == 'BarChart'">
-                <BarChart :dataProp="dataBarAnalysis" />
-            </div>
-            <div class="form-container" v-if="chartToDiplay == 'PolarAreaChart'">
-                <PolarAreaChart :dataProp="dataPolarAreaAnalysis"/>
-            </div>
-            <div class="form-container" v-if="chartToDiplay == 'PieChart'">
-                <PieChart :dataProp="dataPieAnalysis"/>
-            </div>
-            <div class="form-container" v-if="chartToDiplay == 'LineChart'">
-                <LineChart :dataProp="dataLineAnalysis"/>
-            </div>
 
             <div class="form-container" v-if="chartToDiplay == 'All'">
                 <div>
-                    <BarChart :dataProp="dataBarAnalysis" />
+                    <BarChart :dataProp="dataBarAnalysis" :activeViewOption="activeViewOption" :key="activeViewOption"/>
                 </div>
                 <div>
                     <div>
@@ -67,16 +61,23 @@
             </div>
 
             <div class="form-container" v-if="chartToDiplay == 'URL'">
-                <div>
-                    <BarChart :dataProp="['URL']" />
+                <div class="deleteOption">
+                    <button 
+                        v-for="item, i in options" :key="i" 
+                        class="tab" :class="{ active: item === activeViewOption }"
+                        @click="changeTab(item)"
+                        >{{item}}</button>
                 </div>
                 <div>
-                    <InfoDetail :dataProp="['URL']" /> 
+                    <BarChart :dataProp="['URL']" :activeViewOption="activeViewOption" :key="activeViewOption"/>
+                </div>
+                <div>
+                    <InfoDetail :dataProp="['URL']" :activeViewOption="activeViewOption" :key="activeViewOption"/> 
                 </div>
             </div>
             <div class="form-container" v-if="chartToDiplay == 'Road'">
                 <div>
-                    <BarChart :dataProp="['Road']" />
+                    <BarChart :dataProp="['Road']" :activeViewOption="activeViewOption" :key="activeViewOption"/>
                 </div>
                 <div>
                     <InfoDetail :dataProp="['Road']" /> 

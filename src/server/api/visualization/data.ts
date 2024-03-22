@@ -21,7 +21,6 @@ export default defineEventHandler(async (event) => {
 
         if(type == 'Road') {
             const uniqueDataList = Array.from(new Set(ds.map(item => JSON.stringify(item)))).map(item => JSON.parse(item));
-            console.log("data list: ", uniqueDataList)
             const uniqueDataJSON = JSON.stringify(uniqueDataList);
             return uniqueDataJSON;        
         } else {
