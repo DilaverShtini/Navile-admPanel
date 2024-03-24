@@ -70,7 +70,6 @@ export default {
 
             filteredResult.forEach( async (el: any) => {
               promises.push(new Promise<void>(async (resolve, _reject) => {
-                dataName.value.push(JSON.parse(el).data);
                 const response1 = await fetch(`/api/visualization/countElement`, {
                   method: 'POST',
                   headers: {
@@ -87,6 +86,7 @@ export default {
 
                 dataCount.value.push(result);
                 resolve();
+                dataName.value.push(JSON.parse(el).data);
               }))
             });
 

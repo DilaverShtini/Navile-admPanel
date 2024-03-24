@@ -160,7 +160,6 @@ export default {
                                 }));
 
                             } else {
-                                resultValues.value.push(JSON.parse(el).data)
                                 promises.push(new Promise<void>(async (resolve, _reject) => {
                                 const response1 = await fetch(`/api/visualization/detailTimeData`, {
                                     method: 'POST',
@@ -202,6 +201,8 @@ export default {
                                 dataCount.value.push(dataCountTemp);
                                 await Promise.all(promise);
                                 resolve();
+                                resultValues.value.push(JSON.parse(el).data)
+
                                 }));
                             }
                         });
