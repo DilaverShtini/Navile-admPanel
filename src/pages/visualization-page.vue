@@ -45,7 +45,7 @@
 
             <div class="form-container" v-if="chartToDiplay == 'All'">
                 <div>
-                    <BarChart :dataProp="dataBarAnalysis" :activeViewOption="activeViewOption" :key="activeViewOption"/>
+                    <BarChart :dataProp="dataBarAnalysis" :activeViewOption="activeViewOption" :key="activeViewOption" :chartToDisplay="chartToDiplay"/>
                 </div>
                 <div>
                     <div>
@@ -69,7 +69,7 @@
                         >{{item}}</button>
                 </div>
                 <div>
-                    <BarChart :dataProp="['URL']" :activeViewOption="activeViewOption" :key="activeViewOption"/>
+                    <BarChart :dataProp="['URL']" :activeViewOption="activeViewOption" :key="activeViewOption" :chartToDisplay="chartToDiplay"/>
                 </div>
                 <div>
                     <InfoDetail :dataProp="['URL']" :activeViewOption="activeViewOption" :key="activeViewOption"/> 
@@ -77,7 +77,7 @@
             </div>
             <div class="form-container" v-if="chartToDiplay == 'Road'">
                 <div>
-                    <BarChart :dataProp="['Road']" :activeViewOption="activeViewOption" :key="activeViewOption"/>
+                    <BarChart :dataProp="['Road']" :activeViewOption="activeViewOption" :key="activeViewOption" :chartToDisplay="chartToDiplay"/>
                 </div>
                 <div>
                     <InfoDetail :dataProp="['Road']" /> 

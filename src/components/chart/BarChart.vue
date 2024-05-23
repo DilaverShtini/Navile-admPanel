@@ -34,6 +34,10 @@ export default {
       type: String,
       required: true,
     },
+    chartToDisplay: {
+      type: String,
+      required: true,
+    }
   },
   setup: async (props) => {
     const { dataProp } = toRefs(props);
@@ -86,7 +90,21 @@ export default {
 
                 dataCount.value.push(result);
                 resolve();
-                dataName.value.push(JSON.parse(el).data);
+
+                console.log("props: ", props.chartToDisplay)
+                // se sono nella sezione degli url faccio vedere gli url specifici della selezione, altrimenti se sono in visualizza tutti i dati
+                // faccio visualizzare anche il prefisso
+                if(props.chartToDisplay == "All") {
+                    dataName.value.push(JSON.parse(el).data);
+                } else {
+                    // rimuovo il prefisso "Edificio n" dal nome dell'url
+                    let parsedData = JSON.parse(el);
+                    let stringa = parsedData.data
+                    let nuovaStringa = stringa.substring(stringa.indexOf('-') + 1);
+                    parsedData.data = nuovaStringa;
+                    dataName.value.push(nuovaStringa);
+
+                }
               }))
             });
 
