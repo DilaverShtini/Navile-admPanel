@@ -21,6 +21,7 @@
                 chartToDiplay: ref('All'),
                 options: ref(['Edificio 4', 'Edificio 5']),
                 activeViewOption: ref('Edificio 4'),
+                isSidebarVisible: ref(false),
             };
         },
         methods: {
@@ -31,6 +32,9 @@
             changeTab(item: string) {
                 this.activeViewOption = item;
             },
+            toggleSidebar() {
+                this.isSidebarVisible = !this.isSidebarVisible
+            }
 
         },
     }
@@ -38,8 +42,10 @@
 
 <template>
     <div class="container">
-        <div class="menu border">
-            <MainSidebar @click="updateView()"/>
+        <button class="menu-button" @click="toggleSidebar">Menu</button>
+
+        <div :class="['menu', { show: isSidebarVisible }]" @click="toggleSidebar">
+            <MainSidebar @click="updateView()" />
         </div>
         <div class="form">
 

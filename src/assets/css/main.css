@@ -298,3 +298,51 @@ option {
     width: 80%;
     height: 30%;
 }
+
+/* Styles for mobile */
+@media (max-width: 768px) {
+    .menu-button {
+      display: block;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1001;
+      padding: 15px 0;
+      background-color: #d97d7d;
+      color: white;
+      border: none;
+      text-align: center;
+      cursor: pointer;
+    }
+    
+    .menu {
+      display: none;
+      width: 100%;
+      position: fixed;
+      top: 50px;
+      left: 0;
+      z-index: 1000;
+      background-color: white;
+      max-height: calc(100% - 50px);
+      overflow-y: auto;
+    }
+  
+    .menu.show {
+      display: block;
+    }
+  
+    .form {
+      padding-top: 40px;
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .menu-button {
+      display: none;
+    }
+  
+    .form {
+      padding-top: 0;
+    }
+  }
