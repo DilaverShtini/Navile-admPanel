@@ -1,8 +1,30 @@
-/* Styles for BarChart and PolarAreaChar */
 .bar, .polarArea, .pie {
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-bottom: 1rem;
-    max-height: 30em;
-    max-width: 110em;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+@media (min-width: 768px) {
+    .visualization-container {
+        position: relative;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .visualization {
+        height: 300px;
+        overflow-y: hidden;
+    }
+
+    .bar {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        max-width: 100%;
+        height: 100%;
+        overflow-y: auto;
+    }
 }

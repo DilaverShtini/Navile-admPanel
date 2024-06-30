@@ -1,6 +1,6 @@
 /* Styles for MainMenu, FloorMenu, SpaceMenu, AddSpace, DeleteSpace, ModifyBuilding, ModifySpace */
 .container {
-    max-height: 53em;
+    max-height: 66em;
     display: flex;
     justify-content: left;
     flex: 1;
@@ -337,7 +337,7 @@ option {
     }
   }
   
-  @media (min-width: 769px) {
+  @media (min-width: 768px) {
     .menu-button {
       display: none;
     }
@@ -346,3 +346,12 @@ option {
       padding-top: 0;
     }
   }
+
+.chart-description {
+    font-size: 1.3em;
+    color: #333;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif
+}

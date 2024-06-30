@@ -21,6 +21,23 @@ function getSortedIndices(arr: any[]): number[] {
   return arr.map((_val, idx) => idx).sort((a, b) => arr[b] - arr[a]);
 }
 
+function wrapText(text: string, maxLineLength: number): string {
+  const words = text.split('-');
+  let lines: string[] = [];
+  let line = '';
+
+  for (const word of words) {
+    if ((line + word).length > maxLineLength) {
+      lines.push(line.trim());
+      line = '';
+    }
+    line += word + '';
+  }
+  lines.push(line.trim());
+  return lines.join('\n');
+}
+
+
 export default {
   name: 'BarChart',
   components: { Bar },
@@ -42,7 +59,7 @@ export default {
   setup: async (props) => {
     const { dataProp } = toRefs(props);
     const dataLoaded = ref(false);
-    const charts = ref<{ labels: any[]; datasets: { label: any; data: any; barThickness: number; backgroundColor: string[];}[] }[]>([]);
+    const charts = ref<{ labels: any[]; datasets: { label: any; data: any/*; barThickness: number*/; backgroundColor: string[];}[] }[]>([]);
  
     const fetchData = async (name: string) => {
       
@@ -91,7 +108,7 @@ export default {
                 dataCount.value.push(result);
                 resolve();
 
-                console.log("props: ", props.chartToDisplay)
+                //console.log("props: ", props.chartToDisplay)
                 // se sono nella sezione degli url faccio vedere gli url specifici della selezione, altrimenti se sono in visualizza tutti i dati
                 // faccio visualizzare anche il prefisso
                 if(props.chartToDisplay == "All") {
@@ -184,7 +201,7 @@ export default {
         await Promise.all(promises);
 
         const sortedIndices = getSortedIndices(dataCount.value);
-        const sortedLabels = sortedIndices.map(idx => dataName.value[idx]);
+        const sortedLabels = window.innerWidth <= 768 ? sortedIndices.map(idx => wrapText(dataName.value[idx], 7)) : sortedIndices.map(idx => dataName.value[idx]);
         const sortedDataCount = sortedIndices.map(idx => dataCount.value[idx]);
 
         const chartData = {
@@ -193,10 +210,12 @@ export default {
             {
               label: name,
               data: sortedDataCount,
-              barThickness: 25,
+              barThickness: 15,
               backgroundColor: [
                 'rgba(110, 207, 235, 0.9)',
               ],
+              borderWidth: 1,
+              barPercentage: 0.8
             },
           ],
         };
@@ -204,13 +223,15 @@ export default {
         charts.value.push(chartData);
         
         }
-          dataLoaded.value = true;
+        dataLoaded.value = true;
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-
-    await Promise.all(dataProp.value.map((name: any) => fetchData(name)));
+    
+    onMounted(async () => {
+      await Promise.all(props.dataProp.map((name: any) => fetchData(name)));
+    });
 
     return ({
       dataLoaded,
@@ -220,28 +241,42 @@ export default {
         indexAxis: 'y',
         plugins: {
           datalabels: {
+            padding: {
+              top: 10
+            },
             color: 'white',
             font: {
               weight: 'bold',
-              size: 17,
+              size: window.innerWidth <= 768 ? 12 : 14,
             },
+            formatter: (value: any) => {
+              return value;
+            }
           },
+          
         },
         scales: {
           x: {
             ticks: {
               font: {
                 weight: 'bold',
-                size: 17,
+                size: window.innerWidth <= 768 ? 10 : 15,
               },
             },
           },
           y: {
+            categorySpacing: 20,
             ticks: {
+              maxRotation: 0.5,
+              autoSkip: false,
               font: {
                 weight: 'bold',
-                size: 15,
+                size: window.innerWidth <= 768 ? 8 : 15,
               },
+              callback: function(value: any, index: number, ticks: any) {
+                var label = this.getLabelForValue(index);
+                return label ? label.split('\n') : value;
+              }
             },
           },
         },
@@ -253,8 +288,11 @@ export default {
 </script>
 
 <template>
-  <div v-if="dataLoaded" class="visualization">
-    <Bar v-for="(chartData, index) in charts" :key="index" :options="chartOptions" :data="chartData" class="bar"/>
+  <div class="visualization-container">
+    <div v-if="dataLoaded" class="visualization" ref="chartContainer">
+      <Bar v-for="(chartData, index) in charts" :key="index" :options="chartOptions" :data="chartData" class="bar"/>
+    </div>
+    <p v-else>Loading...</p>
   </div>
-  <p v-else>Loading...</p>
 </template>
+

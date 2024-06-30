@@ -54,11 +54,20 @@
                     <BarChart :dataProp="dataBarAnalysis" :activeViewOption="activeViewOption" :key="activeViewOption" :chartToDisplay="chartToDiplay"/>
                 </div>
                 <div>
+                    <div class="chart-description">
+                        Il seguente grafico rappresenta il confronto tra i vari bottoni presenti nei chioschi del complesso Navile di Bologna.
+                    </div>
                     <div>
                         <PolarAreaChart :dataProp="dataPolarAreaAnalysis"/>
                     </div>
+                    <div class="chart-description">
+                        Il seguente grafico mette a confronto il numero di interazioni avute con la Mappa e con la Sidebar nei chioschi del complesso Navile di Bologna.
+                    </div>
                     <div>
                         <PieChart :dataProp="dataPieAnalysis"/>
+                    </div>
+                    <div class="chart-description">
+                        Il seguente grafico rappresenta tutte le interazioni avute nei chioschi del complesso Navile di Bologna nei diversi mesi dell'anno.
                     </div>
                     <div>
                         <LineChart :dataProp="dataLineAnalysis"/>
@@ -75,42 +84,72 @@
                         >{{item}}</button>
                 </div>
                 <div>
+                    <div class="chart-description">
+                        Il seguente grafico rappresenta, in maniera decrescente, il numero di URL visitati, e le loro occorrenze, nei chioschi del complesso Navile di Bologna.
+                    </div>
                     <BarChart :dataProp="['URL']" :activeViewOption="activeViewOption" :key="activeViewOption" :chartToDisplay="chartToDiplay"/>
                 </div>
                 <div>
+                    <div class="chart-description">
+                    Il seguente grafico mette a confronto il numero di URL visitati nei chioschi nei diversi mesi dell'anno.
+                    </div>
                     <InfoDetail :dataProp="['URL']" :activeViewOption="activeViewOption" :key="activeViewOption"/> 
                 </div>
             </div>
             <div class="form-container" v-if="chartToDiplay == 'Road'">
                 <div>
+                    <div class="chart-description">
+                    Il seguente grafico rappresenta, in maniera decrescente, il numero di indicazioni cercate, e le loro occorrenze, nei chioschi del complesso Navile di Bologna.
+                     </div>
                     <BarChart :dataProp="['Road']" :activeViewOption="activeViewOption" :key="activeViewOption" :chartToDisplay="chartToDiplay"/>
                 </div>
                 <div>
+                    <div class="chart-description">
+                    Il seguente grafico mette a confronto il numero delle indicazioni cercate nei chioschi presenti nel complesso Navile di Bologna nei diversi mesi dell'anno.
+                    </div>
                     <InfoDetail :dataProp="['Road']" /> 
                 </div>
             </div>
             <div class="form-container" v-if="chartToDiplay == 'Button'">
                 <div>
-                    <PolarAreaChart :dataProp="['Button']" />
+                    <div class="chart-description">
+                        Il seguente grafico rappresenta il confronto tra i vari bottoni presenti nei chioschi del complesso Navile di Bologna.
+                    </div>
+                        <PolarAreaChart :dataProp="['Button']" />
                 </div>
                 <div>
-                    <InfoDetail :dataProp="['Button']" /> 
+                    <div class="chart-description">
+                        Il seguente grafico mette a confronto il numero di interazioni avute con i diversi bottoni presenti dei chioschi presenti nel complesso Navile di Bologna nei diversi mesi dell'anno.
+                    </div>
+                        <InfoDetail :dataProp="['Button']" /> 
                 </div>
             </div>
             <div class="form-container" v-if="chartToDiplay == 'Sidebar'">
                 <div>
-                    <PieChart :dataProp="['Sidebar | Mappa']" />
+                    <div class="chart-description">
+                        Il seguente grafico mette a confronto il numero di interazioni avute con la Mappa e con la Sidebar nei chioschi del complesso Navile di Bologna.
+                    </div>
+                        <PieChart :dataProp="['Sidebar | Mappa']" />
                 </div>
                 <div>
+                    <div class="chart-description">
+                        Il seguente grafico mette a confronto il numero interazioni avute con il menù laterale nei chioschi presenti nel complesso Navile di Bologna nei diversi mesi dell'anno.
+                   </div>    
                     <InfoDetail :dataProp="['Sidebar']" /> 
                 </div>
             </div>
             <div class="form-container" v-if="chartToDiplay == 'Mappa'">
                 <div>
+                    <div class="chart-description">
+                        Il seguente grafico mette a confronto il numero di interazioni avute con la Mappa e con la Sidebar nei chioschi del complesso Navile di Bologna.
+                    </div>
                     <PieChart :dataProp="['Sidebar | Mappa']" />
                 </div>
                 <div>
-                    <InfoDetail :dataProp="['Mappa']" /> 
+                    <div class="chart-description">
+                        Il seguente grafico mette a confronto le interazioni avute con la mappa chioschi presenti nel complesso Navile di Bologna nei diversi mesi dell'anno.
+                    </div>
+                        <InfoDetail :dataProp="['Mappa']" /> 
                 </div>
             </div>
             
